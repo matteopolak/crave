@@ -145,7 +145,7 @@ export default router({
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				WHERE
 					"recipe".id = $1`,
-				[input.id, ctx.session?.user.userId],
+				ctx.session ? [input.id, ctx.session.user.userId] : [input.id],
 			);
 
 			if (!result.rows.length) {
