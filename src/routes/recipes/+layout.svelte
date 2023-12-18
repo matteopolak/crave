@@ -1,51 +1,118 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { trpc } from '$lib/client';
-	import { createQuery } from '@tanstack/svelte-query';
-
 	import Menu from '~icons/ic/baseline-menu';
 	import Logo from '~icons/noto/shallow-pan-of-food';
+	import Channel from '~icons/ic/baseline-account-box';
+	import History from '~icons/ic/baseline-history';
+	import Recipe from '~icons/ic/baseline-restaurant';
+	import WatchLater from '~icons/ic/baseline-schedule';
+	import Liked from '~icons/ic/baseline-favorite';
+	import RightArrow from '~icons/ic/baseline-chevron-right';
+	import Home from '~icons/ic/baseline-home';
+	import Recipes from '~icons/ic/baseline-restaurant-menu';
+	import Subscriptions from '~icons/ic/baseline-subscriptions';
+	import Settings from '~icons/ic/baseline-settings';
+
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import type { PageData } from './$types';
+	import Search from './(components)/Search.svelte';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { trpc } from '$lib/client';
 
-	function search() {
-		return goto(`/recipes/search?q=${encodeURIComponent(term)}`);
-	}
+	export let year = new Date().getFullYear();
+	export let data: PageData;
 
-	$: query = createQuery({
-		queryKey: ['complete'],
-		queryFn: () => (term ? trpc.complete.query({ text: term }) : []),
+	type SidebarCategory = {
+		name?: string;
+		href?: string;
+		children: SidebarItem[];
+	};
+
+	type SidebarItem = {
+		name: string;
+		icon: ConstructorOfATypedSvelteComponent | string;
+		href: string;
+	};
+
+	const subscriptions = createQuery({
+		queryKey: ['subscriptions'],
+		queryFn: () =>
+			trpc.user.subscriptions
+				.query()
+				.then(r => ({ success: true, data: r }) as const)
+				.catch(() => ({ success: false }) as const),
 	});
 
-	$: {
-		let self = ++ctx;
-
-		query.subscribe(r => {
-			if (self === ctx && r.data) {
-				suggestions = r.data;
-			}
-		});
-	}
-
-	let ctx = 0;
-	let suggestions: { title: string }[] = [];
-	let dropdown: HTMLDivElement;
-
-	let term = $page.url.searchParams.get('q') ?? '';
-
-	$: if (browser) {
-		if (term) {
-			$page.url.searchParams.set('q', term);
-		} else {
-			$page.url.searchParams.delete('q');
-		}
-
-		history.replaceState(history.state, '', $page.url);
-	}
-
-	export let data: PageData;
+	$: sidebar = [
+		{
+			children: [
+				{
+					name: 'Home',
+					href: '/',
+					icon: Home,
+				},
+				{
+					name: 'Recipes',
+					href: '/recipes',
+					icon: Recipes,
+				},
+				{
+					name: 'Subscriptions',
+					href: '/subscriptions',
+					icon: Subscriptions,
+				},
+			],
+		},
+		{
+			name: 'You',
+			href: '/@me',
+			children: [
+				{
+					name: 'Your channel',
+					href: '/@me',
+					icon: Channel,
+				},
+				{
+					name: 'History',
+					href: '/recipes/history',
+					icon: History,
+				},
+				{
+					name: 'Your recipes',
+					href: '/@me/recipes',
+					icon: Recipe,
+				},
+				{
+					name: 'Watch later',
+					href: '/recipes/watch-later',
+					icon: WatchLater,
+				},
+				{
+					name: 'Liked recipes',
+					href: '/recipes/liked',
+					icon: Liked,
+				},
+			],
+		},
+		$subscriptions.data?.success && $subscriptions.data.data.length
+			? {
+					name: 'Subscriptions',
+					children: $subscriptions.data.data.map(sub => ({
+						name: sub.name,
+						href: `/@${sub.username}`,
+						icon: 'https://via.placeholder.com/64',
+					})),
+			  }
+			: undefined,
+		{
+			children: [
+				{
+					name: 'Settings',
+					href: '/settings',
+					icon: Settings,
+				},
+			],
+		},
+	] satisfies (SidebarCategory | undefined)[];
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -72,39 +139,10 @@
 				</a>
 			</div>
 
-			<form on:submit|preventDefault={search} class="mx-auto">
-				<div class="dropdown w-full" bind:this={dropdown}>
-					<input
-						type="text"
-						placeholder="Search"
-						class="input input-bordered rounded-full bg-base-300 w-96"
-						bind:value={term}
-						on:focusin={() => dropdown.classList.add('dropdown-open')}
-						on:focusout={() => dropdown.classList.remove('dropdown-open')}
-					/>
-
-					{#if suggestions.length}
-						<ul
-							class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-full"
-						>
-							{#each suggestions as suggestion}
-								<li>
-									<a
-										href="/recipes/search?q={encodeURIComponent(
-											suggestion.title,
-										)}"
-									>
-										{suggestion.title}
-									</a>
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</div>
-			</form>
+			<Search />
 
 			<div class="lg:w-64 grid place-items-end">
-				<ProfileDropdown username={data.user.username} name={data.user.name} />
+				<ProfileDropdown user={data.user} />
 			</div>
 		</div>
 
@@ -132,11 +170,43 @@
 				</a>
 			</div>
 
-			<li><a href="/recipes/@me">Your recipes</a></li>
+			{#each sidebar as category}
+				{#if category}
+					{#if category.name}
+						{#if category.href}
+							<li class="text-lg font-bold">
+								<a href={category.href}>
+									{category.name}
+									<RightArrow class="w-6 h-6" />
+								</a>
+							</li>
+						{:else}
+							<span class="px-4 py-2 text-lg font-bold">{category.name}</span>
+						{/if}
+					{/if}
 
-			<div class="divider"></div>
+					{#each category.children as route}
+						<li>
+							<a href={route.href}>
+								{#if typeof route.icon === 'string'}
+									<img
+										src={route.icon}
+										class="h-6 w-6 rounded-full"
+										alt="{route.name}'s avatar"
+									/>
+								{:else}
+									<svelte:component this={route.icon} class="h-6 w-6" />
+								{/if}
+								{route.name}
+							</a>
+						</li>
+					{/each}
 
-			<li><a href="/recipes/match">Find a recipe</a></li>
+					<div class="divider"></div>
+				{/if}
+			{/each}
+
+			<span class="text-center brightness-75">© {year} Crave</span>
 		</ul>
 	</div>
 </div>

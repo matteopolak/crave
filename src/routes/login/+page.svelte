@@ -5,6 +5,8 @@
 	import Google from '~icons/logos/google-icon';
 	import GitHub from '~icons/logos/github-icon';
 	import type { ActionData } from './$types';
+	import { addFromQuery } from '$lib/util';
+	import { page } from '$app/stores';
 
 	let showPassword = false;
 	let width = 0;
@@ -36,11 +38,19 @@
 		}}
 	>
 		<div class="grid grid-cols-2 lg:grid-cols-1 gap-1">
-			<a class="btn btn-md dark:btn-neutral w-full gap-4" href="/login/github">
+			<a
+				class="btn btn-md dark:btn-neutral w-full gap-4"
+				href="/login/github"
+				use:addFromQuery
+			>
 				<GitHub class="h-6 w-6 dark:invert" />
 				Continue with GitHub
 			</a>
-			<a class="btn btn-md dark:btn-neutral w-full gap-4" href="/login/google">
+			<a
+				class="btn btn-md dark:btn-neutral w-full gap-4"
+				href="/login/google"
+				use:addFromQuery
+			>
 				<Google class="h-6 w-6" />
 				Continue with Google
 			</a>
@@ -117,6 +127,7 @@
 			Don't have an account? <a
 				href="/register"
 				class="underline text-neutral-100 dark:text-neutral-50"
+				use:addFromQuery
 			>
 				Sign up for Crave
 			</a>

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { trpc } from '$lib/client';
 	import { createQuery } from '@tanstack/svelte-query';
-	import RecipeGrid from './(components)/RecipeGrid.svelte';
+	import RecipeGrid from '../(components)/RecipeGrid.svelte';
 
 	const recipes = createQuery({
-		queryKey: ['random'],
-		queryFn: () => trpc.recipes.random.query({}),
+		queryKey: ['liked'],
+		queryFn: () => trpc.recipes.liked.query(),
 	});
 </script>
 

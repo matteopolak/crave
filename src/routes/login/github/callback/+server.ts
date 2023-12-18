@@ -1,4 +1,5 @@
 import { auth, githubAuth } from '$lib/server/lucia.js';
+import { getRedirectWithCookie } from '$lib/server/url.js';
 import { OAuthRequestError } from '@lucia-auth/oauth';
 
 export const GET = async ({ url, cookies, locals }) => {
@@ -41,11 +42,10 @@ export const GET = async ({ url, cookies, locals }) => {
 		return new Response(null, {
 			status: 302,
 			headers: {
-				Location: '/',
+				Location: getRedirectWithCookie('github_oauth_from', cookies),
 			},
 		});
 	} catch (e) {
-		console.error(e);
 		if (e instanceof OAuthRequestError) {
 			return new Response(null, {
 				status: 400,

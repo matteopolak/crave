@@ -11,10 +11,10 @@
 		queryKey: ['recipe'],
 		queryFn: () =>
 			Promise.all([
-				trpc.get.query({
+				trpc.recipes.get.query({
 					id: parseInt($page.params.id),
 				}),
-				trpc.similar.query({
+				trpc.recipes.recommended.query({
 					id: parseInt($page.params.id),
 				}),
 			]),

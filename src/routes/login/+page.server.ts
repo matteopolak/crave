@@ -1,24 +1,25 @@
 import { auth } from '$lib/server/lucia';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
 import { LuciaError } from 'lucia';
+import { redirectWithQuery } from '$lib/server/url';
 
 const Input = z.object({
 	username: z.string().min(4, 'Username must be at least 4 characters.').max(39, 'Username cannot be more than 39 characters.'),
 	password: z.string().min(8, 'Password must be at least 8 characters.').max(255, 'Password cannot be more than 255 characters.'),
 });
 
-export const load = (async ({ locals }) => {
+export const load = (async ({ locals, url }) => {
 	const session = await locals.auth.validate();
-	if (session) redirect(302, '/');
+	if (session) return redirectWithQuery(url);
 
 	return {};
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, url }) => {
 		const formData = await request.formData();
 		const username = formData.get('username');
 		const password = formData.get('password');
@@ -63,6 +64,6 @@ export const actions: Actions = {
 			});
 		}
 
-		redirect(302, '/');
+		return redirectWithQuery(url);
 	},
 };

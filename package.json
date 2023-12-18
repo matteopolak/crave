@@ -53,6 +53,7 @@
 		"@trpc/client": "^10.44.1",
 		"redoc-svelte": "^0.2.3",
 		"svelte-reveal": "^0.7.0",
+		"svelte-time": "^0.8.2",
 		"svelte-typewriter": "^3.2.2"
 	}
 }

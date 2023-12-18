@@ -6,7 +6,7 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 		interface Locals {
-			auth: import('lucia/packages/lucia/src').AuthRequest;
+			auth: import('lucia').AuthRequest;
 		}
 	}
 

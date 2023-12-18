@@ -17,11 +17,11 @@
 		queryKey: ['match'],
 		queryFn: () =>
 			first
-				? trpc.random.query({
+				? trpc.recipes.random.query({
 						includeEmbeddings: true,
 						limit: 9,
 				  })
-				: trpc.vector.search.mutate({
+				: trpc.recipes.vector.search.mutate({
 						vector: unit,
 						includeEmbeddings: true,
 						limit: 9,

@@ -4,6 +4,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import pg from 'pg';
 import { z } from 'zod';
+import { redirectWithQuery } from '$lib/server/url';
 
 const Input = z.object({
 	username: z.string().min(4, 'Username must be at least 4 characters.').max(39, 'Username cannot be more than 39 characters.'),
@@ -19,7 +20,7 @@ export const load = (async ({ locals }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, url }) => {
 		const formData = await request.formData();
 		const username = formData.get('username');
 		const password = formData.get('password');
@@ -72,6 +73,6 @@ export const actions = {
 			});
 		}
 
-		redirect(302, '/');
+		return redirectWithQuery(url);
 	},
 } satisfies Actions;

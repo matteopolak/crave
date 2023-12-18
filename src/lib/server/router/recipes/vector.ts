@@ -1,6 +1,8 @@
-import { procedure, router } from '$lib/server/trpc';
 import { z } from 'zod';
-import { PartialRecipe } from '../schema';
+
+import { procedure, router } from '$lib/server/trpc';
+import { PartialRecipe } from '$lib/server/schema';
+import { SELECT_AUTHOR, SELECT_PARTIAL_RECIPE } from '.';
 
 export default router({
 	search: procedure
@@ -14,10 +16,8 @@ export default router({
 		.mutation(async ({ input, ctx }) => {
 			const result = await ctx.db.query<PartialRecipe>(
 				`SELECT
-					id,
-					title,
-					ingredients,
-					thumbnail
+					${SELECT_AUTHOR},
+					${SELECT_PARTIAL_RECIPE}
 					${input.includeEmbeddings ? ',embedding' : ''}
 				FROM recipe WHERE
 				embedding <#> $1 < -0.7

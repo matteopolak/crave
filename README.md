@@ -14,19 +14,53 @@ CREATE EXTENSION tsm_system_rows;
 -- Create the recipe table
 CREATE TABLE recipe (
   id SERIAL PRIMARY KEY,
+  -- If the author id is NULL, the recipe was created by the system
+  author_id TEXT REFERENCES "user" (id),
   embedding vector(768),
+ 
   title TEXT NOT NULL UNIQUE,
+  thumbnail TEXT NOT NULL,
+  url TEXT NOT NULL,
+
   quantities TEXT[] NOT NULL,
   directions TEXT[] NOT NULL,
   ingredients TEXT[] NOT NULL,
+ 
   energy REAL NOT NULL,
   fat REAL NOT NULL,
   saturated_fat REAL NOT NULL,
   protein REAL NOT NULL,
   salt REAL NOT NULL,
   sugar REAL NOT NULL,
-  thumbnail TEXT NOT NULL,
-  url TEXT NOT NULL
+
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Keep track of a user's recipe viewing history
+CREATE TABLE history (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES "user" (id),
+  recipe_id INTEGER NOT NULL REFERENCES recipe (id),
+ 
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Keep track of a user's subscriptions
+CREATE TABLE subscription (
+  user_id TEXT NOT NULL REFERENCES "user" (id),
+  channel_id TEXT REFERENCES "user" (id),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+  PRIMARY KEY (user_id, channel_id)
+);
+
+-- Keep track of a user's likes
+CREATE TABLE "like" (
+  user_id TEXT NOT NULL REFERENCES "user" (id),
+  recipe_id INTEGER NOT NULL REFERENCES recipe (id),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+  PRIMARY KEY (user_id, recipe_id)
 );
 
 -- Use an inner product similarity index
@@ -42,7 +76,9 @@ CREATE TABLE "user" (
   id TEXT NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
   username VARCHAR(39) NOT NULL UNIQUE,
-  embedding vector(768)
+  embedding vector(768),
+
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE user_key (
