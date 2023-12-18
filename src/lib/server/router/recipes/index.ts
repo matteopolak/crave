@@ -219,6 +219,7 @@ export default router({
 		}),
 	history: protectedProcedure
 		.meta({ openapi: { method: 'GET', path: '/recipes/history' } })
+		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
 			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
