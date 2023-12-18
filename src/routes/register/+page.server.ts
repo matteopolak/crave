@@ -2,7 +2,7 @@ import { auth } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
-import { DatabaseError } from 'pg';
+import pg from 'pg';
 import { z } from 'zod';
 
 const Input = z.object({
@@ -59,7 +59,7 @@ export const actions = {
 			locals.auth.setSession(session);
 		} catch (e) {
 			if (
-				e instanceof DatabaseError &&
+				e instanceof pg.DatabaseError &&
 				e.constraint
 			) {
 				return fail(400, {
