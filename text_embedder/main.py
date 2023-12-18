@@ -3,6 +3,7 @@ from os import getenv
 from FlagEmbedding import FlagModel
 from flask import Flask, request
 from dotenv import load_dotenv
+from waitress import serve
 
 load_dotenv()
 
@@ -23,4 +24,4 @@ def embed():
 	}
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=int(getenv('TEXT_EMBEDDER_PORT', '5000')))
+	serve(app, host='0.0.0.0', port=int(getenv('TEXT_EMBEDDER_PORT', '5000')))
