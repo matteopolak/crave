@@ -4,9 +4,10 @@ import { pg } from '@lucia-auth/adapter-postgresql';
 import { github, google } from '@lucia-auth/oauth/providers';
 
 import { dev } from '$app/environment';
-import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, HOST_URL } from '$env/static/private';
+import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
 
 import { db } from './context';
+import { PUBLIC_BASE_URL } from '$env/static/public';
 
 export const auth = lucia({
 	env: dev ? 'DEV' : 'PROD',
@@ -32,7 +33,7 @@ export const githubAuth = github(auth, {
 export const googleAuth = google(auth, {
 	clientId: GOOGLE_CLIENT_ID,
 	clientSecret: GOOGLE_CLIENT_SECRET,
-	redirectUri: new URL('/login/google/callback', HOST_URL).href,
+	redirectUri: new URL('/login/google/callback', PUBLIC_BASE_URL).href,
 });
 
 export type Auth = typeof auth;
