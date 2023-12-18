@@ -199,6 +199,7 @@ export default router({
 		}),
 	liked: protectedProcedure
 		.meta({ openapi: { method: 'GET', path: '/recipes/liked' } })
+		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
 			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
