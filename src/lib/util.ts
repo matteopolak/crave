@@ -44,7 +44,11 @@ export function addFromQuery(node: HTMLAnchorElement) {
 		page.subscribe(page => {
 			const url = new URL(node.href);
 
-			url.searchParams.set('from', page.url.pathname + page.url.search);
+			if (page.url.pathname !== '/login' && page.url.pathname !== '/register') {
+				url.searchParams.set('from', page.url.pathname + page.url.search);
+			} else {
+				url.searchParams.delete('from');
+			}
 
 			node.href = url.toString();
 		});
