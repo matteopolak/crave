@@ -1,6 +1,9 @@
+import { eq, inArray } from 'drizzle-orm/sql';
 import { protectedProcedure, router } from '$lib/server/trpc';
 import { z } from 'zod';
 import { User } from '../schema';
+import { db } from '../db';
+import { subscription, user } from '../db/schema';
 
 export default router({
 	me: protectedProcedure
@@ -16,18 +19,17 @@ export default router({
 		.input(z.void())
 		.output(User)
 		.query(async ({ ctx }) => {
-			const result = await ctx.db.query<User>(
-				`SELECT
-					id,
-					name,
-					username,
-					created_at
-				FROM "user"
-				WHERE username = $1`,
-				[ctx.session.user.username],
-			);
+			const users = await db
+				.select({
+					id: user.id,
+					name: user.name,
+					username: user.username,
+					createdAt: user.createdAt,
+				})
+				.from(user)
+				.where(eq(user.id, ctx.session.user.userId));
 
-			return result.rows[0];
+			return users[0];
 		}),
 	subscriptions: protectedProcedure
 		.meta({
@@ -42,19 +44,21 @@ export default router({
 		.input(z.void())
 		.output(User.array())
 		.query(async ({ ctx }) => {
-			const result = await ctx.db.query<User>(
-				`SELECT
-					id,
-					name,
-					username,
-					created_at
-				FROM "user"
-				WHERE id IN (
-					SELECT channel_id FROM subscription WHERE user_id = $1
-				)`,
-				[ctx.session.user.userId],
-			);
+			const subscriptions = db
+				.select({
+					channelId: subscription.channelId,
+				})
+				.from(subscription)
+				.where(eq(subscription.userId, ctx.session.user.userId));
 
-			return result.rows;
+			return db
+				.select({
+					id: user.id,
+					name: user.name,
+					username: user.username,
+					createdAt: user.createdAt,
+				})
+				.from(user)
+				.where(inArray(user.id, subscriptions));
 		}),
 });

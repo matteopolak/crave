@@ -9,6 +9,7 @@ import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
 
 import vector from './vector';
 import { transformAuthor, type FlatAuthor, SELECT_PARTIAL_RECIPE, SELECT_AUTHOR } from '$lib/server/sql';
+import { raw } from '$lib/server/db';
 
 const ai = axios.create({
 	baseURL: `http://127.0.0.1:${TEXT_EMBEDDER_PORT}`,
@@ -29,12 +30,12 @@ export default router({
 		})
 		.input(z.object({ text: z.string(), includeEmbeddings: z.boolean().default(false) }))
 		.output(z.object({ title: z.string() }).array())
-		.query(async ({ input, ctx }) => {
+		.query(async ({ input }) => {
 			const vector = await ai.post('/', {
 				text: input.text,
 			});
 
-			const result = await ctx.db.query<{ title: string }>(
+			const result = await raw.query<{ title: string }>(
 				`SELECT
 					title
 				FROM recipe
@@ -58,12 +59,12 @@ export default router({
 		})
 		.input(z.object({ text: z.string(), includeEmbeddings: z.boolean().default(false) }))
 		.output(PartialRecipe.array())
-		.query(async ({ input, ctx }) => {
+		.query(async ({ input }) => {
 			const vector = await ai.post('/', {
 				text: input.text,
 			});
 
-			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
+			const result = await raw.query<PartialRecipe & FlatAuthor>(
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
@@ -91,7 +92,7 @@ export default router({
 		.input(z.object({ id: z.number(), includeEmbeddings: z.boolean().default(false) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
-			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
+			const result = await raw.query<PartialRecipe & FlatAuthor>(
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
@@ -133,7 +134,7 @@ export default router({
 		.input(z.object({ includeEmbeddings: z.boolean().default(false), limit: z.number().min(1).max(100).int().default(50) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
-			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
+			const result = await raw.query<PartialRecipe & FlatAuthor>(
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
@@ -162,7 +163,7 @@ export default router({
 		.input(z.object({ id: Id, includeEmbeddings: z.boolean().default(false) }))
 		.output(Recipe)
 		.query(async ({ input, ctx }) => {
-			const result = await ctx.db.query<Recipe & FlatAuthor>(
+			const result = await raw.query<Recipe & FlatAuthor>(
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE},
@@ -195,7 +196,7 @@ export default router({
 			// insert history entry if the user is logged in
 			if (ctx.session) {
 				// it will only be inserted if the last history entry is not the same recipe
-				await ctx.db.query('CALL add_history($1, $2)', [ctx.session.user.userId, input.id]);
+				await raw.query('CALL add_history($1, $2)', [ctx.session.user.userId, input.id]);
 			} else {
 				result.rows[0].liked = false;
 			}
@@ -215,7 +216,7 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await ctx.db.query<{ likes: number }>(
+			await raw.query<{ likes: number }>(
 				`INSERT INTO "like" (user_id, recipe_id) VALUES ($1, $2)
 				ON CONFLICT (user_id, recipe_id) DO NOTHING;`,
 				[ctx.session.user.userId, input.id],
@@ -234,7 +235,7 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await ctx.db.query<{ likes: number }>(
+			await raw.query<{ likes: number }>(
 				'DELETE FROM "like" WHERE user_id = $1 AND recipe_id = $2;',
 				[ctx.session.user.userId, input.id],
 			);
@@ -252,7 +253,7 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
+			const result = await raw.query<PartialRecipe & FlatAuthor>(
 				`SELECT
 						${SELECT_AUTHOR},
 						${SELECT_PARTIAL_RECIPE}
@@ -280,7 +281,7 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const result = await ctx.db.query<PartialRecipe & FlatAuthor>(
+			const result = await raw.query<PartialRecipe & FlatAuthor>(
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}

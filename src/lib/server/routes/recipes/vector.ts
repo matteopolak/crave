@@ -2,7 +2,10 @@ import { z } from 'zod';
 
 import { procedure, router } from '$lib/server/trpc';
 import { PartialRecipe } from '$lib/server/schema';
-import { SELECT_AUTHOR, SELECT_PARTIAL_RECIPE } from '$lib/server/sql';
+import { db } from '$lib/server/db';
+import { history, recipe, user } from '$lib/server/db/schema';
+import { count, eq, lt, sql } from 'drizzle-orm';
+import { maxInnerProduct } from 'pgvector/drizzle-orm';
 
 export default router({
 	search: procedure
@@ -21,21 +24,35 @@ export default router({
 			limit: z.number().min(1).max(100).int().default(10),
 		}))
 		.output(PartialRecipe.array())
-		.mutation(async ({ input, ctx }) => {
-			const result = await ctx.db.query<PartialRecipe>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',recipe.embedding' : ''}
-				FROM recipe
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				WHERE
-					recipe.embedding <#> $1 < -0.7
-				ORDER BY random()
-				LIMIT $2`,
-				[`[${input.vector.join(',')}]`, input.limit],
-			);
+		.mutation(async ({ input }) => {
+			const views = db
+				.select({ value: count() })
+				.from(history)
+				.where(eq(history.recipeId, recipe.id))
+				.as('v');
 
-			return result.rows;
+			const recipes = await db
+				.select({
+					id: recipe.id,
+					title: recipe.title,
+					ingredients: recipe.ingredients,
+					thumbnail: recipe.thumbnail,
+					createdAt: recipe.createdAt,
+					author: {
+						id: user.id,
+						username: user.username,
+						name: user.name,
+						createdAt: user.createdAt,
+					},
+					views: views.value,
+					...(input.includeEmbeddings ? { embedding: recipe.embedding } : {}),
+				})
+				.from(recipe)
+				.leftJoin(user, eq(recipe.authorId, user.id))
+				.where(lt(maxInnerProduct(recipe.embedding, input.vector), -0.7))
+				.orderBy(sql`random()`)
+				.limit(input.limit);
+
+			return recipes;
 		}),
 });
