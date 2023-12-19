@@ -26,9 +26,11 @@ export default router({
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',embedding' : ''}
-				FROM recipe WHERE
-				embedding <#> $1 < -0.7
+					${input.includeEmbeddings ? ',recipe.embedding' : ''}
+				FROM recipe
+				LEFT JOIN "user" ON "user".id = recipe.author_id
+				WHERE
+					recipe.embedding <#> $1 < -0.7
 				ORDER BY random()
 				LIMIT $2`,
 				[`[${input.vector.join(',')}]`, input.limit],

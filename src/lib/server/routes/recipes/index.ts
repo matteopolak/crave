@@ -67,7 +67,7 @@ export default router({
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',"recipe".embedding' : ''}
+					${input.includeEmbeddings ? ',recipe.embedding' : ''}
 				FROM recipe
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				ORDER BY
@@ -95,7 +95,7 @@ export default router({
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',"recipe".embedding' : ''}
+					${input.includeEmbeddings ? ',recipe.embedding' : ''}
 				FROM recipe
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				WHERE
@@ -137,7 +137,7 @@ export default router({
 				`SELECT
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',embedding' : ''}
+					${input.includeEmbeddings ? ',recipe.embedding' : ''}
 				FROM recipe TABLESAMPLE SYSTEM_ROWS($1)
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				${ctx.session ? `WHERE
@@ -177,7 +177,7 @@ export default router({
 					url,
 					(SELECT COUNT(*)::int FROM "like" WHERE recipe_id = "recipe".id) AS likes
 					${ctx.session ? ',EXISTS(SELECT 1 FROM "like" WHERE recipe_id = "recipe".id AND user_id = $2) AS liked' : ''}
-					${input.includeEmbeddings ? ',embedding' : ''}
+					${input.includeEmbeddings ? ',recipe.embedding' : ''}
 				FROM recipe
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				WHERE
