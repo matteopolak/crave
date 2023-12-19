@@ -8,28 +8,25 @@ import { procedure, protectedProcedure, router } from '$lib/server/trpc';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
 
 import vector from './vector';
-import { transformAuthor, type FlatAuthor } from '$lib/server/sql';
+import { transformAuthor, type FlatAuthor, SELECT_PARTIAL_RECIPE, SELECT_AUTHOR } from '$lib/server/sql';
 
 const ai = axios.create({
 	baseURL: `http://127.0.0.1:${TEXT_EMBEDDER_PORT}`,
 	validateStatus: () => true,
 });
 
-export const SELECT_AUTHOR = `"user".id AS author_id,
-"user".username AS author_username,
-"user".name AS author_name,
-"user".created_at AS author_created_at`;
-export const SELECT_PARTIAL_RECIPE = `"recipe".id,
-"recipe".title,
-"recipe".ingredients,
-"recipe".thumbnail,
-"recipe".created_at,
-(SELECT COUNT(*)::int FROM history WHERE recipe_id = "recipe".id) AS views`;
-
 export default router({
 	vector,
 	autocomplete: procedure
-		.meta({ openapi: { method: 'POST', path: '/recipes/autocomplete' } })
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/autocomplete',
+				summary: 'Autocomplete',
+				description: 'Performs an autocomplete search with a specific text.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ text: z.string(), includeEmbeddings: z.boolean().default(false) }))
 		.output(z.object({ title: z.string() }).array())
 		.query(async ({ input, ctx }) => {
@@ -50,7 +47,15 @@ export default router({
 			return result.rows;
 		}),
 	search: procedure
-		.meta({ openapi: { method: 'POST', path: '/recipes/search' } })
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/search',
+				summary: 'Search',
+				description: 'Performs a search with a specific text.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ text: z.string(), includeEmbeddings: z.boolean().default(false) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
@@ -74,7 +79,15 @@ export default router({
 			return result.rows.map(transformAuthor);
 		}),
 	recommended: procedure
-		.meta({ openapi: { method: 'GET', path: '/recipes/{id}/recommended' } })
+		.meta({
+			openapi: {
+				method: 'GET',
+				path: '/recipes/{id}/recommended',
+				summary: 'Recommended recipes',
+				description: 'Gets recommended recipes for a specific recipe that haven\'t been seen yet.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ id: z.number(), includeEmbeddings: z.boolean().default(false) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
@@ -89,9 +102,13 @@ export default router({
 					"recipe".id != $1 AND "recipe".embedding <#> (
 						SELECT r.embedding FROM recipe r WHERE r.id = $1
 					) < -0.7
+					${ctx.session ? `AND
+					"recipe".id NOT IN (
+						SELECT recipe_id FROM history WHERE user_id = $2
+					)` : ''}
 				ORDER BY random()
 				LIMIT 25`,
-				[input.id],
+				ctx.session ? [input.id, ctx.session.user.userId] : [input.id],
 			);
 
 			if (!result.rows.length) {
@@ -104,7 +121,15 @@ export default router({
 			return result.rows.map(transformAuthor);
 		}),
 	random: procedure
-		.meta({ openapi: { method: 'GET', path: '/recipes/random' } })
+		.meta({
+			openapi: {
+				method: 'GET',
+				path: '/recipes/random',
+				summary: 'Random recipes',
+				description: 'Gets random recipes that haven\'t been seen yet.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ includeEmbeddings: z.boolean().default(false), limit: z.number().min(1).max(100).int().default(50) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
@@ -114,14 +139,26 @@ export default router({
 					${SELECT_PARTIAL_RECIPE}
 					${input.includeEmbeddings ? ',embedding' : ''}
 				FROM recipe TABLESAMPLE SYSTEM_ROWS($1)
-				LEFT JOIN "user" ON "user".id = recipe.author_id`,
-				[input.limit],
+				LEFT JOIN "user" ON "user".id = recipe.author_id
+				${ctx.session ? `WHERE
+					"recipe".id NOT IN (
+						SELECT recipe_id FROM history WHERE user_id = $2
+					)` : ''}`,
+				ctx.session ? [input.limit, ctx.session.user.userId] : [input.limit],
 			);
 
 			return result.rows.map(transformAuthor);
 		}),
 	get: procedure
-		.meta({ openapi: { method: 'GET', path: '/recipes/{id}' } })
+		.meta({
+			openapi: {
+				method: 'GET',
+				path: '/recipes/{id}',
+				summary: 'Get recipe',
+				description: 'Gets a specific recipe.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ id: Id, includeEmbeddings: z.boolean().default(false) }))
 		.output(Recipe)
 		.query(async ({ input, ctx }) => {
@@ -157,48 +194,61 @@ export default router({
 
 			// insert history entry if the user is logged in
 			if (ctx.session) {
-				await ctx.db.query(
-					'INSERT INTO history (user_id, recipe_id) VALUES ($1, $2)',
-					[ctx.session.user.userId, input.id],
-				);
+				// it will only be inserted if the last history entry is not the same recipe
+				await ctx.db.query('CALL add_history($1, $2)', [ctx.session.user.userId, input.id]);
 			} else {
 				result.rows[0].liked = false;
 			}
 
-
 			return transformAuthor(result.rows[0]);
 		}),
 	like: protectedProcedure
-		.meta({ openapi: { method: 'POST', path: '/recipes/{id}/like' } })
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/{id}/like',
+				summary: 'Like recipe',
+				description: 'Likes a specific recipe.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ id: Id }))
-		.output(z.object({ likes: z.number().int() }))
+		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			const result = await ctx.db.query<{ likes: number }>(
+			await ctx.db.query<{ likes: number }>(
 				`INSERT INTO "like" (user_id, recipe_id) VALUES ($1, $2)
-				ON CONFLICT (user_id, recipe_id) DO NOTHING;
-
-				SELECT COUNT(*)::int AS likes FROM "like" WHERE recipe_id = $2`,
+				ON CONFLICT (user_id, recipe_id) DO NOTHING;`,
 				[ctx.session.user.userId, input.id],
 			);
-
-			return result.rows[1];
 		}),
 	unlike: protectedProcedure
-		.meta({ openapi: { method: 'POST', path: '/recipes/{id}/unlike' } })
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/{id}/unlike',
+				summary: 'Unlike recipe',
+				description: 'Unlikes a specific recipe.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({ id: Id }))
-		.output(z.object({ likes: z.number().int() }))
+		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			const result = await ctx.db.query<{ likes: number }>(
-				`DELETE FROM "like" WHERE user_id = $1 AND recipe_id = $2;
-
-				SELECT COUNT(*)::int AS likes FROM "like" WHERE recipe_id = $2`,
+			await ctx.db.query<{ likes: number }>(
+				'DELETE FROM "like" WHERE user_id = $1 AND recipe_id = $2;',
 				[ctx.session.user.userId, input.id],
 			);
-
-			return result.rows[1];
 		}),
 	liked: protectedProcedure
-		.meta({ openapi: { method: 'GET', path: '/recipes/liked' } })
+		.meta({
+			openapi: {
+				method: 'GET',
+				path: '/recipes/liked',
+				summary: 'Liked recipes',
+				description: 'Gets the current user\'s liked recipes.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
@@ -218,7 +268,15 @@ export default router({
 			return result.rows.map(transformAuthor);
 		}),
 	history: protectedProcedure
-		.meta({ openapi: { method: 'GET', path: '/recipes/history' } })
+		.meta({
+			openapi: {
+				method: 'GET',
+				path: '/recipes/history',
+				summary: 'History',
+				description: 'Gets the current user\'s history.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
@@ -227,10 +285,11 @@ export default router({
 					${SELECT_AUTHOR},
 					${SELECT_PARTIAL_RECIPE}
 				FROM recipe
+				JOIN history ON history.recipe_id = recipe.id
 				LEFT JOIN "user" ON "user".id = recipe.author_id
 				WHERE
-					id IN (SELECT recipe_id FROM history WHERE user_id = $1)
-				ORDER BY created_at DESC`,
+					user_id = $1
+				ORDER BY "history".created_at DESC`,
 				[ctx.session.user.userId],
 			);
 

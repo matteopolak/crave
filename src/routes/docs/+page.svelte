@@ -2,7 +2,7 @@
 	import { RedocStandalone } from 'redoc-svelte';
 </script>
 
-<RedocStandalone specUrl="docs/openapi.json" />
+<RedocStandalone specUrl="/docs/openapi.json" />
 
 <style>
 	:global(body) {

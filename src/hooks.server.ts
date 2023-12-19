@@ -5,7 +5,7 @@ import { createTRPCHandle } from 'trpc-sveltekit';
 
 import { auth } from '$lib/server/lucia';
 import { createContext } from '$lib/server/context';
-import router from '$lib/server/router';
+import router from '$lib/server/routes';
 
 const handleTrpc: Handle = createTRPCHandle({ router, createContext, url: '/api' });
 

@@ -2,11 +2,19 @@ import { z } from 'zod';
 
 import { procedure, router } from '$lib/server/trpc';
 import { PartialRecipe } from '$lib/server/schema';
-import { SELECT_AUTHOR, SELECT_PARTIAL_RECIPE } from '.';
+import { SELECT_AUTHOR, SELECT_PARTIAL_RECIPE } from '$lib/server/sql';
 
 export default router({
 	search: procedure
-		.meta({ openapi: { method: 'POST', path: '/vector/search' } })
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/vector/search',
+				summary: 'Vector search',
+				description: 'Performs a vector search with a specific vector.',
+				tags: ['recipe'],
+			},
+		})
 		.input(z.object({
 			vector: z.number().array().length(768),
 			includeEmbeddings: z.boolean().default(false),

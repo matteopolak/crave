@@ -2,7 +2,7 @@
 	import { trpc } from '$lib/client';
 	import type { PartialRecipe } from '$lib/server/schema';
 	import { createQuery } from '@tanstack/svelte-query';
-	import RecipeBox from '../(components)/RecipeBox.svelte';
+	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
 
 	import Info from '~icons/ic/baseline-info';
 

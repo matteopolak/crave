@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Recipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
+	import Like from './Like.svelte';
 	import NutritionFacts from './NutritionFacts.svelte';
 
 	export let recipe: Recipe | undefined = undefined;
@@ -18,34 +19,40 @@
 				/>
 			</div>
 
-			<div class="flex flex-row flex-wrap gap-1 mt-7">
-				{#each recipe.ingredients as ingredient}
-					<div class="badge badge-lg badge-neutral line-clamp-1">
-						{ingredient}
+			<div class="flex flex-row flex-wrap place-items-center pb-2">
+				<div>
+					<div class="flex flex-row flex-wrap gap-1 mt-7">
+						{#each recipe.ingredients as ingredient}
+							<div class="badge badge-lg badge-neutral line-clamp-1">
+								{ingredient}
+							</div>
+						{/each}
 					</div>
-				{/each}
+
+					<h1 class="mt-4">{recipe.title}</h1>
+				</div>
+
+				<div class="ml-auto w-fit">
+					<Like bind:recipe />
+				</div>
 			</div>
 
-			<h1 class="mt-4">{recipe.title}</h1>
+			<NutritionFacts
+				salt={recipe.salt}
+				energy={recipe.energy}
+				fat={recipe.fat}
+				saturated={recipe.saturated_fat}
+				sugar={recipe.sugar}
+				protein={recipe.protein}
+			/>
+
 			<h2>Ingredients</h2>
 
-			<span class="flex flex-row flex-wrap">
-				<ul>
-					{#each recipe.quantities as ingredient}
-						<li>{ingredient}</li>
-					{/each}
-				</ul>
-				<span class="mx-auto">
-					<NutritionFacts
-						salt={recipe.salt}
-						energy={recipe.energy}
-						fat={recipe.fat}
-						saturated={recipe.saturated_fat}
-						sugar={recipe.sugar}
-						protein={recipe.protein}
-					/>
-				</span>
-			</span>
+			<ul>
+				{#each recipe.quantities as ingredient}
+					<li>{ingredient}</li>
+				{/each}
+			</ul>
 
 			<h2>Directions</h2>
 
