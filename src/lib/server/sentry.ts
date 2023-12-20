@@ -1,13 +1,10 @@
 import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
 
 import { SENTRY_DSN } from '$env/static/private';
 
 Sentry.init({
 	dsn: SENTRY_DSN,
 	integrations: [
-		new ProfilingIntegration(),
-		// add postgres integration
 		new Sentry.Integrations.Postgres(),
 	],
 	tracesSampleRate: 1.0,

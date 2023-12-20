@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import { bigint, index, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
@@ -9,8 +10,6 @@ export const user = pgTable('user', {
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Keep track of a user's recipes
-// TODO: CREATE INDEX ON recipe USING hnsw (embedding vector_ip_ops);
 export const recipe = pgTable('recipe', {
 	id: serial('id').primaryKey(),
 	authorId: text('author_id').notNull().references(() => user.id),
@@ -31,10 +30,10 @@ export const recipe = pgTable('recipe', {
 }, table => {
 	return {
 		authorIdx: index().on(table.authorId),
+		embeddingIdx: sql`CREATE INDEX IF NOT EXISTS "recipe_embedding_index" ON ${table} USING hnsw (${table.embedding} vector_ip_ops)`,
 	}
 });
 
-// Keep track of a user's recipe viewing history
 export const history = pgTable('history', {
 	id: serial('id').primaryKey(),
 	userId: text('user_id').notNull().references(() => user.id),
@@ -47,7 +46,6 @@ export const history = pgTable('history', {
 	}
 });
 
-// Keep track of a user's subscriptions
 export const subscription = pgTable('subscription', {
 	userId: text('user_id').notNull().references(() => user.id),
 	channelId: text('channel_id').notNull().references(() => user.id),
@@ -59,7 +57,6 @@ export const subscription = pgTable('subscription', {
 	}
 });
 
-// Keep track of a user's likes
 export const like = pgTable('like', {
 	userId: text('user_id').notNull().references(() => user.id),
 	recipeId: integer('recipe_id').notNull().references(() => recipe.id),
