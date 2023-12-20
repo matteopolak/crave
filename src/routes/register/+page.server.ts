@@ -1,10 +1,11 @@
-import { auth } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
-
-import type { Actions, PageServerLoad } from './$types';
 import pg from 'pg';
 import { z } from 'zod';
+
+import { auth } from '$lib/server/lucia';
 import { redirectWithQuery } from '$lib/server/url';
+
+import type { Actions, PageServerLoad } from './$types';
 
 const Input = z.object({
 	username: z.string().min(4, 'Username must be at least 4 characters.').max(39, 'Username cannot be more than 39 characters.'),

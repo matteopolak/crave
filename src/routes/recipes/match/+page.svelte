@@ -1,14 +1,18 @@
 <script lang="ts">
 	import { trpc } from '$lib/client';
-	import type { PartialRecipe } from '$lib/server/schema';
 	import { createQuery } from '@tanstack/svelte-query';
 	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
 
 	import Info from '~icons/ic/baseline-info';
+	import type { inferRouterOutputs } from '@trpc/server';
+	import type { Router } from '$lib/server/routes';
 
-	// Initialize vector to 0
+	type PartialRecipe =
+		inferRouterOutputs<Router>['recipes']['vector']['search'][number];
+
 	let vector: number[] = [];
 	let first = true;
+	let info: HTMLDialogElement;
 
 	$: length = Math.sqrt(vector.reduce((acc, val) => acc + val ** 2, 0));
 	$: unit = vector.map(val => val / length);
@@ -16,20 +20,14 @@
 	$: recipes = createQuery({
 		queryKey: ['match'],
 		queryFn: () =>
-			first
-				? trpc.recipes.random.query({
-						includeEmbeddings: true,
-						limit: 9,
-				  })
-				: trpc.recipes.vector.search.mutate({
-						vector: unit,
-						includeEmbeddings: true,
-						limit: 9,
-				  }),
+			trpc.recipes.vector.search.mutate({
+				vector: first ? undefined : unit,
+				limit: 9,
+			}),
 	});
 
 	function next(recipe: PartialRecipe) {
-		const embedding = JSON.parse(recipe.embedding!);
+		const embedding = recipe.embedding;
 
 		// move the vector in the direction of the recipe
 		if (first) {
@@ -40,14 +38,12 @@
 			const length = Math.sqrt(vector.reduce((acc, val) => acc + val ** 2, 0));
 			const unit = vector.map(val => val / length);
 
-			console.log('old', vector);
 			vector = unit.map(val => val * dot);
-			console.log('new', vector);
 		}
 	}
 </script>
 
-<dialog id="info" class="modal">
+<dialog id="info" class="modal" bind:this={info}>
 	<div class="modal-box">
 		<form method="dialog">
 			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

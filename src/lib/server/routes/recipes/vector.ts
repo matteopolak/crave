@@ -1,11 +1,12 @@
+import { eq, lt } from 'drizzle-orm';
+import { maxInnerProduct } from 'pgvector/drizzle-orm';
 import { z } from 'zod';
 
-import { procedure, router } from '$lib/server/trpc';
-import { PartialRecipe } from '$lib/server/schema';
 import { db } from '$lib/server/db';
-import { history, recipe, user } from '$lib/server/db/schema';
-import { count, eq, lt, sql } from 'drizzle-orm';
-import { maxInnerProduct } from 'pgvector/drizzle-orm';
+import { recipe, user } from '$lib/server/db/schema';
+import { partialRecipe, random } from '$lib/server/db/select';
+import { PartialRecipe } from '$lib/server/schema';
+import { procedure, router } from '$lib/server/trpc';
 
 export default router({
 	search: procedure
@@ -19,38 +20,26 @@ export default router({
 			},
 		})
 		.input(z.object({
-			vector: z.number().array().length(768),
-			includeEmbeddings: z.boolean().default(false),
+			vector: z.number().array().length(768).optional(),
 			limit: z.number().min(1).max(100).int().default(10),
 		}))
-		.output(PartialRecipe.array())
+		.output(
+			PartialRecipe
+				.required({
+					embedding: true,
+				})
+				.array(),
+		)
 		.mutation(async ({ input }) => {
-			const views = db
-				.select({ value: count() })
-				.from(history)
-				.where(eq(history.recipeId, recipe.id))
-				.as('v');
-
 			const recipes = await db
 				.select({
-					id: recipe.id,
-					title: recipe.title,
-					ingredients: recipe.ingredients,
-					thumbnail: recipe.thumbnail,
-					createdAt: recipe.createdAt,
-					author: {
-						id: user.id,
-						username: user.username,
-						name: user.name,
-						createdAt: user.createdAt,
-					},
-					views: views.value,
-					...(input.includeEmbeddings ? { embedding: recipe.embedding } : {}),
+					...partialRecipe,
+					embedding: recipe.embedding,
 				})
 				.from(recipe)
-				.leftJoin(user, eq(recipe.authorId, user.id))
-				.where(lt(maxInnerProduct(recipe.embedding, input.vector), -0.7))
-				.orderBy(sql`random()`)
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(input.vector ? lt(maxInnerProduct(recipe.embedding, input.vector), -0.6) : undefined)
+				.orderBy(random())
 				.limit(input.limit);
 
 			return recipes;

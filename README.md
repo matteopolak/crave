@@ -14,8 +14,7 @@ CREATE EXTENSION tsm_system_rows;
 -- Create the recipe table
 CREATE TABLE recipe (
   id SERIAL PRIMARY KEY,
-  -- If the author id is NULL, the recipe was created by the system
-  author_id TEXT REFERENCES "user" (id),
+  author_id TEXT NOT NULL REFERENCES "user" (id),
   embedding vector(768),
  
   title TEXT NOT NULL UNIQUE,
@@ -48,7 +47,7 @@ CREATE TABLE history (
 -- Keep track of a user's subscriptions
 CREATE TABLE subscription (
   user_id TEXT NOT NULL REFERENCES "user" (id),
-  channel_id TEXT REFERENCES "user" (id),
+  channel_id TEXT NOT NULL REFERENCES "user" (id),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 
   PRIMARY KEY (user_id, channel_id)

@@ -14,8 +14,6 @@
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		blob.update(ctx);
 
-		console.log(blob.radius);
-
 		window.requestAnimationFrame(() => loop(ctx));
 	}
 

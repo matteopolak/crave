@@ -1,15 +1,17 @@
-import { TEXT_EMBEDDER_PORT } from '$env/static/private';
-
-import { z } from 'zod';
-import axios from 'axios';
 import { TRPCError } from '@trpc/server';
+import axios from 'axios';
+import { and, desc, eq, lt, ne, notInArray, sql } from 'drizzle-orm';
+import { z } from 'zod';
 
-import { procedure, protectedProcedure, router } from '$lib/server/trpc';
+import { TEXT_EMBEDDER_PORT } from '$env/static/private';
+import { db } from '$lib/server/db';
+import { history, like, recipe, user } from '$lib/server/db/schema';
+import { completeRecipe, maxInnerProduct, partialRecipe, random } from '$lib/server/db/select';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
+import { procedure, protectedProcedure, router } from '$lib/server/trpc';
 
 import vector from './vector';
-import { transformAuthor, type FlatAuthor, SELECT_PARTIAL_RECIPE, SELECT_AUTHOR } from '$lib/server/sql';
-import { raw } from '$lib/server/db';
+
 
 const ai = axios.create({
 	baseURL: `http://127.0.0.1:${TEXT_EMBEDDER_PORT}`,
@@ -35,17 +37,13 @@ export default router({
 				text: input.text,
 			});
 
-			const result = await raw.query<{ title: string }>(
-				`SELECT
-					title
-				FROM recipe
-				ORDER BY
-					embedding <#> $1
-				LIMIT 10`,
-				[`[${vector.data.embedding.join(',')}]`],
-			);
+			const recipes = await db
+				.select({ title: recipe.title })
+				.from(recipe)
+				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
+				.limit(10);
 
-			return result.rows;
+			return recipes;
 		}),
 	search: procedure
 		.meta({
@@ -57,27 +55,21 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ text: z.string(), includeEmbeddings: z.boolean().default(false) }))
+		.input(z.object({ text: z.string() }))
 		.output(PartialRecipe.array())
 		.query(async ({ input }) => {
 			const vector = await ai.post('/', {
 				text: input.text,
 			});
 
-			const result = await raw.query<PartialRecipe & FlatAuthor>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',recipe.embedding' : ''}
-				FROM recipe
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				ORDER BY
-					embedding <#> $1
-				LIMIT 50`,
-				[`[${vector.data.embedding.join(',')}]`],
-			);
+			const recipes = await db
+				.select(partialRecipe)
+				.from(recipe)
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
+				.limit(50);
 
-			return result.rows.map(transformAuthor);
+			return recipes;
 		}),
 	recommended: procedure
 		.meta({
@@ -89,37 +81,39 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ id: z.number(), includeEmbeddings: z.boolean().default(false) }))
+		.input(z.object({ id: z.number() }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
-			const result = await raw.query<PartialRecipe & FlatAuthor>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',recipe.embedding' : ''}
-				FROM recipe
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				WHERE
-					"recipe".id != $1 AND "recipe".embedding <#> (
-						SELECT r.embedding FROM recipe r WHERE r.id = $1
-					) < -0.7
-					${ctx.session ? `AND
-					"recipe".id NOT IN (
-						SELECT recipe_id FROM history WHERE user_id = $2
-					)` : ''}
-				ORDER BY random()
-				LIMIT 25`,
-				ctx.session ? [input.id, ctx.session.user.userId] : [input.id],
-			);
+			console.log('before');
+			const e = db
+				.select({ embedding: recipe.embedding })
+				.from(recipe)
+				.where(eq(recipe.id, input.id));
 
-			if (!result.rows.length) {
+			const r = db
+				.select(partialRecipe)
+				.from(recipe)
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(and(
+					ne(recipe.id, input.id),
+					lt(maxInnerProduct(recipe.embedding, e), -0.7),
+					ctx.session ? ne(recipe.id, input.id) : undefined,
+				))
+				.orderBy(random())
+				.limit(25);
+
+			console.log('sql:', r.toSQL());
+
+			const recipes = await r;
+
+			if (!recipes.length) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: 'Recipe not found.',
 				});
 			}
 
-			return result.rows.map(transformAuthor);
+			return recipes;
 		}),
 	random: procedure
 		.meta({
@@ -131,24 +125,23 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ includeEmbeddings: z.boolean().default(false), limit: z.number().min(1).max(100).int().default(50) }))
+		.input(z.object({ limit: z.number().min(1).max(100).int().default(50) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
-			const result = await raw.query<PartialRecipe & FlatAuthor>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE}
-					${input.includeEmbeddings ? ',recipe.embedding' : ''}
-				FROM recipe TABLESAMPLE SYSTEM_ROWS($1)
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				${ctx.session ? `WHERE
-					"recipe".id NOT IN (
-						SELECT recipe_id FROM history WHERE user_id = $2
-					)` : ''}`,
-				ctx.session ? [input.limit, ctx.session.user.userId] : [input.limit],
-			);
+			const h = ctx.session && db
+				.select({ recipeId: history.recipeId })
+				.from(history)
+				.where(eq(history.userId, ctx.session.user.userId));
 
-			return result.rows.map(transformAuthor);
+			const recipes = await db
+				.select(partialRecipe)
+				.from(recipe)
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(h ? notInArray(recipe.id, h) : undefined)
+				.orderBy(random())
+				.limit(input.limit);
+
+			return recipes;
 		}),
 	get: procedure
 		.meta({
@@ -160,48 +153,27 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ id: Id, includeEmbeddings: z.boolean().default(false) }))
+		.input(z.object({ id: Id }))
 		.output(Recipe)
 		.query(async ({ input, ctx }) => {
-			const result = await raw.query<Recipe & FlatAuthor>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE},
-					quantities,
-					directions,
-					energy,
-					fat,
-					saturated_fat,
-					protein,
-					salt,
-					sugar,
-					url,
-					(SELECT COUNT(*)::int FROM "like" WHERE recipe_id = "recipe".id) AS likes
-					${ctx.session ? ',EXISTS(SELECT 1 FROM "like" WHERE recipe_id = "recipe".id AND user_id = $2) AS liked' : ''}
-					${input.includeEmbeddings ? ',recipe.embedding' : ''}
-				FROM recipe
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				WHERE
-					"recipe".id = $1`,
-				ctx.session ? [input.id, ctx.session.user.userId] : [input.id],
-			);
+			const recipes = await db
+				.select(completeRecipe(ctx.session?.user.userId))
+				.from(recipe)
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(eq(recipe.id, input.id));
 
-			if (!result.rows.length) {
+			if (!recipes.length) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: 'Recipe not found.',
 				});
 			}
 
-			// insert history entry if the user is logged in
 			if (ctx.session) {
-				// it will only be inserted if the last history entry is not the same recipe
-				await raw.query('CALL add_history($1, $2)', [ctx.session.user.userId, input.id]);
-			} else {
-				result.rows[0].liked = false;
+				await db.execute(sql`CALL add_history(${ctx.session.user.userId}, ${input.id})`);
 			}
 
-			return transformAuthor(result.rows[0]);
+			return recipes[0];
 		}),
 	like: protectedProcedure
 		.meta({
@@ -216,11 +188,14 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await raw.query<{ likes: number }>(
-				`INSERT INTO "like" (user_id, recipe_id) VALUES ($1, $2)
-				ON CONFLICT (user_id, recipe_id) DO NOTHING;`,
-				[ctx.session.user.userId, input.id],
-			);
+			await db.insert(like)
+				.values({
+					userId: ctx.session.user.userId,
+					recipeId: input.id,
+				})
+				.onConflictDoNothing({
+					target: [like.userId, like.recipeId],
+				});
 		}),
 	unlike: protectedProcedure
 		.meta({
@@ -235,10 +210,11 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await raw.query<{ likes: number }>(
-				'DELETE FROM "like" WHERE user_id = $1 AND recipe_id = $2;',
-				[ctx.session.user.userId, input.id],
-			);
+			await db.delete(like)
+				.where(and(
+					eq(like.userId, ctx.session.user.userId),
+					eq(like.recipeId, input.id),
+				));
 		}),
 	liked: protectedProcedure
 		.meta({
@@ -253,20 +229,15 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const result = await raw.query<PartialRecipe & FlatAuthor>(
-				`SELECT
-						${SELECT_AUTHOR},
-						${SELECT_PARTIAL_RECIPE}
-					FROM recipe
-					JOIN "like" ON "like".recipe_id = recipe.id
-					LEFT JOIN "user" ON "user".id = recipe.author_id
-					WHERE
-						"like".user_id = $1
-					ORDER BY "like".created_at DESC`,
-				[ctx.session.user.userId],
-			);
+			const recipes = await db
+				.select(partialRecipe)
+				.from(recipe)
+				.innerJoin(like, eq(like.recipeId, recipe.id))
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(eq(like.userId, ctx.session.user.userId))
+				.orderBy(desc(like.createdAt));
 
-			return result.rows.map(transformAuthor);
+			return recipes;
 		}),
 	history: protectedProcedure
 		.meta({
@@ -281,19 +252,14 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const result = await raw.query<PartialRecipe & FlatAuthor>(
-				`SELECT
-					${SELECT_AUTHOR},
-					${SELECT_PARTIAL_RECIPE}
-				FROM recipe
-				JOIN history ON history.recipe_id = recipe.id
-				LEFT JOIN "user" ON "user".id = recipe.author_id
-				WHERE
-					user_id = $1
-				ORDER BY "history".created_at DESC`,
-				[ctx.session.user.userId],
-			);
+			const recipes = await db
+				.select(partialRecipe)
+				.from(recipe)
+				.innerJoin(history, eq(history.recipeId, recipe.id))
+				.innerJoin(user, eq(recipe.authorId, user.id))
+				.where(eq(history.userId, ctx.session.user.userId))
+				.orderBy(desc(history.createdAt));
 
-			return result.rows.map(transformAuthor);
+			return recipes;
 		}),
 });

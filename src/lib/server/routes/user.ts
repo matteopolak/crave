@@ -1,9 +1,11 @@
 import { eq, inArray } from 'drizzle-orm/sql';
-import { protectedProcedure, router } from '$lib/server/trpc';
 import { z } from 'zod';
-import { User } from '../schema';
+
+import { protectedProcedure, router } from '$lib/server/trpc';
+
 import { db } from '../db';
 import { subscription, user } from '../db/schema';
+import { User } from '../schema';
 
 export default router({
 	me: protectedProcedure

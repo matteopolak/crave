@@ -1,5 +1,6 @@
-import { page } from '$app/stores';
 import { get } from 'svelte/store';
+
+import { page } from '$app/stores';
 
 export function showOnLoad(node: HTMLImageElement) {
 	node.classList.add('opacity-0');

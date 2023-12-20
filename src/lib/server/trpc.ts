@@ -1,6 +1,7 @@
-import type { Context } from '$lib/server/context';
-import { TRPCError, initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import type { OpenApiMeta } from 'trpc-openapi';
+
+import type { Context } from '$lib/server/context';
 
 const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
 

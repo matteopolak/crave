@@ -41,7 +41,7 @@
 				salt={recipe.salt}
 				energy={recipe.energy}
 				fat={recipe.fat}
-				saturated={recipe.saturated_fat}
+				saturated={recipe.saturatedFat}
 				sugar={recipe.sugar}
 				protein={recipe.protein}
 			/>

@@ -1,5 +1,6 @@
+import { type Cookies, redirect } from '@sveltejs/kit';
+
 import { dev } from '$app/environment';
-import { redirect, type Cookies } from '@sveltejs/kit';
 
 function parseFromQuery(url: URL) {
 	const from = url.searchParams.get('from');

@@ -1,12 +1,12 @@
-import { integer, pgTable, serial, text, timestamp, varchar, bigint, real } from 'drizzle-orm/pg-core';
+import { bigint, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
 export const user = pgTable('user', {
-	id: text('id').primaryKey(),
+	id: varchar('id', { length: 15 }).primaryKey(),
 	name: text('name').notNull(),
 	username: varchar('username', { length: 39 }).notNull().unique(),
 	embedding: vector('embedding', { dimension: 768 }),
-	createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 // Keep track of a user's recipes
@@ -27,7 +27,7 @@ export const recipe = pgTable('recipe', {
 	protein: real('protein').notNull(),
 	salt: real('salt').notNull(),
 	sugar: real('sugar').notNull(),
-	createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 // Keep track of a user's recipe viewing history
@@ -35,31 +35,32 @@ export const history = pgTable('history', {
 	id: serial('id').primaryKey(),
 	userId: text('user_id').notNull().references(() => user.id),
 	recipeId: integer('recipe_id').notNull().references(() => recipe.id),
-	createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
+
 // Keep track of a user's subscriptions
 export const subscription = pgTable('subscription', {
 	userId: text('user_id').notNull().references(() => user.id),
-	channelId: text('channel_id').references(() => user.id),
-	createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+	channelId: text('channel_id').notNull().references(() => user.id),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 // Keep track of a user's likes
 export const like = pgTable('like', {
 	userId: text('user_id').notNull().references(() => user.id),
 	recipeId: integer('recipe_id').notNull().references(() => recipe.id),
-	createdAt: timestamp('created_at', { withTimezone: true }).notNull(),
+	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const userKey = pgTable('user_key', {
-	id: text('id').primaryKey(),
-	userId: text('user_id').notNull().references(() => user.id),
-	password: text('hashed_password'),
+	id: varchar('id', { length: 255 }).primaryKey(),
+	userId: varchar('user_id', { length: 15 }).notNull().references(() => user.id),
+	password: varchar('hashed_password', { length: 255 }),
 });
 
 export const userSession = pgTable('user_session', {
-	id: text('id').primaryKey(),
-	userId: text('user_id').notNull().references(() => user.id),
-	activeExpires: bigint('active_expires', { mode: 'bigint' }).notNull(),
-	idleExpires: bigint('idle_expires', { mode: 'bigint' }).notNull(),
+	id: varchar('id', { length: 128 }).primaryKey(),
+	userId: varchar('user_id', { length: 15 }).notNull().references(() => user.id),
+	activeExpires: bigint('active_expires', { mode: 'number' }).notNull(),
+	idleExpires: bigint('idle_expires', { mode: 'number' }).notNull(),
 });

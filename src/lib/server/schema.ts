@@ -2,14 +2,9 @@ import { z } from 'zod';
 
 export const Id = z.number().int().nonnegative();
 export const Embedding = z.number().array().length(768);
-export const RawEmbedding = z.string();
 
 export const ChannelId = z.string();
 export const CreatedAt = z.coerce.date().or(z.string().datetime());
-
-export const WithEmbedding = z.object({
-	embedding: Embedding,
-});
 
 export const User = z
 	.object({
@@ -20,7 +15,7 @@ export const User = z
 	})
 	.nullable()
 	// TODO: Remove this once "Crave" is a real user
-	.transform(v => v ?? null)
+	.transform(v => v ?? undefined)
 	.default({
 		id: '000000000000000',
 		username: 'crave',
@@ -45,14 +40,13 @@ export const PartialRecipe = z.object({
 	title: z.string(),
 	thumbnail: z.string().url(),
 	ingredients: z.string().array(),
-	embedding: RawEmbedding.optional(),
+	embedding: Embedding.optional(),
 
 	views: z.number().nonnegative().int(),
 	createdAt: CreatedAt,
 });
 
 export type PartialRecipe = z.infer<typeof PartialRecipe>;
-export type WithEmbedding = z.infer<typeof WithEmbedding>;
 export type Embedding = z.infer<typeof Embedding>;
 
 export const Recipe = z.object({

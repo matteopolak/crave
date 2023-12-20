@@ -43,7 +43,7 @@
 			<div class="flex flex-row gap-2 place-items-center">
 				<span>{recipe.views} views</span>
 				<span class="text-neutral-500">•</span>
-				<span><Time timestamp={recipe.created_at} relative /></span>
+				<span><Time timestamp={recipe.createdAt} relative /></span>
 			</div>
 		</div>
 	</div>

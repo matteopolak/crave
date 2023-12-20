@@ -1,18 +1,17 @@
-import { lucia } from 'lucia';
-import { sveltekit } from 'lucia/middleware';
 import { pg } from '@lucia-auth/adapter-postgresql';
 import { github, google } from '@lucia-auth/oauth/providers';
+import { lucia } from 'lucia';
+import { sveltekit } from 'lucia/middleware';
 
 import { dev } from '$app/environment';
 import { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from '$env/static/private';
-
-import { db } from './context';
 import { PUBLIC_BASE_URL } from '$env/static/public';
+import { pool } from '$lib/server/db';
 
 export const auth = lucia({
 	env: dev ? 'DEV' : 'PROD',
 	middleware: sveltekit(),
-	adapter: pg(db, {
+	adapter: pg(pool, {
 		user: 'user',
 		key: 'user_key',
 		session: 'user_session',

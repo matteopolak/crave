@@ -34,6 +34,7 @@
 		"daisyui": "^4.4.20",
 		"drizzle-orm": "^0.29.1",
 		"eslint": "^8.56.0",
+		"eslint-plugin-simple-import-sort": "^10.0.0",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"lucia": "^2.7.5",
 		"pg": "^8.11.3",
