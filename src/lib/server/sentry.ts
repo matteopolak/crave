@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node';
+import Sentry from '@sentry/node/cjs';
 
 import { SENTRY_DSN } from '$env/static/private';
 
