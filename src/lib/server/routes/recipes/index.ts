@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
-import { and, desc, eq, inArray, lt, ne, notInArray, sql } from 'drizzle-orm';
+import { and, desc, eq, lt, ne, notInArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { TEXT_EMBEDDER_PORT } from '$env/static/private';
@@ -224,16 +224,12 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const l = db
-				.select({ recipeId: like.recipeId })
-				.from(like)
-				.where(eq(like.userId, ctx.session.user.userId));
-
 			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
-				.where(inArray(recipe.id, l))
+				.innerJoin(like, eq(recipe.id, like.recipeId))
+				.where(eq(like.userId, ctx.session.user.userId))
 				.orderBy(desc(like.createdAt)));
 
 			return recipes;
@@ -251,16 +247,12 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const h = db
-				.select({ recipeId: history.recipeId })
-				.from(history)
-				.where(eq(history.userId, ctx.session.user.userId));
-
 			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
-				.where(inArray(recipe.id, h))
+				.innerJoin(history, eq(recipe.id, history.recipeId))
+				.where(eq(history.userId, ctx.session.user.userId))
 				.orderBy(desc(history.createdAt)));
 
 			return recipes;

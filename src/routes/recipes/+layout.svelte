@@ -11,6 +11,7 @@
 	import Recipes from '~icons/ic/baseline-restaurant-menu';
 	import Subscriptions from '~icons/ic/baseline-subscriptions';
 	import Settings from '~icons/ic/baseline-settings';
+	import Food from '~icons/ic/baseline-fastfood';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import type { PageData } from './$types';
@@ -90,6 +91,11 @@
 					name: 'Liked recipes',
 					href: '/recipes/liked',
 					icon: Liked,
+				},
+				{
+					name: 'Recipe matcher',
+					href: '/recipes/matcher',
+					icon: Food,
 				},
 			],
 		},

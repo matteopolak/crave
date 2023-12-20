@@ -15,6 +15,6 @@
 			Your recipe history
 		</h1>
 
-		<RecipeGrid recipes={$recipes} side vertical size="lg" />
+		<RecipeGrid recipes={$recipes} side vertical size="xl" />
 	</div>
 </div>
