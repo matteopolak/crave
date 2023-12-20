@@ -6,6 +6,7 @@ import { db } from '$lib/server/db';
 import { recipe, user } from '$lib/server/db/schema';
 import { partialRecipe, random } from '$lib/server/db/select';
 import { PartialRecipe } from '$lib/server/schema';
+import { get } from '$lib/server/sentry';
 import { procedure, router } from '$lib/server/trpc';
 
 export default router({
@@ -31,7 +32,7 @@ export default router({
 				.array(),
 		)
 		.mutation(async ({ input }) => {
-			const recipes = await db
+			const recipes = await get(db
 				.select({
 					...partialRecipe,
 					embedding: recipe.embedding,
@@ -40,7 +41,7 @@ export default router({
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.where(input.vector ? lt(maxInnerProduct(recipe.embedding, input.vector), -0.6) : undefined)
 				.orderBy(random())
-				.limit(input.limit);
+				.limit(input.limit));
 
 			return recipes;
 		}),

@@ -7,34 +7,6 @@ YouTube-like recipe explorer with semantic recommendations and powerful search.
 ## Setting up the database
 
 ```sql
--- `vector` or `pgvector`
-CREATE EXTENSION vector;
-CREATE EXTENSION tsm_system_rows; 
-
--- Create the recipe table
-CREATE TABLE recipe (
-  id SERIAL PRIMARY KEY,
-  author_id TEXT NOT NULL REFERENCES "user" (id),
-  embedding vector(768),
- 
-  title TEXT NOT NULL UNIQUE,
-  thumbnail TEXT NOT NULL,
-  url TEXT NOT NULL,
-
-  quantities TEXT[] NOT NULL,
-  directions TEXT[] NOT NULL,
-  ingredients TEXT[] NOT NULL,
- 
-  energy REAL NOT NULL,
-  fat REAL NOT NULL,
-  saturated_fat REAL NOT NULL,
-  protein REAL NOT NULL,
-  salt REAL NOT NULL,
-  sugar REAL NOT NULL,
-
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
-);
-
 -- Keep track of a user's recipe viewing history
 CREATE TABLE history (
   id SERIAL PRIMARY KEY,
@@ -44,6 +16,9 @@ CREATE TABLE history (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX ON history (user_id);
+CREATE INDEX ON history (recipe_id);
+
 -- Keep track of a user's subscriptions
 CREATE TABLE subscription (
   user_id TEXT NOT NULL REFERENCES "user" (id),
@@ -52,6 +27,9 @@ CREATE TABLE subscription (
 
   PRIMARY KEY (user_id, channel_id)
 );
+
+CREATE INDEX ON subscription (user_id);
+CREATE INDEX ON subscription (channel_id);
 
 -- Keep track of a user's likes
 CREATE TABLE "like" (

@@ -1,4 +1,4 @@
-import { bigint, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { bigint, index, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
 export const user = pgTable('user', {
@@ -13,7 +13,7 @@ export const user = pgTable('user', {
 // TODO: CREATE INDEX ON recipe USING hnsw (embedding vector_ip_ops);
 export const recipe = pgTable('recipe', {
 	id: serial('id').primaryKey(),
-	authorId: text('author_id').references(() => user.id),
+	authorId: text('author_id').notNull().references(() => user.id),
 	embedding: vector('embedding', { dimension: 768 }),
 	title: text('title').notNull().unique(),
 	thumbnail: text('thumbnail').notNull(),
@@ -28,6 +28,10 @@ export const recipe = pgTable('recipe', {
 	salt: real('salt').notNull(),
 	sugar: real('sugar').notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => {
+	return {
+		authorIdx: index().on(table.authorId),
+	}
 });
 
 // Keep track of a user's recipe viewing history
@@ -36,6 +40,11 @@ export const history = pgTable('history', {
 	userId: text('user_id').notNull().references(() => user.id),
 	recipeId: integer('recipe_id').notNull().references(() => recipe.id),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => {
+	return {
+		userIdx: index().on(table.userId),
+		recipeIdx: index().on(table.recipeId),
+	}
 });
 
 // Keep track of a user's subscriptions
@@ -43,6 +52,11 @@ export const subscription = pgTable('subscription', {
 	userId: text('user_id').notNull().references(() => user.id),
 	channelId: text('channel_id').notNull().references(() => user.id),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => {
+	return {
+		userIdx: index().on(table.userId),
+		channelIdx: index().on(table.channelId),
+	}
 });
 
 // Keep track of a user's likes
@@ -50,6 +64,11 @@ export const like = pgTable('like', {
 	userId: text('user_id').notNull().references(() => user.id),
 	recipeId: integer('recipe_id').notNull().references(() => recipe.id),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+}, table => {
+	return {
+		userIdx: index().on(table.userId),
+		recipeIdx: index().on(table.recipeId),
+	}
 });
 
 export const userKey = pgTable('user_key', {

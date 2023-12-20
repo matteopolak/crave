@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
-import { and, desc, eq, lt, ne, notInArray, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, lt, ne, notInArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { TEXT_EMBEDDER_PORT } from '$env/static/private';
@@ -8,10 +8,10 @@ import { db } from '$lib/server/db';
 import { history, like, recipe, user } from '$lib/server/db/schema';
 import { completeRecipe, maxInnerProduct, partialRecipe, random } from '$lib/server/db/select';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
+import { get } from '$lib/server/sentry';
 import { procedure, protectedProcedure, router } from '$lib/server/trpc';
 
 import vector from './vector';
-
 
 const ai = axios.create({
 	baseURL: `http://127.0.0.1:${TEXT_EMBEDDER_PORT}`,
@@ -37,11 +37,11 @@ export default router({
 				text: input.text,
 			});
 
-			const recipes = await db
+			const recipes = await get(db
 				.select({ title: recipe.title })
 				.from(recipe)
 				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
-				.limit(10);
+				.limit(10));
 
 			return recipes;
 		}),
@@ -62,12 +62,12 @@ export default router({
 				text: input.text,
 			});
 
-			const recipes = await db
+			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
-				.limit(50);
+				.limit(50));
 
 			return recipes;
 		}),
@@ -89,7 +89,7 @@ export default router({
 				.from(recipe)
 				.where(eq(recipe.id, input.id));
 
-			const r = db
+			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
@@ -99,9 +99,7 @@ export default router({
 					ctx.session ? ne(recipe.id, input.id) : undefined,
 				))
 				.orderBy(random())
-				.limit(25);
-
-			const recipes = await r;
+				.limit(25));
 
 			if (!recipes.length) {
 				throw new TRPCError({
@@ -130,13 +128,13 @@ export default router({
 				.from(history)
 				.where(eq(history.userId, ctx.session.user.userId));
 
-			const recipes = await db
+			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.where(h ? notInArray(recipe.id, h) : undefined)
 				.orderBy(random())
-				.limit(input.limit);
+				.limit(input.limit));
 
 			return recipes;
 		}),
@@ -153,11 +151,11 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(Recipe)
 		.query(async ({ input, ctx }) => {
-			const recipes = await db
+			const recipes = await get(db
 				.select(completeRecipe(ctx.session?.user.userId))
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
-				.where(eq(recipe.id, input.id));
+				.where(eq(recipe.id, input.id)));
 
 			if (!recipes.length) {
 				throw new TRPCError({
@@ -185,14 +183,14 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await db.insert(like)
+			await get(db.insert(like)
 				.values({
 					userId: ctx.session.user.userId,
 					recipeId: input.id,
 				})
 				.onConflictDoNothing({
 					target: [like.userId, like.recipeId],
-				});
+				}));
 		}),
 	unlike: protectedProcedure
 		.meta({
@@ -207,11 +205,11 @@ export default router({
 		.input(z.object({ id: Id }))
 		.output(z.void())
 		.mutation(async ({ input, ctx }) => {
-			await db.delete(like)
+			await get(db.delete(like)
 				.where(and(
 					eq(like.userId, ctx.session.user.userId),
 					eq(like.recipeId, input.id),
-				));
+				)));
 		}),
 	liked: protectedProcedure
 		.meta({
@@ -226,13 +224,17 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const recipes = await db
+			const l = db
+				.select({ recipeId: like.recipeId })
+				.from(like)
+				.where(eq(like.userId, ctx.session.user.userId));
+
+			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
-				.innerJoin(like, eq(like.recipeId, recipe.id))
 				.innerJoin(user, eq(recipe.authorId, user.id))
-				.where(eq(like.userId, ctx.session.user.userId))
-				.orderBy(desc(like.createdAt));
+				.where(inArray(recipe.id, l))
+				.orderBy(desc(like.createdAt)));
 
 			return recipes;
 		}),
@@ -249,13 +251,17 @@ export default router({
 		.input(z.void())
 		.output(PartialRecipe.array())
 		.query(async ({ ctx }) => {
-			const recipes = await db
+			const h = db
+				.select({ recipeId: history.recipeId })
+				.from(history)
+				.where(eq(history.userId, ctx.session.user.userId));
+
+			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
-				.innerJoin(history, eq(history.recipeId, recipe.id))
 				.innerJoin(user, eq(recipe.authorId, user.id))
-				.where(eq(history.userId, ctx.session.user.userId))
-				.orderBy(desc(history.createdAt));
+				.where(inArray(recipe.id, h))
+				.orderBy(desc(history.createdAt)));
 
 			return recipes;
 		}),
