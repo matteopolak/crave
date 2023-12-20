@@ -84,7 +84,6 @@ export default router({
 		.input(z.object({ id: z.number() }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
-			console.log('before');
 			const e = db
 				.select({ embedding: recipe.embedding })
 				.from(recipe)
@@ -101,8 +100,6 @@ export default router({
 				))
 				.orderBy(random())
 				.limit(25);
-
-			console.log('sql:', r.toSQL());
 
 			const recipes = await r;
 
