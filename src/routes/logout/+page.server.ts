@@ -1,6 +1,7 @@
-import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/lucia';
 import { redirectWithQuery } from '$lib/server/url';
+
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const session = await locals.auth.validate();

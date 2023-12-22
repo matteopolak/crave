@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@400;700&family=Vina+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,900;1,9..40,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,7 +12,7 @@
 
 @layer base {
 	:root {
-		font-family: 'Oxygen', sans-serif;
+		font-family: 'DM Sans', sans-serif;
 		scroll-behavior: smooth;
 	}
 }

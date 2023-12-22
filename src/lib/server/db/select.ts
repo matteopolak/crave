@@ -15,8 +15,8 @@ export function random(): SQL<number> {
 	return sql`random()`;
 }
 
-export function maxInnerProduct(lhs: SQLWrapper, rhs: SQLWrapper): SQL<number> {
-	return sql`${lhs} <#> ${rhs}`;
+export function maxInnerProduct(lhs: SQLWrapper, rhs: SQLWrapper | number[]): SQL<number> {
+	return Array.isArray(rhs) ? sql`${lhs} <#> ${`[${rhs.join(',')}]`}` : sql`${lhs} <#> ${rhs}`;
 }
 
 export const views = sql<number>`${db
@@ -41,6 +41,16 @@ const liked = (userId?: string) => userId ? exists(db
 	.as('l')
 	: sql<boolean>`false`;
 
+export const subscribed = (userId?: string) => userId ? exists(db
+	.select({ value: sql`1` })
+	.from(s.subscription)
+	.where(and(
+		eq(s.subscription.channelId, s.user.id),
+		eq(s.subscription.userId, userId),
+	)))
+	.as('l')
+	: sql<boolean>`false`;
+
 const likes = db
 	.select({ value: count() })
 	.from(s.like)
@@ -58,6 +68,10 @@ export const partialRecipe = {
 
 export const completeRecipe = (userId?: string) => ({
 	...partialRecipe,
+	author: {
+		...user,
+		subscribed: subscribed(userId),
+	},
 	quantities: s.recipe.quantities,
 	directions: s.recipe.directions,
 	energy: s.recipe.energy,

@@ -55,3 +55,7 @@ export function addFromQuery(node: HTMLAnchorElement) {
 		});
 	}
 }
+
+export function formatNumber(number: number) {
+	return number.toLocaleString();
+}

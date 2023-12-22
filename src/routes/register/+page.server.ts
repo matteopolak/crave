@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import pg from 'pg';
 import { z } from 'zod';
 
@@ -13,9 +13,9 @@ const Input = z.object({
 	name: z.string().min(1, 'Name is required.').max(255, 'Name cannot be more than 255 characters.'),
 });
 
-export const load = (async ({ locals }) => {
+export const load = (async ({ locals, url }) => {
 	const session = await locals.auth.validate();
-	if (session) redirect(302, '/');
+	if (session) return redirectWithQuery(url, '/recipes');
 
 	return {};
 }) satisfies PageServerLoad;

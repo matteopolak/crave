@@ -67,7 +67,7 @@ CREATE INDEX IF NOT EXISTS "history_recipe_id_index" ON "history" ("recipe_id");
 CREATE INDEX IF NOT EXISTS "like_user_id_index" ON "like" ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "like_recipe_id_index" ON "like" ("recipe_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "recipe_author_id_index" ON "recipe" ("author_id");--> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "recipe_embedding_index" ON "recipe" USING hnsw ("embedding" vector_ip_ops);
+CREATE INDEX IF NOT EXISTS "recipe_embedding_index" ON "recipe" USING hnsw ("embedding" vector_ip_ops);--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "subscription_user_id_index" ON "subscription" ("user_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "subscription_channel_id_index" ON "subscription" ("channel_id");--> statement-breakpoint
 DO $$ BEGIN

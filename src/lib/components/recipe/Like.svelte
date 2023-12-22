@@ -3,6 +3,7 @@
 	import Unlike from '~icons/ic/baseline-favorite';
 	import type { Recipe } from '$lib/server/schema';
 	import { trpc } from '$lib/client';
+	import { formatNumber } from '$lib/util';
 
 	export let recipe: Recipe;
 
@@ -27,6 +28,6 @@
 	</span>
 
 	<span class="text-lg w-8">
-		{recipe.likes}
+		{formatNumber(recipe.likes)}
 	</span>
 </button>

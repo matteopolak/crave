@@ -1,8 +1,10 @@
-import { app } from '$lib/server/routes';
 import { json } from '@sveltejs/kit';
 import { generateOpenApiDocument } from 'trpc-openapi';
-import type { RequestHandler } from './$types';
+
 import { PUBLIC_BASE_URL } from '$env/static/public';
+import { app } from '$lib/server/routes';
+
+import type { RequestHandler } from './$types';
 
 const openApiDocument = generateOpenApiDocument(app, {
 	title: 'Crave API',

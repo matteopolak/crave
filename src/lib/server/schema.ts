@@ -12,15 +12,9 @@ export const User = z
 		username: z.string(),
 		name: z.string(),
 		createdAt: CreatedAt,
-	})
-	.nullable()
-	// TODO: Remove this once "Crave" is a real user
-	.transform(v => v ?? undefined)
-	.default({
-		id: '000000000000000',
-		username: 'crave',
-		name: 'Crave',
-		createdAt: new Date(),
+		recipes: z.number().nonnegative().int().optional(),
+		subscribers: z.number().nonnegative().int().optional(),
+		subscribed: z.boolean().optional(),
 	});
 
 export type User = z.infer<typeof User>;

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Recipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
+	import Subscribe from '../Subscribe.svelte';
 	import Like from './Like.svelte';
 	import NutritionFacts from './NutritionFacts.svelte';
+	import RecipeCardInformation from './RecipeCardInformation.svelte';
 
 	export let recipe: Recipe | undefined = undefined;
 </script>
@@ -20,21 +22,36 @@
 			</div>
 
 			<div class="flex flex-row flex-wrap place-items-center pb-2">
-				<div>
-					<div class="flex flex-row flex-wrap gap-1 mt-7">
-						{#each recipe.ingredients as ingredient}
-							<div class="badge badge-lg badge-neutral line-clamp-1">
-								{ingredient}
-							</div>
-						{/each}
-					</div>
+				<a
+					href="/@{recipe.author.username}"
+					class="flex flex-row gap-2 place-items-center w-fit no-underline"
+				>
+					<img
+						src="https://via.placeholder.com/64"
+						class="rounded-full w-14 h-14"
+						alt={recipe.author.name}
+						use:showOnLoad
+					/>
 
-					<h1 class="mt-4">{recipe.title}</h1>
-				</div>
+					<RecipeCardInformation {recipe} title={false} size="lg" />
+				</a>
 
-				<div class="ml-auto w-fit">
+				<div class="ml-auto w-fit flex flex-row place-items-center gap-2">
+					<Subscribe bind:user={recipe.author} />
 					<Like bind:recipe />
 				</div>
+			</div>
+
+			<div>
+				<div class="flex flex-row flex-wrap gap-1 mt-7">
+					{#each recipe.ingredients as ingredient}
+						<div class="badge badge-lg badge-neutral line-clamp-1">
+							{ingredient}
+						</div>
+					{/each}
+				</div>
+
+				<h1 class="mt-4">{recipe.title}</h1>
 			</div>
 
 			<NutritionFacts

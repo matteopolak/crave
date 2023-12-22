@@ -3,8 +3,6 @@
 	import Logo from '~icons/noto/shallow-pan-of-food';
 	import Channel from '~icons/ic/baseline-account-box';
 	import History from '~icons/ic/baseline-history';
-	import Recipe from '~icons/ic/baseline-restaurant';
-	import WatchLater from '~icons/ic/baseline-schedule';
 	import Liked from '~icons/ic/baseline-favorite';
 	import RightArrow from '~icons/ic/baseline-chevron-right';
 	import Home from '~icons/ic/baseline-home';
@@ -14,10 +12,10 @@
 	import Food from '~icons/ic/baseline-fastfood';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
-	import type { PageData } from './$types';
 	import Search from './(components)/Search.svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { trpc } from '$lib/client';
+	import type { PageData } from '../$types';
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;
@@ -25,6 +23,7 @@
 	type SidebarCategory = {
 		name?: string;
 		href?: string;
+		disabled?: boolean;
 		children: SidebarItem[];
 	};
 
@@ -32,12 +31,13 @@
 		name: string;
 		icon: ConstructorOfATypedSvelteComponent | string;
 		href: string;
+		disabled?: boolean;
 	};
 
 	const subscriptions = createQuery({
 		queryKey: ['subscriptions'],
 		queryFn: () =>
-			trpc.user.subscriptions
+			trpc.users.subscriptions
 				.query()
 				.then(r => ({ success: true, data: r }) as const)
 				.catch(() => ({ success: false }) as const),
@@ -60,37 +60,32 @@
 					name: 'Subscriptions',
 					href: '/subscriptions',
 					icon: Subscriptions,
+					disabled: data.user === undefined,
 				},
 			],
 		},
 		{
 			name: 'You',
-			href: '/@me',
+			href: `/@${data.user?.username}`,
+			disabled: data.user === undefined,
 			children: [
 				{
 					name: 'Your channel',
-					href: '/@me',
+					href: `/@${data.user?.username}`,
 					icon: Channel,
+					disabled: data.user === undefined,
 				},
 				{
 					name: 'History',
 					href: '/recipes/history',
 					icon: History,
-				},
-				{
-					name: 'Your recipes',
-					href: '/@me/recipes',
-					icon: Recipe,
-				},
-				{
-					name: 'Watch later',
-					href: '/recipes/watch-later',
-					icon: WatchLater,
+					disabled: data.user === undefined,
 				},
 				{
 					name: 'Liked recipes',
 					href: '/recipes/liked',
 					icon: Liked,
+					disabled: data.user === undefined,
 				},
 				{
 					name: 'Recipe matcher',
@@ -118,7 +113,7 @@
 				},
 			],
 		},
-	] satisfies (SidebarCategory | undefined)[];
+	] as (SidebarCategory | undefined)[];
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -181,10 +176,17 @@
 					{#if category.name}
 						{#if category.href}
 							<li class="text-lg font-bold">
-								<a href={category.href}>
-									{category.name}
-									<RightArrow class="w-6 h-6" />
-								</a>
+								{#if category.disabled}
+									<button class="btn-disabled opacity-50">
+										{category.name}
+										<RightArrow class="w-6 h-6" />
+									</button>
+								{:else}
+									<a href={category.href}>
+										{category.name}
+										<RightArrow class="w-6 h-6" />
+									</a>
+								{/if}
 							</li>
 						{:else}
 							<span class="px-4 py-2 text-lg font-bold">{category.name}</span>
@@ -193,7 +195,12 @@
 
 					{#each category.children as route}
 						<li>
-							<a href={route.href}>
+							<svelte:element
+								this={route.disabled ? 'button' : 'a'}
+								href={route.href}
+								class:btn-disabled={route.disabled}
+								class:opacity-50={route.disabled}
+							>
 								{#if typeof route.icon === 'string'}
 									<img
 										src={route.icon}
@@ -204,7 +211,7 @@
 									<svelte:component this={route.icon} class="h-6 w-6" />
 								{/if}
 								{route.name}
-							</a>
+							</svelte:element>
 						</li>
 					{/each}
 

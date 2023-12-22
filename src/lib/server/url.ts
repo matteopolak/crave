@@ -18,8 +18,8 @@ function parseFromQuery(url: URL) {
 	return null
 }
 
-export function redirectWithQuery(url: URL) {
-	return redirect(302, parseFromQuery(url) ?? '/');
+export function redirectWithQuery(url: URL, fallback = '/') {
+	return redirect(302, parseFromQuery(url) ?? fallback);
 }
 
 export function getRedirectWithCookie(name: string, cookies: Cookies) {

@@ -40,7 +40,7 @@ export default router({
 			const recipes = await get(db
 				.select({ title: recipe.title })
 				.from(recipe)
-				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
+				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding as number[]))
 				.limit(10));
 
 			return recipes;

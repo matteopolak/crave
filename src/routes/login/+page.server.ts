@@ -1,10 +1,11 @@
-import { auth } from '$lib/server/lucia';
 import { fail } from '@sveltejs/kit';
+import { LuciaError } from 'lucia';
+import { z } from 'zod';
+
+import { auth } from '$lib/server/lucia';
+import { redirectWithQuery } from '$lib/server/url';
 
 import type { Actions, PageServerLoad } from './$types';
-import { z } from 'zod';
-import { LuciaError } from 'lucia';
-import { redirectWithQuery } from '$lib/server/url';
 
 const Input = z.object({
 	username: z.string().min(4, 'Username must be at least 4 characters.').max(39, 'Username cannot be more than 39 characters.'),
@@ -13,7 +14,7 @@ const Input = z.object({
 
 export const load = (async ({ locals, url }) => {
 	const session = await locals.auth.validate();
-	if (session) return redirectWithQuery(url);
+	if (session) return redirectWithQuery(url, '/recipes');
 
 	return {};
 }) satisfies PageServerLoad;

@@ -50,7 +50,7 @@
 				</a>
 			</li>
 			<li>
-				<a href="/logout">
+				<a href="/logout" use:addFromQuery>
 					<LogOut />
 					Log out
 				</a>
