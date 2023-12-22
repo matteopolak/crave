@@ -7,7 +7,6 @@
 	import RightArrow from '~icons/ic/baseline-chevron-right';
 	import Home from '~icons/ic/baseline-home';
 	import Recipes from '~icons/ic/baseline-restaurant-menu';
-	import Subscriptions from '~icons/ic/baseline-subscriptions';
 	import Settings from '~icons/ic/baseline-settings';
 	import Food from '~icons/ic/baseline-fastfood';
 
@@ -55,12 +54,6 @@
 					name: 'Recipes',
 					href: '/recipes',
 					icon: Recipes,
-				},
-				{
-					name: 'Subscriptions',
-					href: '/subscriptions',
-					icon: Subscriptions,
-					disabled: data.user === undefined,
 				},
 			],
 		},
