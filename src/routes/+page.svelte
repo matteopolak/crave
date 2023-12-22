@@ -2,7 +2,7 @@
 	<div class="hero-content flex-col lg:flex-row-reverse p-8 lg:p-4">
 		<img
 			src="/favicon.png"
-			class="max-w-48 md:max-w-sm shadow-2xl w-full object-cover"
+			class="max-w-48 md:max-w-sm drop-shadow-xl w-full object-cover"
 			alt="Crave hero"
 		/>
 
