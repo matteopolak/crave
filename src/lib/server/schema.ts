@@ -11,6 +11,7 @@ export const User = z
 		id: ChannelId,
 		username: z.string(),
 		name: z.string(),
+		verified: z.boolean(),
 		createdAt: CreatedAt,
 		recipes: z.number().nonnegative().int().optional(),
 		subscribers: z.number().nonnegative().int().optional(),
@@ -20,20 +21,20 @@ export const User = z
 export type User = z.infer<typeof User>;
 
 export const Nutrition = z.object({
-	energy: z.number().nonnegative(),
-	fat: z.number().nonnegative(),
-	saturatedFat: z.number().nonnegative(),
-	protein: z.number().nonnegative(),
-	salt: z.number().nonnegative(),
-	sugar: z.number().nonnegative(),
+	calories: z.number().nonnegative('Calories must be a non-negative number.'),
+	fat: z.number().nonnegative('Fat must be a non-negative number.'),
+	saturatedFat: z.number().nonnegative('Saturated fat must be a non-negative number.'),
+	protein: z.number().nonnegative('Protein must be a non-negative number.'),
+	sodium: z.number().nonnegative('Sodium must be a non-negative number.'),
+	sugar: z.number().nonnegative('Sugar must be a non-negative number.'),
 });
 
 export const PartialRecipe = z.object({
 	id: Id,
 	author: User,
-	title: z.string(),
-	thumbnail: z.string().url(),
-	ingredients: z.string().array(),
+	title: z.string().min(3, 'Recipe title must be at least 10 characters in length.'),
+	thumbnail: z.string().min(1, 'Recipe thumbnail is required.'),
+	tags: z.string().array().min(1, 'At least one tag is required.'),
 	embedding: Embedding.optional(),
 
 	views: z.number().nonnegative().int(),
@@ -46,8 +47,8 @@ export type Embedding = z.infer<typeof Embedding>;
 export const Recipe = z.object({
 	liked: z.boolean(),
 	likes: z.number().nonnegative().int(),
-	quantities: z.string().array(),
-	directions: z.string().array(),
+	ingredients: z.string().array().min(1, 'At least one ingredient is required.'),
+	directions: z.string().array().min(1, 'At least one direction is required.'),
 	url: z.string().url().nullable(),
 })
 	.merge(Nutrition)

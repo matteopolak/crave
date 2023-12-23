@@ -28,6 +28,7 @@ export const user = {
 	id: s.user.id,
 	username: s.user.username,
 	name: s.user.name,
+	verified: s.user.verified,
 	createdAt: s.user.createdAt,
 };
 
@@ -59,7 +60,7 @@ const likes = db
 export const partialRecipe = {
 	id: s.recipe.id,
 	title: s.recipe.title,
-	ingredients: s.recipe.ingredients,
+	tags: s.recipe.tags,
 	thumbnail: s.recipe.thumbnail,
 	createdAt: s.recipe.createdAt,
 	author: user,
@@ -72,13 +73,13 @@ export const completeRecipe = (userId?: string) => ({
 		...user,
 		subscribed: subscribed(userId),
 	},
-	quantities: s.recipe.quantities,
+	ingredients: s.recipe.ingredients,
 	directions: s.recipe.directions,
-	energy: s.recipe.energy,
+	calories: s.recipe.calories,
 	fat: s.recipe.fat,
 	saturatedFat: s.recipe.saturatedFat,
 	protein: s.recipe.protein,
-	salt: s.recipe.salt,
+	sodium: s.recipe.sodium,
 	sugar: s.recipe.sugar,
 	url: s.recipe.url,
 	liked: liked(userId),

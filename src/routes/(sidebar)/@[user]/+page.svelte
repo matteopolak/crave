@@ -4,6 +4,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 	import Channel from './(components)/Channel.svelte';
+	import type { PageData } from './$types';
 
 	$: recipes = createQuery({
 		queryKey: ['user_recipes'],
@@ -20,11 +21,13 @@
 				username: $page.params.user,
 			}),
 	});
+
+	export let data: PageData;
 </script>
 
 <div class="grid place-items-center p-8">
 	<div class="grid max-w-7xl navbar gap-16">
-		<Channel user={$user} />
+		<Channel channel={$user} user={data.user} />
 		<RecipeGrid
 			recipes={$recipes}
 			author

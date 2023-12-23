@@ -5,8 +5,8 @@
 	import Recipe from '$lib/components/recipe/Recipe.svelte';
 
 	import Food from '~icons/emojione/pot-of-food';
-	import RecipeCard from '$lib/components/recipe/RecipeCard.svelte';
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+	import type { PageData } from './$types';
 
 	$: recipe = createQuery({
 		queryKey: ['recipe'],
@@ -23,13 +23,15 @@
 				id: parseInt($page.params.id),
 			}),
 	});
+
+	export let data: PageData;
 </script>
 
-<div
-	class="flex flex-col md:flex-row gap-8 pt-8 pb-16 pr-12 lg:pr-16 xl:pr-32 pl-8"
->
+<div class="flex flex-col gap-8 xl:grid grid-cols-5">
 	{#if $recipe.isPending}
-		<Recipe />
+		<div class="xl:col-span-3">
+			<Recipe user={data.user} />
+		</div>
 	{:else if $recipe.isError}
 		<div class="flex w-full h-full justify-center mt-40">
 			<div class="grid place-items-center max-w-xl gap-16">
@@ -40,10 +42,14 @@
 			</div>
 		</div>
 	{:else}
-		<Recipe recipe={$recipe.data} />
+		<div class="xl:col-span-3">
+			<Recipe recipe={$recipe.data} user={data.user} />
+		</div>
 	{/if}
 
-	{#if !$recipe.isError}
-		<RecipeGrid recipes={$recommended} vertical side placeholderItems={25} />
-	{/if}
+	<div class="xl:col-span-2">
+		{#if !$recipe.isError}
+			<RecipeGrid recipes={$recommended} vertical side placeholderItems={25} />
+		{/if}
+	</div>
 </div>

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { Recipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
+	import type { User } from 'lucia';
 	import Subscribe from '../Subscribe.svelte';
 	import Like from './Like.svelte';
 	import NutritionFacts from './NutritionFacts.svelte';
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
 
 	export let recipe: Recipe | undefined = undefined;
+	export let user: User | undefined;
 </script>
 
 <div class="w-full">
@@ -37,16 +39,19 @@
 				</a>
 
 				<div class="ml-auto w-fit flex flex-row place-items-center gap-2">
-					<Subscribe bind:user={recipe.author} />
+					{#if user && user.userId !== recipe.author.id}
+						<Subscribe bind:user={recipe.author} />
+					{/if}
+
 					<Like bind:recipe />
 				</div>
 			</div>
 
 			<div>
 				<div class="flex flex-row flex-wrap gap-1 mt-7">
-					{#each recipe.ingredients as ingredient}
+					{#each recipe.tags as tag}
 						<div class="badge badge-lg badge-neutral line-clamp-1">
-							{ingredient}
+							{tag}
 						</div>
 					{/each}
 				</div>
@@ -54,19 +59,12 @@
 				<h1 class="mt-4">{recipe.title}</h1>
 			</div>
 
-			<NutritionFacts
-				salt={recipe.salt}
-				energy={recipe.energy}
-				fat={recipe.fat}
-				saturated={recipe.saturatedFat}
-				sugar={recipe.sugar}
-				protein={recipe.protein}
-			/>
+			<NutritionFacts {recipe} />
 
 			<h2>Ingredients</h2>
 
 			<ul>
-				{#each recipe.quantities as ingredient}
+				{#each recipe.ingredients as ingredient}
 					<li>{ingredient}</li>
 				{/each}
 			</ul>

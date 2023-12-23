@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, index, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { bigint, boolean, index, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
 export const user = pgTable('user', {
@@ -7,6 +7,7 @@ export const user = pgTable('user', {
 	name: text('name').notNull(),
 	username: varchar('username', { length: 39 }).notNull().unique(),
 	embedding: vector('embedding', { dimension: 768 }),
+	verified: boolean('verified').notNull().default(false),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
@@ -17,14 +18,14 @@ export const recipe = pgTable('recipe', {
 	title: text('title').notNull().unique(),
 	thumbnail: text('thumbnail').notNull(),
 	url: text('url'),
-	quantities: text('quantities').array().notNull(),
-	directions: text('directions').array().notNull(),
 	ingredients: text('ingredients').array().notNull(),
-	energy: real('energy').notNull(),
+	directions: text('directions').array().notNull(),
+	tags: text('tags').array().notNull(),
+	calories: real('calories').notNull(),
 	fat: real('fat').notNull(),
 	saturatedFat: real('saturated_fat').notNull(),
 	protein: real('protein').notNull(),
-	salt: real('salt').notNull(),
+	sodium: real('sodium').notNull(),
 	sugar: real('sugar').notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, table => {

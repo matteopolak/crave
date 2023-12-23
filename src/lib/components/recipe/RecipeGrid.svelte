@@ -39,7 +39,7 @@
 	class="grid gap-4"
 	class:p-8={pad}
 	style={!vertical
-		? `grid-template-columns: repeat(auto-fit, minmax(${sizes[size]}, 1fr))`
+		? `grid-template-columns: repeat(auto-fill, minmax(${sizes[size]}, 1fr))`
 		: ''}
 >
 	{#if recipes.isPending || recipes.isError}

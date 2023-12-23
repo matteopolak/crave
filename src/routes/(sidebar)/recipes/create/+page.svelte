@@ -1,136 +1,110 @@
-<script lang="ts">
-	import NutritionFacts from '$lib/components/recipe/NutritionFacts.svelte';
+<script lang="ts" context="module">
 	import type { Router } from '$lib/server/routes';
 	import type { inferRouterInputs } from '@trpc/server';
 
-	type Recipe = inferRouterInputs<Router>['recipes']['create'];
+	export type Recipe = inferRouterInputs<Router>['recipes']['create'];
+</script>
+
+<script lang="ts">
+	import toast from 'svelte-french-toast';
+	import { resolveRoute } from '$app/paths';
+
+	import Page0 from './(components)/Page0.svelte';
+	import Page1 from './(components)/Page1.svelte';
+	import Page2 from './(components)/Page2.svelte';
+	import Page3 from './(components)/Page3.svelte';
+
+	import Back from '~icons/ic/baseline-arrow-back';
+	import Forward from '~icons/ic/baseline-arrow-forward';
+	import { trpc } from '$lib/client';
+	import { goto } from '$app/navigation';
+	import { TRPCClientError } from '@trpc/client';
 
 	let recipe = {
 		title: '',
 		thumbnail: '',
-		ingredients: [],
-		quantities: [],
-		directions: [],
-		energy: 100 / 7 / 0.239006,
-		fat: 100 / 7,
-		saturatedFat: 100 / 7,
-		protein: 100 / 7,
-		salt: 100 / 7 / 0.38758,
-		sugar: 100 / 7,
+		tags: [],
+		ingredients: [''],
+		directions: [''],
+		calories: 0,
+		fat: 0,
+		saturatedFat: 0,
+		protein: 0,
+		sodium: 0,
+		sugar: 0,
 	} as Recipe;
 
-	let tag = '';
-	let ingredient = '';
-	let direction = '';
+	let page = 0;
+
+	const pages = [
+		{
+			name: 'Thumbnail and title',
+			component: Page0,
+		},
+		{
+			name: 'Ingredients',
+			component: Page1,
+		},
+		{
+			name: 'Directions',
+			component: Page2,
+		},
+		{
+			name: 'Nutritional information',
+			component: Page3,
+		},
+	];
+
+	async function submit() {
+		try {
+			const { id } = await toast.promise(
+				trpc.recipes.create.mutate(recipe),
+				{
+					loading: 'Creating recipe...',
+					success: 'Recipe created!',
+					error: e => {
+						if (e instanceof TRPCClientError) {
+							return JSON.parse(e.message)[0].message;
+						} else {
+							return 'An unknown error occurred.';
+						}
+					},
+				},
+				{
+					style:
+						'background-color: oklch(var(--b2)); color: oklch(var(--bc) / var(--tw-text-opacity));',
+				},
+			);
+
+			await goto(resolveRoute('/recipes/[id]', { id: id.toString() }));
+		} catch {}
+	}
 </script>
 
-<div class="grid place-items-center p-8">
-	<div class="grid max-w-7xl navbar gap-16">
-		<div class="w-full">
-			<div class="prose max-w-full">
-				<div
-					class="bg-base-300 rounded-2xl aspect-video flex place-items-center justify-center"
-				>
-					{#if recipe.thumbnail}
-						<img
-							class="object-cover w-full h-full rounded-2xl mt-0"
-							src={recipe.thumbnail}
-							alt={recipe.title}
-						/>
-					{:else}
-						hello
-					{/if}
-				</div>
+<div class="flex flex-col items-center p-4 md:p-6 lg:p-8 h-full">
+	<div class="grid max-w-4xl w-full gap-2 h-full prose">
+		<div>
+			<svelte:component this={pages[page].component} bind:recipe />
+		</div>
 
-				<div class="mb-2">
-					<div class="flex flex-row flex-wrap gap-1 mt-7">
-						{#each recipe.ingredients as ingredient}
-							<div class="badge badge-lg badge-neutral line-clamp-1">
-								{ingredient}
-							</div>
-						{/each}
+		<div class="flex flex-row flex-wrap mt-auto">
+			{#if page > 0}
+				<button class="btn btn-accent mr-auto" on:click={() => page--}>
+					<Back />
+					{pages[page - 1].name}
+				</button>
+			{/if}
 
-						<form
-							on:submit|preventDefault={() => {
-								recipe.ingredients.push(tag);
-								recipe = recipe;
-								tag = '';
-							}}
-						>
-							<input
-								type="text"
-								class="bg-transparent"
-								placeholder="Add tag..."
-								bind:value={tag}
-							/>
-						</form>
-					</div>
-
-					<input
-						class="mt-4 bg-base-300 rounded-lg text-4xl font-extrabold p-2"
-						placeholder="Add a title..."
-						type="text"
-						bind:value={recipe.title}
-					/>
-				</div>
-
-				<NutritionFacts
-					salt={recipe.salt}
-					energy={recipe.energy}
-					fat={recipe.fat}
-					saturated={recipe.saturatedFat}
-					sugar={recipe.sugar}
-					protein={recipe.protein}
-				/>
-
-				<h2>Ingredients</h2>
-
-				<ul>
-					{#each recipe.quantities as ingredient}
-						<li>{ingredient}</li>
-					{/each}
-
-					<form
-						on:submit|preventDefault={() => {
-							recipe.quantities.push(ingredient);
-							recipe = recipe;
-							ingredient = '';
-						}}
-					>
-						<input
-							type="text"
-							placeholder="Add ingredient..."
-							class="bg-base-200 rounded-lg p-3 text-xl"
-							bind:value={ingredient}
-						/>
-					</form>
-				</ul>
-
-				<h2>Directions</h2>
-
-				<ol>
-					{#each recipe.directions as direction}
-						<li>
-							{direction}
-						</li>
-					{/each}
-
-					<form
-						on:submit|preventDefault={() => {
-							recipe.directions.push(direction);
-							recipe = recipe;
-							direction = '';
-						}}
-					>
-						<input
-							type="text"
-							placeholder="Add direction..."
-							class="bg-base-200 rounded-lg p-3 text-xl"
-							bind:value={direction}
-						/>
-					</form>
-				</ol>
-			</div>
+			{#if page < pages.length - 1}
+				<button class="btn btn-accent ml-auto" on:click={() => page++}>
+					{pages[page + 1].name}
+					<Forward />
+				</button>
+			{:else}
+				<button class="btn btn-secondary ml-auto" on:click={submit}>
+					Submit
+				</button>
+			{/if}
 		</div>
 	</div>
 </div>

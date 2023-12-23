@@ -9,12 +9,10 @@
 	});
 </script>
 
-<div class="w-full px-32 pb-32 pt-16">
-	<div class="w-full grid gap-8">
-		<h1 class="text-4xl font-bold dark:text-neutral-100 text-neutral-800">
-			Your recipe history
-		</h1>
+<div class="max-w-4xl grid gap-8 px-8 md:px-16 lg:px-24">
+	<h1 class="text-4xl font-bold dark:text-neutral-100 text-neutral-800">
+		Your recipe history
+	</h1>
 
-		<RecipeGrid recipes={$recipes} side vertical size="xl" />
-	</div>
+	<RecipeGrid recipes={$recipes} side vertical size="xl" />
 </div>

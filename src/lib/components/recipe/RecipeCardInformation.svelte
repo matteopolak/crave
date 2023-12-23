@@ -37,12 +37,12 @@
 
 		<div class="text-sm flex flex-col gap-1">
 			<a
-				class="flex flex-row place-items-center gap-1"
+				class="flex flex-row place-items-center gap-1 no-underline"
 				href="/@{recipe.author.username}"
 			>
 				@{recipe.author.username}
 
-				{#if recipe.author.username === 'crave'}
+				{#if recipe.author.verified}
 					<span class="text-info"><Verified /></span>
 				{/if}
 			</a>

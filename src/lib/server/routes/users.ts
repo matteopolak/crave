@@ -38,6 +38,13 @@ export default router({
 				});
 			}
 
+			if (users[0].id === ctx.session.user.userId) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'You cannot subscribe to yourself.',
+				});
+			}
+
 			await get(db
 				.insert(subscription)
 				.values({
@@ -70,6 +77,13 @@ export default router({
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: 'User not found.',
+				});
+			}
+
+			if (users[0].id === ctx.session.user.userId) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'You cannot unsubscribe from yourself.',
 				});
 			}
 
@@ -170,12 +184,7 @@ export default router({
 				.where(eq(subscription.userId, ctx.session.user.userId));
 
 			return await get(db
-				.select({
-					id: user.id,
-					name: user.name,
-					username: user.username,
-					createdAt: user.createdAt,
-				})
+				.select(userSelect)
 				.from(user)
 				.where(inArray(user.id, subscriptions)));
 		}),

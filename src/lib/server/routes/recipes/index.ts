@@ -33,20 +33,20 @@ export default router({
 		.input(Recipe.pick({
 			title: true,
 			thumbnail: true,
-			quantities: true,
-			directions: true,
 			ingredients: true,
-			energy: true,
+			directions: true,
+			tags: true,
+			calories: true,
 			fat: true,
 			saturatedFat: true,
 			protein: true,
-			salt: true,
+			sodium: true,
 			sugar: true,
 		}))
 		.output(z.object({ id: Id }))
 		.mutation(async ({ input, ctx }) => {
 			const vector = await ai.post('/', {
-				text: `${input.title} ${input.ingredients.join(' ')}`,
+				text: `${input.title} ${input.tags.join(' ')}`,
 			});
 
 			const recipes = await get(db
@@ -55,16 +55,16 @@ export default router({
 					authorId: ctx.session.user.userId,
 					title: input.title,
 					thumbnail: input.thumbnail,
-					quantities: input.quantities,
-					directions: input.directions,
 					ingredients: input.ingredients,
-					energy: input.energy,
+					directions: input.directions,
+					tags: input.tags,
+					calories: input.calories,
 					fat: input.fat,
 					saturatedFat: input.saturatedFat,
 					protein: input.protein,
-					salt: input.salt,
+					sodium: input.sodium,
 					sugar: input.sugar,
-					embedding: `[${vector.data.embedding.join(',')}]`,
+					embedding: vector.data.embedding,
 				})
 				.returning({
 					id: recipe.id,
@@ -172,7 +172,7 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ limit: z.number().min(1).max(100).int().default(50) }))
+		.input(z.object({ limit: z.number().int().min(1).max(100).default(50) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
 			const h = ctx.session && db

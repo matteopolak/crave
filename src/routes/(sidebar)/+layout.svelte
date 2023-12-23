@@ -112,9 +112,9 @@
 
 <div class="drawer lg:drawer-open">
 	<input id="sidebar" type="checkbox" class="drawer-toggle" />
-	<div class="drawer-content min-h-screen">
+	<div class="drawer-content flex flex-col">
 		<div
-			class="w-full flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4"
+			class="flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4"
 		>
 			<div />
 
@@ -143,12 +143,14 @@
 			</div>
 		</div>
 
-		<slot />
+		<div class="p-4 md:p-6 lg:p-8 flex-grow">
+			<slot />
+		</div>
 	</div>
 	<div class="drawer-side z-20">
 		<label for="sidebar" aria-label="close sidebar" class="drawer-overlay" />
 
-		<ul class="menu p-4 w-64 min-h-full text-base-content bg-base-100">
+		<ul class="menu p-4 w-64 text-base-content bg-base-100">
 			<div class="flex flex-row items-center gap-2 lg:p-2 mb-4">
 				<label
 					for="sidebar"
@@ -226,7 +228,7 @@
 				{/if}
 			{/each}
 
-			<span class="text-center brightness-75">© {year} Crave</span>
+			<span class="text-center brightness-75 mt-auto">© {year} Crave</span>
 		</ul>
 	</div>
 </div>
