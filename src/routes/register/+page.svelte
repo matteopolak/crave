@@ -37,14 +37,14 @@
 			};
 		}}
 	>
-		<div class="grid grid-cols-2 lg:grid-cols-1 gap-1">
+		<div class="grid grid-cols-2 md:grid-cols-1 gap-1">
 			<a
 				class="btn btn-md dark:btn-neutral w-full gap-4"
 				href="/login/github"
 				use:addFromQuery
 			>
 				<GitHub class="h-6 w-6 dark:invert" />
-				Sign up with GitHub
+				<span class="hidden md:block">Continue with GitHub</span>
 			</a>
 			<a
 				class="btn btn-md dark:btn-neutral w-full gap-4"
@@ -52,7 +52,7 @@
 				use:addFromQuery
 			>
 				<Google class="h-6 w-6" />
-				Sign up with Google
+				<span class="hidden md:block">Continue with Google</span>
 			</a>
 		</div>
 
