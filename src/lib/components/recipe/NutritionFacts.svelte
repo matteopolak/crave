@@ -54,7 +54,9 @@
 <div class="grid gap-2">
 	<div class="w-full rounded-xl overflow-hidden h-16 flex flex-row">
 		{#each nutrition as { colour, name, key } (name)}
-			<div class="h-full {colour}" style="width: {recipe[key]}%" />
+			{#if key !== 'calories'}
+				<div class="h-full {colour}" style="width: {recipe[key]}%" />
+			{/if}
 		{/each}
 
 		<div class="h-full bg-base-300 flex-grow" />
@@ -69,9 +71,9 @@
 					</td>
 
 					<td>
-						<span class="text-sm md:text-md lg:text-lg place-self-center"
-							>{stat.name}</span
-						>
+						<span class="text-sm md:text-md lg:text-lg place-self-center">
+							{stat.name}
+						</span>
 					</td>
 
 					<td>
@@ -84,19 +86,25 @@
 							}}
 						/>
 
-						<span class="text-sm md:text-md lg:text-lg">g / 100g</span>
+						{#if stat.key === 'calories'}
+							<span class="text-sm md:text-md lg:text-lg"> / 100g</span>
+						{:else}
+							<span class="text-sm md:text-md lg:text-lg">g / 100g</span>
+						{/if}
 					</td>
 				</tr>
 			{/each}
 		</table>
 	{:else}
 		<div class="w-full flex flex-row flex-wrap gap-4">
-			{#each nutrition as { name, colour } (name)}
-				<div class="flex flex-row place-items-center gap-2">
-					<div class="w-8 h-8 rounded-full {colour}" />
+			{#each nutrition as { name, colour, key } (name)}
+				{#if key !== 'calories'}
+					<div class="flex flex-row place-items-center gap-2">
+						<div class="w-8 h-8 rounded-full {colour}" />
 
-					<span class="text-sm">{name}</span>
-				</div>
+						<span class="text-sm">{name}</span>
+					</div>
+				{/if}
 			{/each}
 
 			<div class="flex flex-row place-items-center gap-2">
