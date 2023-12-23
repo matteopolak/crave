@@ -12,6 +12,7 @@
 	let done = data.length === 0;
 	let loading = false;
 	let index = 1;
+	let shouldLoad = false;
 
 	async function next() {
 		loading = true;
@@ -24,7 +25,17 @@
 			data = data;
 		}
 
-		tick().then(() => (loading = false));
+		tick().then(() => {
+			loading = false;
+
+			if (shouldLoad) {
+				next();
+			}
+		});
+	}
+
+	$: if (shouldLoad && !loading && !done) {
+		next();
 	}
 </script>
 
@@ -36,7 +47,10 @@
 	<div
 		use:viewport
 		on:enterviewport={() => {
-			if (!loading) next();
+			shouldLoad = true;
+		}}
+		on:exitviewport={() => {
+			shouldLoad = false;
 		}}
 	/>
 
