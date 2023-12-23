@@ -1,0 +1,1 @@
+ALTER TABLE "like" ADD CONSTRAINT "like_user_id_recipe_id_pk" PRIMARY KEY("user_id","recipe_id");

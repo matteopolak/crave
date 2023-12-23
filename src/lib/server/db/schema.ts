@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, index, integer, pgTable, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { bigint, boolean, index, integer, pgTable, primaryKey, real, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
 
 export const user = pgTable('user', {
@@ -66,6 +66,7 @@ export const like = pgTable('like', {
 	return {
 		userIdx: index().on(table.userId),
 		recipeIdx: index().on(table.recipeId),
+		userRecipePkey: primaryKey({ columns: [table.userId, table.recipeId] }),
 	}
 });
 
