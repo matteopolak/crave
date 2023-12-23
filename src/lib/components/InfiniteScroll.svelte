@@ -44,17 +44,17 @@
 {/each}
 
 {#if !done}
-	<div
-		use:viewport
-		on:enterviewport={() => {
-			shouldLoad = true;
-		}}
-		on:exitviewport={() => {
-			shouldLoad = false;
-		}}
-	/>
-
 	{#if loading}
 		<slot name="loading" />
 	{/if}
 {/if}
+
+<div
+	use:viewport
+	on:enterviewport={() => {
+		shouldLoad = true;
+	}}
+	on:exitviewport={() => {
+		shouldLoad = false;
+	}}
+/>

@@ -34,7 +34,7 @@ export const PartialRecipe = z.object({
 	author: User,
 	title: z.string().min(3, 'Recipe title must be at least 10 characters in length.'),
 	thumbnail: z.string().min(1, 'Recipe thumbnail is required.'),
-	tags: z.string().array().min(1, 'At least one tag is required.'),
+	tags: z.string().array(),
 	embedding: Embedding.optional(),
 
 	views: z.number().nonnegative().int(),
