@@ -9,4 +9,4 @@
 	});
 </script>
 
-<RecipeGrid recipes={$recipes} pad load={() => trpc.recipes.random.query({})} />
+<RecipeGrid recipes={$recipes} load={() => trpc.recipes.random.query({})} />

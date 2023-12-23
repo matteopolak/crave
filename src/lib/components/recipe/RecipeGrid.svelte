@@ -12,7 +12,6 @@
 	export let vertical = false;
 	export let side = false;
 	export let author = false;
-	export let pad = false;
 
 	export let load:
 		| ((index: number) => MaybePromise<PartialRecipe[]>)
@@ -37,7 +36,6 @@
 
 <div
 	class="grid gap-4"
-	class:p-8={pad}
 	style={!vertical
 		? `grid-template-columns: repeat(auto-fill, minmax(${sizes[size]}, 1fr))`
 		: ''}

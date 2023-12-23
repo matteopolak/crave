@@ -150,7 +150,7 @@
 	<div class="drawer-side z-20">
 		<label for="sidebar" aria-label="close sidebar" class="drawer-overlay" />
 
-		<ul class="menu p-4 w-64 text-base-content bg-base-100">
+		<ul class="menu p-4 w-64 text-base-content bg-base-100 min-h-full">
 			<div class="flex flex-row items-center gap-2 lg:p-2 mb-4">
 				<label
 					for="sidebar"
