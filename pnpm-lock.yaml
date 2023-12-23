@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@tanstack/svelte-query':
-    specifier: ^5.14.2
-    version: 5.14.2(svelte@4.2.8)
+    specifier: ^5.14.6
+    version: 5.14.6(svelte@4.2.8)
   '@trpc/client':
     specifier: ^10.44.1
     version: 10.44.1(@trpc/server@10.44.1)
@@ -1436,8 +1436,8 @@ packages:
     resolution: {integrity: sha512-QmoJvC72sSWs3hgGis8JdmlDvqLfYGWUK4UG6OR9Q6t28JMN9m2FDwKPqoSJ9YVocELCSjMt/FGjEiLfk8000Q==}
     dev: false
 
-  /@tanstack/svelte-query@5.14.2(svelte@4.2.8):
-    resolution: {integrity: sha512-77G5iFJg7540Rp3gW9EgqYXQh+MNWhLILxLl5SFiPZ+UJ2aDhWiUzMl0qTJx/TueD++M572p4G4bFLHZ60bawg==}
+  /@tanstack/svelte-query@5.14.6(svelte@4.2.8):
+    resolution: {integrity: sha512-aPlbyT7nsveV+CBKPnzuIG+ajyRGz4FgMLMlo8LLJAyFfSxb5oPOZ0brAHbzsDqGkc26Ye8ocT9Tu/Fl4SmjWQ==}
     peerDependencies:
       svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
     dependencies:

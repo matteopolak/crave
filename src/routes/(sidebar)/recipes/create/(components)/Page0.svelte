@@ -45,10 +45,16 @@
 </button>
 
 <div class="flex flex-row flex-wrap gap-1 mt-7">
-	{#each recipe.tags as tag}
-		<div class="badge badge-lg badge-neutral line-clamp-1">
+	{#each recipe.tags as tag, index}
+		<button
+			class="badge badge-lg badge-neutral line-clamp-1"
+			on:click={() => {
+				recipe.tags.splice(index, 1);
+				recipe = recipe;
+			}}
+		>
 			{tag}
-		</div>
+		</button>
 	{/each}
 
 	<form

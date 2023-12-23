@@ -55,7 +55,7 @@
 		"zod": "^3.22.4"
 	},
 	"dependencies": {
-		"@tanstack/svelte-query": "^5.14.2",
+		"@tanstack/svelte-query": "^5.14.6",
 		"@trpc/client": "^10.44.1",
 		"redoc-svelte": "^0.2.3",
 		"svelte-french-toast": "^1.2.0",

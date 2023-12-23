@@ -55,7 +55,34 @@
 		},
 	];
 
+	async function resize(data: string) {
+		const canvas = document.createElement('canvas');
+
+		const img = new Image();
+		img.src = recipe.thumbnail;
+
+		await new Promise<void>(resolve => {
+			img.onload = () => {
+				const { width, height } = img;
+
+				const max = Math.max(width, height);
+
+				canvas.width = (width / max) * 512;
+				canvas.height = (height / max) * 512;
+
+				const ctx = canvas.getContext('2d')!;
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+				resolve();
+			};
+		});
+
+		return canvas.toDataURL('image/jpeg', 0.8);
+	}
+
 	async function submit() {
+		recipe.thumbnail = await resize(recipe.thumbnail);
+
 		try {
 			const { id } = await toast.promise(
 				trpc.recipes.create.mutate(recipe),

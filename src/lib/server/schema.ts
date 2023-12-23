@@ -34,7 +34,7 @@ export const PartialRecipe = z.object({
 	author: User,
 	title: z.string().min(3, 'Recipe title must be at least 10 characters in length.'),
 	thumbnail: z.string().min(1, 'Recipe thumbnail is required.'),
-	tags: z.string().array(),
+	tags: z.string().min(1, 'Tags must contain at least 1 character.').array(),
 	embedding: Embedding.optional(),
 
 	views: z.number().nonnegative().int(),
@@ -47,8 +47,8 @@ export type Embedding = z.infer<typeof Embedding>;
 export const Recipe = z.object({
 	liked: z.boolean(),
 	likes: z.number().nonnegative().int(),
-	ingredients: z.string().array().min(1, 'At least one ingredient is required.'),
-	directions: z.string().array().min(1, 'At least one direction is required.'),
+	ingredients: z.string().min(5, 'Ingredients must be at least 5 characters in length.').array().min(1, 'At least one ingredient is required.'),
+	directions: z.string().min(5, 'Directions must be at least 5 characters in length').array().min(1, 'At least one direction is required.'),
 	url: z.string().url().nullable(),
 })
 	.merge(Nutrition)

@@ -33,7 +33,7 @@
 			<Recipe user={data.user} />
 		</div>
 	{:else if $recipe.isError}
-		<div class="flex w-full h-full justify-center mt-40">
+		<div class="grid w-full h-full justify-center pt-32 col-span-5">
 			<div class="grid place-items-center max-w-xl gap-16">
 				<Food class="w-2/3 h-auto" />
 				<span class="text-neutral-100 text-2xl">

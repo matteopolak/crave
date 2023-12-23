@@ -116,8 +116,6 @@
 		<div
 			class="flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4"
 		>
-			<div />
-
 			<div class="flex flex-row items-center gap-2 lg:hidden">
 				<label
 					for="sidebar"
@@ -136,7 +134,9 @@
 				</a>
 			</div>
 
-			<Search />
+			<div class="mx-auto">
+				<Search />
+			</div>
 
 			<div class="lg:w-64 grid place-items-end">
 				<ProfileDropdown user={data.user} />

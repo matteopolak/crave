@@ -147,7 +147,7 @@ export default router({
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.where(and(
 					ne(recipe.id, input.id),
-					lt(maxInnerProduct(recipe.embedding, e), -0.7),
+					lt(maxInnerProduct(recipe.embedding, e), -0.65),
 					ctx.session ? ne(recipe.id, input.id) : undefined,
 				))
 				.orderBy(random())
