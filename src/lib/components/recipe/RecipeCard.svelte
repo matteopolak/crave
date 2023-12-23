@@ -41,11 +41,10 @@
 	</a>
 {:else}
 	<div
-		class="h-full grid grid-cols-5 gap-3 w-full"
-		class:flex-row={side}
-		class:flex-col={!side}
+		class="h-full gap-3 w-full group flex-col grid-cols-5 flex"
+		class:md:grid={side}
 	>
-		<div class="rounded-lg aspect-video skeleton h-full col-span-2" />
+		<div class="rounded-lg aspect-video skeleton h-full w-full col-span-2" />
 
 		<div class="flex flex-row gap-2 w-full col-span-3">
 			{#if author}
