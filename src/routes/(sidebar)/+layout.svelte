@@ -9,6 +9,7 @@
 	import Recipes from '~icons/ic/baseline-restaurant-menu';
 	import Settings from '~icons/ic/baseline-settings';
 	import Food from '~icons/ic/baseline-fastfood';
+	import Create from '~icons/ic/baseline-add';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import Search from './(components)/Search.svelte';
@@ -113,8 +114,10 @@
 	<input id="sidebar" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content min-h-screen">
 		<div
-			class="w-full flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100"
+			class="w-full flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4"
 		>
+			<div />
+
 			<div class="flex flex-row items-center gap-2 lg:hidden">
 				<label
 					for="sidebar"
@@ -163,6 +166,17 @@
 					</span>
 				</a>
 			</div>
+
+			<a
+				href="/recipes/create"
+				class="btn btn-primary"
+				class:btn-disabled={data.user === undefined}
+			>
+				<Create class="w-6 h-6" />
+				Create
+			</a>
+
+			<div class="divider"></div>
 
 			{#each sidebar as category}
 				{#if category}

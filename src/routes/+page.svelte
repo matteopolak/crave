@@ -1,7 +1,7 @@
 <div class="hero min-h-screen bg-base-200">
 	<div class="hero-content flex-col lg:flex-row-reverse p-8 lg:p-4">
 		<img
-			src="/favicon.png"
+			src="/logo.svg"
 			class="max-w-48 md:max-w-sm drop-shadow-xl w-full object-cover"
 			alt="Crave hero"
 		/>

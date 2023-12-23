@@ -42,7 +42,7 @@
 		},
 		{
 			name: 'Other',
-			value: 100,
+			value: 100 - calories - fat - saturated - protein - sugar - sodium,
 			colour: 'bg-base-300',
 		},
 	];

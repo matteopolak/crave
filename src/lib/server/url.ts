@@ -1,22 +1,7 @@
 import { type Cookies, redirect } from '@sveltejs/kit';
 
 import { dev } from '$app/environment';
-
-function parseFromQuery(url: URL) {
-	const from = url.searchParams.get('from');
-
-	if (from) {
-		try {
-			const url = new URL(from, 'http://localhost');
-
-			return url.pathname + url.search;
-		} catch {
-			// ignore invalid 'from' URLs
-		}
-	}
-
-	return null
-}
+import { parseFromQuery } from '$lib/util';
 
 export function redirectWithQuery(url: URL, fallback = '/') {
 	return redirect(302, parseFromQuery(url) ?? fallback);

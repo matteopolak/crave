@@ -18,6 +18,13 @@ declare global {
 		};
 		type DatabaseSessionAttributes = Record<string, never>;
 	}
+
+	namespace svelteHTML {
+		interface HTMLAttributes {
+			'on:enterviewport'?: () => void;
+			'on:exitviewport'?: () => void;
+		}
+	}
 }
 
 export { };

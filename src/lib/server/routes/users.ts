@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, inArray, sql } from 'drizzle-orm/sql';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm/sql';
 import { z } from 'zod';
 
 import { procedure, protectedProcedure, router } from '$lib/server/trpc';
@@ -128,7 +128,7 @@ export default router({
 				tags: ['user'],
 			},
 		})
-		.input(z.object({ username: z.string().toLowerCase(), page: z.number().int().min(1).default(1) }))
+		.input(z.object({ username: z.string().toLowerCase(), page: z.number().int().nonnegative().default(0) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input }) => {
 			const authorId = db
@@ -143,10 +143,9 @@ export default router({
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.where(eq(recipe.authorId, authorId))
-				.orderBy(desc(recipe.createdAt))
-				.limit(25)
-				.offset((input.page - 1) * 25));
-
+				.orderBy(desc(recipe.createdAt), asc(recipe.id))
+				.offset(input.page * 25)
+				.limit(25));
 
 			return recipes;
 		}),

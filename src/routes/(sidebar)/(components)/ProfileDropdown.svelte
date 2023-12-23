@@ -63,3 +63,9 @@
 		Sign in
 	</a>
 {/if}
+
+<style>
+	li > a {
+		@apply rounded-none;
+	}
+</style>

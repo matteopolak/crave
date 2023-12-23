@@ -25,6 +25,14 @@
 <div class="grid place-items-center p-8">
 	<div class="grid max-w-7xl navbar gap-16">
 		<Channel user={$user} />
-		<RecipeGrid recipes={$recipes} author />
+		<RecipeGrid
+			recipes={$recipes}
+			author
+			load={i =>
+				trpc.users.recipes.query({
+					username: $page.params.user,
+					page: i,
+				})}
+		/>
 	</div>
 </div>

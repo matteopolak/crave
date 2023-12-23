@@ -16,7 +16,7 @@ export const recipe = pgTable('recipe', {
 	embedding: vector('embedding', { dimension: 768 }),
 	title: text('title').notNull().unique(),
 	thumbnail: text('thumbnail').notNull(),
-	url: text('url').notNull(),
+	url: text('url'),
 	quantities: text('quantities').array().notNull(),
 	directions: text('directions').array().notNull(),
 	ingredients: text('ingredients').array().notNull(),

@@ -3,6 +3,8 @@
 	import RecipeCard from './RecipeCard.svelte';
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
+	import type { MaybePromise } from '@sveltejs/kit';
+	import InfiniteScroll from '../InfiniteScroll.svelte';
 
 	export let recipes: QueryObserverResult<PartialRecipe[]>;
 	export let size: Size = 'md';
@@ -11,6 +13,10 @@
 	export let side = false;
 	export let author = false;
 	export let pad = false;
+
+	export let load:
+		| ((index: number) => MaybePromise<PartialRecipe[]>)
+		| undefined = undefined;
 
 	export let placeholderItems = 100;
 
@@ -40,6 +46,21 @@
 		{#each { length: placeholderItems } as _}
 			<RecipeCard {author} {side} size={!vertical ? 'full' : size} />
 		{/each}
+	{:else if load}
+		<InfiniteScroll data={recipes.data} key="id" {load} let:item>
+			<RecipeCard
+				recipe={item}
+				{author}
+				{side}
+				size={!vertical ? 'full' : size}
+			/>
+
+			<svelte:fragment slot="loading">
+				{#each { length: Math.min(placeholderItems, 10) } as _}
+					<RecipeCard {author} {side} size={!vertical ? 'full' : size} />
+				{/each}
+			</svelte:fragment>
+		</InfiniteScroll>
 	{:else}
 		{#each recipes.data as recipe}
 			<RecipeCard {recipe} {author} {side} size={!vertical ? 'full' : size} />

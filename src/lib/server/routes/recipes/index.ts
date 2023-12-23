@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import axios from 'axios';
-import { and, desc, eq, lt, ne, notInArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, lt, ne, notInArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { TEXT_EMBEDDER_PORT } from '$env/static/private';
@@ -20,6 +20,58 @@ const ai = axios.create({
 
 export default router({
 	vector,
+	create: protectedProcedure
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes',
+				summary: 'Create recipe',
+				description: 'Creates a recipe.',
+				tags: ['recipe'],
+			},
+		})
+		.input(Recipe.pick({
+			title: true,
+			thumbnail: true,
+			quantities: true,
+			directions: true,
+			ingredients: true,
+			energy: true,
+			fat: true,
+			saturatedFat: true,
+			protein: true,
+			salt: true,
+			sugar: true,
+		}))
+		.output(z.object({ id: Id }))
+		.mutation(async ({ input, ctx }) => {
+			const vector = await ai.post('/', {
+				text: `${input.title} ${input.ingredients.join(' ')}`,
+			});
+
+			const recipes = await get(db
+				.insert(recipe)
+				.values({
+					authorId: ctx.session.user.userId,
+					title: input.title,
+					thumbnail: input.thumbnail,
+					quantities: input.quantities,
+					directions: input.directions,
+					ingredients: input.ingredients,
+					energy: input.energy,
+					fat: input.fat,
+					saturatedFat: input.saturatedFat,
+					protein: input.protein,
+					salt: input.salt,
+					sugar: input.sugar,
+					embedding: `[${vector.data.embedding.join(',')}]`,
+				})
+				.returning({
+					id: recipe.id,
+				}));
+
+			return recipes[0];
+		}),
 	autocomplete: procedure
 		.meta({
 			openapi: {
@@ -230,7 +282,7 @@ export default router({
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.innerJoin(like, eq(recipe.id, like.recipeId))
 				.where(eq(like.userId, ctx.session.user.userId))
-				.orderBy(desc(like.createdAt)));
+				.orderBy(desc(like.createdAt), asc(recipe.id)));
 
 			return recipes;
 		}),
@@ -253,7 +305,7 @@ export default router({
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.innerJoin(history, eq(recipe.id, history.recipeId))
 				.where(eq(history.userId, ctx.session.user.userId))
-				.orderBy(desc(history.createdAt)));
+				.orderBy(desc(history.createdAt), asc(recipe.id)));
 
 			return recipes;
 		}),

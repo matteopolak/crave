@@ -56,6 +56,36 @@ export function addFromQuery(node: HTMLAnchorElement) {
 	}
 }
 
+export function viewport(node: HTMLElement) {
+	const observer = new IntersectionObserver(([entry]) => {
+		entry.target.dispatchEvent(new CustomEvent(entry.isIntersecting ? 'enterviewport' : 'exitviewport'));
+	});
+
+	observer.observe(node);
+
+	return {
+		destroy() {
+			observer.disconnect();
+		},
+	};
+}
+
 export function formatNumber(number: number) {
 	return number.toLocaleString();
+}
+
+export function parseFromQuery(url: URL) {
+	const from = url.searchParams.get('from');
+
+	if (from) {
+		try {
+			const url = new URL(from, 'http://localhost');
+
+			return url.pathname + url.search;
+		} catch {
+			// ignore invalid 'from' URLs
+		}
+	}
+
+	return null
 }

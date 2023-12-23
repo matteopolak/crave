@@ -36,13 +36,16 @@
 		{/if}
 
 		<div class="text-sm flex flex-col gap-1">
-			<span class="flex flex-row place-items-center gap-1">
+			<a
+				class="flex flex-row place-items-center gap-1"
+				href="/@{recipe.author.username}"
+			>
 				@{recipe.author.username}
 
 				{#if recipe.author.username === 'crave'}
 					<span class="text-info"><Verified /></span>
 				{/if}
-			</span>
+			</a>
 
 			<div class="flex flex-row gap-2 place-items-center">
 				<span>{formatNumber(recipe.views)} views</span>

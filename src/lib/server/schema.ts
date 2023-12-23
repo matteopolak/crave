@@ -48,7 +48,7 @@ export const Recipe = z.object({
 	likes: z.number().nonnegative().int(),
 	quantities: z.string().array(),
 	directions: z.string().array(),
-	url: z.string().url(),
+	url: z.string().url().nullable(),
 })
 	.merge(Nutrition)
 	.merge(PartialRecipe);
