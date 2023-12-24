@@ -108,9 +108,9 @@
 	}
 </script>
 
-<div class="flex flex-col items-center p-4 md:p-6 lg:p-8 h-full">
-	<div class="grid max-w-4xl w-full gap-2 h-full prose">
-		<div>
+<div class="flex flex-col items-center h-full">
+	<div class="grid max-w-4xl w-full gap-2 h-full prose prose-h2:m-0">
+		<div class="flex flex-col gap-4">
 			<svelte:component this={pages[page].component} bind:recipe />
 		</div>
 

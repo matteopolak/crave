@@ -12,7 +12,7 @@
 <h2>Directions</h2>
 
 <form
-	class="flex flex-col gap-2 max-w-xl"
+	class="flex flex-col gap-2"
 	on:submit|preventDefault={() => {
 		recipe.directions.push('');
 		recipe = recipe;

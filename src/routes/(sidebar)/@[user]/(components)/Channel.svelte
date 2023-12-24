@@ -10,7 +10,7 @@
 	export let user: User | undefined;
 </script>
 
-<div class="flex flex-row place-items-center gap-8">
+<div class="flex flex-row place-items-center gap-4 md:gap-6 lg:gap-8">
 	{#if channel.isPending || channel.isError}
 		<div class="w-32 h-32 rounded-full skeleton" />
 
@@ -22,13 +22,15 @@
 		<img
 			src="https://via.placeholder.com/256"
 			alt="{channel.data.username}'s profile"
-			class="w-32 h-32 object-cover rounded-full"
+			class="w-24 lg:w-32 aspect-square object-cover rounded-full"
 		/>
 
 		<div class="flex flex-col flex-wrap gap-2">
-			<h1 class="text-4xl font-bold">{channel.data.name}</h1>
+			<h1 class="text-2xl md:text-4xl font-bold line-clamp-1">
+				{channel.data.name}
+			</h1>
 
-			<div class="flex flex-row gap-2 place-items-center">
+			<div class="flex-wrap gap-2 place-items-center">
 				<span class="flex flex-row place-items-center gap-1">
 					@{channel.data.username}
 
@@ -36,7 +38,6 @@
 						<span class="text-info"><Verified /></span>
 					{/if}
 				</span>
-				<span class="text-neutral-500">•</span>
 				<span>{formatNumber(channel.data.subscribers ?? 0)} subscribers</span>
 				<span class="text-neutral-500">•</span>
 				<span>{formatNumber(channel.data.recipes ?? 0)} recipes</span>

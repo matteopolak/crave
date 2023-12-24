@@ -60,7 +60,7 @@
 {:else}
 	<a href="/login" class="btn btn-ghost rounded-xl" use:addFromQuery>
 		<LogIn class="w-6 h-6" />
-		Sign in
+		<span class="hidden md:block">Sign in</span>
 	</a>
 {/if}
 

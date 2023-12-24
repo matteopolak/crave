@@ -15,4 +15,9 @@
 		font-family: 'DM Sans', sans-serif;
 		scroll-behavior: smooth;
 	}
+
+	input[type='number'] {
+		margin: 0;
+		appearance: textfield;
+	}
 }

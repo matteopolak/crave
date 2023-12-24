@@ -63,38 +63,40 @@
 	</div>
 
 	{#if enableEditing}
-		<table>
+		<div class="table border-separate border-spacing-y-2">
 			{#each nutrition as stat (stat.name)}
-				<tr>
-					<td>
-						<div class="w-8 h-8 rounded-full {stat.colour} inline-block" />
-					</td>
+				<div class="join table-row">
+					<div class="join-item w-10 {stat.colour} table-cell" />
 
-					<td>
-						<span class="text-sm md:text-md lg:text-lg place-self-center">
-							{stat.name}
-						</span>
-					</td>
+					<div
+						class="join-item bg-base-300 text-sm md:text-md lg:text-lg px-2 table-cell"
+					>
+						{stat.name}
+					</div>
 
-					<td>
+					<div class="bg-base-200 h-full">
 						<input
-							class="input font-mono flex-grow w-32 md:w-40 lg:w-64"
+							class="input bg-base-200 font-mono join-item flex-grow table-cell py-7"
 							type="number"
 							value={recipe[stat.key]}
 							on:input={e => {
 								recipe[stat.key] = e.currentTarget.valueAsNumber;
 							}}
 						/>
+					</div>
 
+					<span
+						class="bg-base-300 join-item px-2 line-clamp-1 text-xs md:text-sm lg:text-md table-cell"
+					>
 						{#if stat.key === 'calories'}
-							<span class="text-sm md:text-md lg:text-lg"> / 100g</span>
+							/ 100g
 						{:else}
-							<span class="text-sm md:text-md lg:text-lg">g / 100g</span>
+							g / 100g
 						{/if}
-					</td>
-				</tr>
+					</span>
+				</div>
 			{/each}
-		</table>
+		</div>
 	{:else}
 		<div class="w-full flex flex-row flex-wrap gap-4">
 			{#each nutrition as { name, colour, key } (name)}
