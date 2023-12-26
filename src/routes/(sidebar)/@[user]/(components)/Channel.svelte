@@ -1,11 +1,14 @@
 <script lang="ts">
-	import type { User as APIUser } from '$lib/server/schema';
 	import type { QueryObserverResult } from '@tanstack/svelte-query';
-	import Verified from '~icons/ic/baseline-verified';
-	import Subscribe from '$lib/components/Subscribe.svelte';
-	import { formatNumber } from '$lib/util';
 	import type { User } from 'lucia';
+
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import type { User as APIUser } from '$lib/server/schema';
+	import { formatNumber } from '$lib/util';
+
+	import Subscribe from '$lib/components/Subscribe.svelte';
+
+	import Verified from '~icons/ic/baseline-verified';
 
 	export let channel: QueryObserverResult<APIUser>;
 	export let user: User | undefined;

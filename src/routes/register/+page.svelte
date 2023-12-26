@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Blob from '$lib/components/blob/Blob.svelte';
-
-	import Google from '~icons/logos/google-icon';
-	import GitHub from '~icons/logos/github-icon';
-	import type { ActionData } from './$types';
-	import { page } from '$app/stores';
 	import { addFromQuery } from '$lib/util';
+
+	import GitHub from '~icons/logos/github-icon';
+	import Google from '~icons/logos/google-icon';
+
+	import type { ActionData } from './$types';
 
 	let showPassword = false;
 	let width = 0;

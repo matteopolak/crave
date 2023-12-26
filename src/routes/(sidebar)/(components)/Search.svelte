@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { createQuery } from '@tanstack/svelte-query';
+
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
-	import { createQuery } from '@tanstack/svelte-query';
 
 	function search() {
 		return goto(`/recipes/search?q=${encodeURIComponent(term)}`);

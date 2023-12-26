@@ -1,8 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 
-	import { Toaster } from 'svelte-french-toast';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { Toaster } from 'svelte-french-toast';
 
 	const queryClient = new QueryClient();
 </script>

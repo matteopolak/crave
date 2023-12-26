@@ -1,22 +1,25 @@
 <script lang="ts">
-	import Menu from '~icons/ic/baseline-menu';
-	import Logo from '~icons/noto/shallow-pan-of-food';
-	import Channel from '~icons/ic/baseline-account-box';
-	import History from '~icons/ic/baseline-history';
-	import Liked from '~icons/ic/baseline-favorite';
-	import RightArrow from '~icons/ic/baseline-chevron-right';
-	import Home from '~icons/ic/baseline-home';
-	import Recipes from '~icons/ic/baseline-restaurant-menu';
-	import Settings from '~icons/ic/baseline-settings';
-	import Food from '~icons/ic/baseline-fastfood';
-	import Create from '~icons/ic/baseline-add';
+	import { createQuery } from '@tanstack/svelte-query';
+
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { trpc } from '$lib/client';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import Search from './(components)/Search.svelte';
-	import { createQuery } from '@tanstack/svelte-query';
-	import { trpc } from '$lib/client';
+
+	import Channel from '~icons/ic/baseline-account-box';
+	import Create from '~icons/ic/baseline-add';
+	import RightArrow from '~icons/ic/baseline-chevron-right';
+	import Food from '~icons/ic/baseline-fastfood';
+	import Liked from '~icons/ic/baseline-favorite';
+	import History from '~icons/ic/baseline-history';
+	import Home from '~icons/ic/baseline-home';
+	import Menu from '~icons/ic/baseline-menu';
+	import Recipes from '~icons/ic/baseline-restaurant-menu';
+	import Settings from '~icons/ic/baseline-settings';
+	import Logo from '~icons/noto/shallow-pan-of-food';
+
 	import type { PageData } from '../$types';
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;

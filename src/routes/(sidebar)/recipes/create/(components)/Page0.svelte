@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Recipe } from '../+page.svelte';
+
 	import AddPhoto from '~icons/ic/baseline-add-photo-alternate';
 
 	export let recipe: Recipe;

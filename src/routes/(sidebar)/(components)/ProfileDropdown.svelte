@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
-	import { addFromQuery } from '$lib/util';
 	import type { User } from 'lucia';
 
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { addFromQuery } from '$lib/util';
+
+	import Channel from '~icons/ic/baseline-account-box';
 	import LogOut from '~icons/ic/baseline-logout';
 	import Settings from '~icons/ic/baseline-settings';
-
 	import LogIn from '~icons/ic/outline-account-circle';
 
 	export let user: User | undefined;
@@ -44,6 +45,12 @@
 				</div>
 			</div>
 
+			<li>
+				<a href="/@{user.username}">
+					<Channel />
+					Your channel
+				</a>
+			</li>
 			<li>
 				<a href="/settings">
 					<Settings />

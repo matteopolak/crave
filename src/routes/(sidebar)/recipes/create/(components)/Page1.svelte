@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { tick } from 'svelte';
+
 	import type { Recipe } from '../+page.svelte';
+
 	import Add from '~icons/ic/baseline-add';
 	import Delete from '~icons/ic/baseline-delete';
 

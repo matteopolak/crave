@@ -6,8 +6,13 @@
 </script>
 
 <script lang="ts">
+	import { TRPCClientError } from '@trpc/client';
 	import toast from 'svelte-french-toast';
+
+	import { goto } from '$app/navigation';
 	import { resolveRoute } from '$app/paths';
+	import { trpc } from '$lib/client';
+	import { resize } from '$lib/util';
 
 	import Page0 from './(components)/Page0.svelte';
 	import Page1 from './(components)/Page1.svelte';
@@ -16,10 +21,6 @@
 
 	import Back from '~icons/ic/baseline-arrow-back';
 	import Forward from '~icons/ic/baseline-arrow-forward';
-	import { trpc } from '$lib/client';
-	import { goto } from '$app/navigation';
-	import { TRPCClientError } from '@trpc/client';
-	import { resize } from '$lib/util';
 
 	let recipe = {
 		title: '',

@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { createQuery } from '@tanstack/svelte-query';
+
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
-	import { createQuery } from '@tanstack/svelte-query';
+
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 
 	$: recipes = createQuery({

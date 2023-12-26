@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { createQuery } from '@tanstack/svelte-query';
+
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
-	import { createQuery } from '@tanstack/svelte-query';
+
 	import Recipe from '$lib/components/recipe/Recipe.svelte';
+	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 
 	import Food from '~icons/emojione/pot-of-food';
-	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+
 	import type { PageData } from './$types';
 
 	$: recipe = createQuery({

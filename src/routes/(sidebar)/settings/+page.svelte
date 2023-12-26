@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { trpc } from '$lib/client';
-	import toast from 'svelte-french-toast';
-	import type { PageData } from './$types';
 	import { TRPCClientError } from '@trpc/client';
-	import { resize } from '$lib/util';
+	import toast from 'svelte-french-toast';
+
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { trpc } from '$lib/client';
+	import { resize } from '$lib/util';
 
 	import At from '~icons/ic/baseline-alternate-email';
-	import Person from '~icons/ic/baseline-person';
 	import Delete from '~icons/ic/baseline-delete';
+	import Person from '~icons/ic/baseline-person';
 
-	export let data: PageData;
+	import type { PageData } from './$types';
 
 	let files: FileList;
 	let input: HTMLInputElement;
@@ -56,6 +56,8 @@
 			)
 			.catch(() => {});
 	}
+
+	export let data: PageData;
 </script>
 
 <div class="flex flex-col items-center h-full">

@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { trpc } from '$lib/client';
 	import { createQuery } from '@tanstack/svelte-query';
+	import type { inferRouterOutputs } from '@trpc/server';
+
+	import { trpc } from '$lib/client';
+	import type { Router } from '$lib/server/routes';
+
+	import Recipe from '$lib/components/recipe/Recipe.svelte';
 	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
 
-	import Info from '~icons/ic/baseline-info';
 	import Fullscreen from '~icons/ic/baseline-fullscreen';
+	import Info from '~icons/ic/baseline-info';
 
-	import type { inferRouterOutputs } from '@trpc/server';
-	import type { Router } from '$lib/server/routes';
-	import Recipe from '$lib/components/recipe/Recipe.svelte';
 	import type { PageData } from './$types';
 
 	type PartialRecipe =
