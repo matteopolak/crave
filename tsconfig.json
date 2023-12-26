@@ -14,4 +14,7 @@
 			"unplugin-icons/types/svelte",
 		]
 	},
+	"exclude": [
+		"drizzle-orm",
+	]
 }

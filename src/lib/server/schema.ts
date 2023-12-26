@@ -9,9 +9,10 @@ export const CreatedAt = z.coerce.date().or(z.string().datetime());
 export const User = z
 	.object({
 		id: ChannelId,
-		username: z.string(),
+		username: z.string().min(3, 'Username must be at least 3 characters in length.').max(39, 'Username cannot be more than 39 characters.').toLowerCase(),
 		name: z.string(),
 		verified: z.boolean(),
+		thumbnail: z.string().nullable().transform(v => v ?? undefined).default('/images/default-avatar.svg'),
 		createdAt: CreatedAt,
 		recipes: z.number().nonnegative().int().optional(),
 		subscribers: z.number().nonnegative().int().optional(),

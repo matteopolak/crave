@@ -89,3 +89,28 @@ export function parseFromQuery(url: URL) {
 
 	return null
 }
+
+export async function resize(data: string, side = 512) {
+	const canvas = document.createElement('canvas');
+
+	const img = new Image();
+	img.src = data;
+
+	await new Promise<void>(resolve => {
+		img.onload = () => {
+			const { width, height } = img;
+
+			const max = Math.max(width, height);
+
+			canvas.width = (width / max) * side;
+			canvas.height = (height / max) * side;
+
+			const ctx = canvas.getContext('2d')!;
+			ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+			resolve();
+		};
+	});
+
+	return canvas.toDataURL('image/jpeg', 0.8);
+}

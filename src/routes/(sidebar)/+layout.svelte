@@ -94,7 +94,7 @@
 					children: $subscriptions.data.data.map(sub => ({
 						name: sub.name,
 						href: `/@${sub.username}`,
-						icon: 'https://via.placeholder.com/64',
+						icon: sub.thumbnail,
 					})),
 			  }
 			: undefined,

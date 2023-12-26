@@ -3,7 +3,18 @@ import type { OpenApiMeta } from 'trpc-openapi';
 
 import type { Context } from '$lib/server/context';
 
-const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
+const t = initTRPC
+	.context<Context>()
+	.meta<OpenApiMeta>()
+	.create({
+		errorFormatter({ shape, error }) {
+			return {
+				...shape,
+				// @ts-expect-error - `issues` is not in the type definition
+				message: error.cause?.issues?.[0].message ?? error.message,
+			};
+		},
+	});
 
 export const middleware = t.middleware;
 export const router = t.router;

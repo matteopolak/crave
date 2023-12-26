@@ -19,6 +19,7 @@
 	import { trpc } from '$lib/client';
 	import { goto } from '$app/navigation';
 	import { TRPCClientError } from '@trpc/client';
+	import { resize } from '$lib/util';
 
 	let recipe = {
 		title: '',
@@ -55,31 +56,6 @@
 		},
 	];
 
-	async function resize(data: string) {
-		const canvas = document.createElement('canvas');
-
-		const img = new Image();
-		img.src = recipe.thumbnail;
-
-		await new Promise<void>(resolve => {
-			img.onload = () => {
-				const { width, height } = img;
-
-				const max = Math.max(width, height);
-
-				canvas.width = (width / max) * 512;
-				canvas.height = (height / max) * 512;
-
-				const ctx = canvas.getContext('2d')!;
-				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-				resolve();
-			};
-		});
-
-		return canvas.toDataURL('image/jpeg', 0.8);
-	}
-
 	async function submit() {
 		recipe.thumbnail = await resize(recipe.thumbnail);
 
@@ -91,7 +67,7 @@
 					success: 'Recipe created!',
 					error: e => {
 						if (e instanceof TRPCClientError) {
-							return JSON.parse(e.message)[0].message;
+							return e.message;
 						} else {
 							return 'An unknown error occurred.';
 						}

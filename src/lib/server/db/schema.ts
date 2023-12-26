@@ -8,6 +8,7 @@ export const user = pgTable('user', {
 	username: varchar('username', { length: 39 }).notNull().unique(),
 	embedding: vector('embedding', { dimension: 768 }),
 	verified: boolean('verified').notNull().default(false),
+	thumbnail: text('thumbnail'),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 

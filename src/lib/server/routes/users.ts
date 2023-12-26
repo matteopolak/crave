@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm/sql';
+import pg from 'pg'
 import { z } from 'zod';
 
 import { procedure, protectedProcedure, router } from '$lib/server/trpc';
@@ -11,6 +12,42 @@ import { PartialRecipe, User } from '../schema';
 import { get } from '../sentry';
 
 export default router({
+	update: protectedProcedure
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/users/me',
+				summary: 'Update user',
+				description: 'Updates the current user\'s profile',
+				tags: ['user'],
+			},
+		})
+		.input(User.pick({
+			name: true,
+			thumbnail: true,
+			username: true,
+		}))
+		.output(z.void())
+		.mutation(async ({ ctx, input }) => {
+			try {
+				await get(db
+					.update(user)
+					.set(input)
+					.where(eq(user.id, ctx.session.user.userId)));
+			} catch (e) {
+				if (
+					e instanceof pg.DatabaseError &&
+					e.constraint
+				) {
+					throw new TRPCError({
+						code: 'CONFLICT',
+						message: 'Username already taken.',
+					});
+				}
+
+				throw e;
+			}
+		}),
 	subscribe: protectedProcedure
 		.meta({
 			openapi: {

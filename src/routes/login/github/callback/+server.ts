@@ -26,6 +26,7 @@ export const GET = async ({ url, cookies, locals }) => {
 				attributes: {
 					name: githubUser.name ?? githubUser.login,
 					username: githubUser.login,
+					thumbnail: githubUser.avatar_url, 
 				},
 			});
 

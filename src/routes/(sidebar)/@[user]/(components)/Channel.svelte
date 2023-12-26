@@ -20,7 +20,7 @@
 		</div>
 	{:else}
 		<img
-			src="https://via.placeholder.com/256"
+			src={channel.data.thumbnail}
 			alt="{channel.data.username}'s profile"
 			class="w-24 lg:w-32 aspect-square object-cover rounded-full"
 		/>

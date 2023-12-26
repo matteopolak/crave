@@ -15,7 +15,7 @@
 		<div tabindex="0" role="button" class="avatar">
 			<div class="h-10 rounded-full">
 				<img
-					src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+					src={user.thumbnail ?? '/images/default-avatar.svg'}
 					alt="{user.name}'s avatar"
 				/>
 			</div>
@@ -29,7 +29,7 @@
 				<div class="avatar">
 					<div class="h-10 rounded-full">
 						<img
-							src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+							src={user.thumbnail ?? '/images/default-avatar.svg'}
 							alt="{user.name}'s avatar"
 						/>
 					</div>

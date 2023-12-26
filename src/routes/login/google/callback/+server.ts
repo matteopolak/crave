@@ -26,6 +26,7 @@ export const GET = async ({ url, cookies, locals }) => {
 				attributes: {
 					name: googleUser.name,
 					username: googleUser.name.replaceAll(' ', '_').toLowerCase(),
+					thumbnail: googleUser.picture,
 				},
 			});
 

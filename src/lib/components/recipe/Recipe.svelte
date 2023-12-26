@@ -29,7 +29,7 @@
 					class="flex flex-row gap-2 place-items-center w-fit no-underline"
 				>
 					<img
-						src="https://via.placeholder.com/64"
+						src={recipe.author.thumbnail}
 						class="rounded-full w-14 h-14"
 						alt={recipe.author.name}
 						use:showOnLoad

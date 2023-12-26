@@ -29,6 +29,7 @@ export const user = {
 	username: s.user.username,
 	name: s.user.name,
 	verified: s.user.verified,
+	thumbnail: s.user.thumbnail,
 	createdAt: s.user.createdAt,
 };
 

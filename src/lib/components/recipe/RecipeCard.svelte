@@ -29,7 +29,7 @@
 		<div class="flex flex-row gap-2 w-full col-span-3">
 			{#if author}
 				<img
-					src="https://via.placeholder.com/64"
+					src={recipe.author.thumbnail}
 					class="rounded-full w-8 h-8"
 					alt={recipe.author.name}
 					use:showOnLoad
