@@ -115,7 +115,7 @@
 	<input id="sidebar" type="checkbox" class="drawer-toggle" />
 	<div class="drawer-content flex flex-col">
 		<div
-			class="flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4"
+			class="flex px-4 py-4 items-center sticky top-0 z-10 bg-base-100 place-content-between gap-4 leading-[0]"
 		>
 			<div class="flex flex-row items-center gap-2 lg:hidden">
 				<label
@@ -139,9 +139,7 @@
 				<Search />
 			</div>
 
-			<div class="lg:w-64 grid place-items-end">
-				<ProfileDropdown user={data.user} />
-			</div>
+			<ProfileDropdown user={data.user} />
 		</div>
 
 		<div class="p-4 md:p-6 lg:p-8 flex-grow">

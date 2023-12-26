@@ -43,12 +43,6 @@
 	<slot {item} />
 {/each}
 
-{#if !done}
-	{#if loading}
-		<slot name="loading" />
-	{/if}
-{/if}
-
 <div
 	use:viewport
 	on:enterviewport={() => {
@@ -58,3 +52,9 @@
 		shouldLoad = false;
 	}}
 />
+
+{#if !done}
+	{#if loading}
+		<slot name="loading" />
+	{/if}
+{/if}
