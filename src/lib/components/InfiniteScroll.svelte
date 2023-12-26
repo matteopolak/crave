@@ -6,8 +6,8 @@
 	type T = $$Generic;
 
 	export let data: T[];
-	export let key: keyof T;
 	export let load: (index: number) => MaybePromise<T[]>;
+	export let itemThreshold = 1;
 
 	let done = data.length === 0;
 	let loading = false;
@@ -18,7 +18,7 @@
 		loading = true;
 		const items = await load(index++);
 
-		if (items.length === 0) {
+		if (items.length < itemThreshold) {
 			done = true;
 		} else {
 			data.push(...items);
@@ -26,10 +26,10 @@
 		}
 
 		tick().then(() => {
-			loading = false;
-
 			if (shouldLoad) {
 				next();
+			} else {
+				loading = false;
 			}
 		});
 	}
@@ -39,9 +39,15 @@
 	}
 </script>
 
-{#each data as item (item[key])}
+{#each data as item, i (i)}
 	<slot {item} />
 {/each}
+
+{#if !done}
+	{#if loading}
+		<slot name="loading" />
+	{/if}
+{/if}
 
 <div
 	use:viewport
@@ -52,9 +58,3 @@
 		shouldLoad = false;
 	}}
 />
-
-{#if !done}
-	{#if loading}
-		<slot name="loading" />
-	{/if}
-{/if}

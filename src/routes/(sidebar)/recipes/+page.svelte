@@ -9,4 +9,8 @@
 	});
 </script>
 
-<RecipeGrid recipes={$recipes} load={() => trpc.recipes.random.query({})} />
+<RecipeGrid
+	recipes={$recipes}
+	load={() => trpc.recipes.random.query({})}
+	itemThreshold={50}
+/>

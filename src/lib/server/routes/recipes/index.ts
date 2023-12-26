@@ -273,16 +273,20 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.void())
+		.input(z.object({
+			page: z.number().int().nonnegative().default(0),
+		}))
 		.output(PartialRecipe.array())
-		.query(async ({ ctx }) => {
+		.query(async ({ ctx, input }) => {
 			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.innerJoin(like, eq(recipe.id, like.recipeId))
 				.where(eq(like.userId, ctx.session.user.userId))
-				.orderBy(desc(like.createdAt), asc(recipe.id)));
+				.orderBy(desc(like.createdAt), asc(recipe.id))
+				.offset(25 * input.page)
+				.limit(25));
 
 			return recipes;
 		}),
@@ -296,16 +300,20 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.void())
+		.input(z.object({
+			page: z.number().int().nonnegative().default(0),
+		}))
 		.output(PartialRecipe.array())
-		.query(async ({ ctx }) => {
+		.query(async ({ ctx, input }) => {
 			const recipes = await get(db
 				.select(partialRecipe)
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.innerJoin(history, eq(recipe.id, history.recipeId))
 				.where(eq(history.userId, ctx.session.user.userId))
-				.orderBy(desc(history.createdAt), asc(recipe.id)));
+				.orderBy(desc(history.createdAt), asc(recipe.id))
+				.offset(25 * input.page)
+				.limit(25));
 
 			return recipes;
 		}),

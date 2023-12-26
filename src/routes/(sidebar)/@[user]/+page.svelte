@@ -36,6 +36,7 @@
 					username: $page.params.user,
 					page: i,
 				})}
+			itemThreshold={25}
 		/>
 	</div>
 </div>

@@ -49,7 +49,13 @@
 
 	<div class="xl:col-span-2">
 		{#if !$recipe.isError}
-			<RecipeGrid recipes={$recommended} vertical side placeholderItems={25} />
+			<RecipeGrid
+				recipes={$recommended}
+				vertical
+				side
+				placeholderItems={25}
+				itemThreshold={25}
+			/>
 		{/if}
 	</div>
 </div>

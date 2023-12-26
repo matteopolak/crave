@@ -5,7 +5,10 @@
 
 	const recipes = createQuery({
 		queryKey: ['liked'],
-		queryFn: () => trpc.recipes.history.query(),
+		queryFn: () =>
+			trpc.recipes.history.query({
+				page: 0,
+			}),
 	});
 </script>
 
@@ -14,5 +17,16 @@
 		Your recipe history
 	</h1>
 
-	<RecipeGrid recipes={$recipes} side vertical size="xl" />
+	<RecipeGrid
+		recipes={$recipes}
+		side
+		vertical
+		size="xl"
+		itemThreshold={25}
+		placeholderItems={10}
+		load={i =>
+			trpc.recipes.history.query({
+				page: i,
+			})}
+	/>
 </div>

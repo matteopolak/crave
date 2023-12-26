@@ -17,7 +17,8 @@
 		| ((index: number) => MaybePromise<PartialRecipe[]>)
 		| undefined = undefined;
 
-	export let placeholderItems = 100;
+	export let placeholderItems = 10;
+	export let itemThreshold = 0;
 
 	const sizes: Record<Size, string> = {
 		sm: '15rem',
@@ -45,7 +46,7 @@
 			<RecipeCard {author} {side} size={!vertical ? 'full' : size} />
 		{/each}
 	{:else if load}
-		<InfiniteScroll data={recipes.data} key="id" {load} let:item>
+		<InfiniteScroll data={recipes.data} {load} {itemThreshold} let:item>
 			<RecipeCard
 				recipe={item}
 				{author}
