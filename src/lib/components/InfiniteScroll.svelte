@@ -20,7 +20,9 @@
 
 		if (items.length < itemThreshold) {
 			done = true;
-		} else {
+		}
+
+		if (items.length) {
 			data.push(...items);
 			data = data;
 		}
