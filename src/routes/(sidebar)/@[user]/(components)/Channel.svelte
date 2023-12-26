@@ -11,7 +11,9 @@
 	export let user: User | undefined;
 </script>
 
-<div class="flex flex-row place-items-center gap-4 md:gap-6 lg:gap-8">
+<div
+	class="flex flex-row place-items-center gap-4 md:gap-6 lg:gap-8 bg-base-300 p-4 md:p-8 rounded-3xl"
+>
 	{#if channel.isPending || channel.isError}
 		<div class="w-32 h-32 rounded-full skeleton" />
 

@@ -25,8 +25,8 @@
 	export let data: PageData;
 </script>
 
-<div class="grid place-items-center p-8">
-	<div class="grid max-w-7xl navbar gap-16">
+<div class="grid place-items-center">
+	<div class="grid items-center max-w-7xl navbar gap-16 p-0">
 		<Channel channel={$user} user={data.user} />
 		<RecipeGrid
 			recipes={$recipes}

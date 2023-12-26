@@ -87,7 +87,7 @@ export function parseFromQuery(url: URL) {
 		}
 	}
 
-	return null
+	return null;
 }
 
 export async function resize(data: string, side = 512) {

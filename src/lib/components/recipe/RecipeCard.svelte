@@ -18,7 +18,7 @@
 		class:md:grid={side}
 		href="/recipes/{recipe.id}"
 	>
-		<div class="rounded-lg overflow-hidden aspect-video bg-base-300 col-span-2">
+		<div class="rounded-xl overflow-hidden aspect-video bg-base-300 col-span-2">
 			<img
 				class="object-cover h-full w-full group-hover:scale-105 transition-all duration-300"
 				src={recipe.thumbnail}

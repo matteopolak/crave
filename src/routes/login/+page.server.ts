@@ -65,6 +65,6 @@ export const actions: Actions = {
 			});
 		}
 
-		return redirectWithQuery(url);
+		return redirectWithQuery(url, '/recipes');
 	},
 };
