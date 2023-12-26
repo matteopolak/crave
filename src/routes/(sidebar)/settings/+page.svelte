@@ -11,6 +11,7 @@
 	import Person from '~icons/ic/baseline-person';
 
 	import type { PageData } from './$types';
+	import { theme } from '$lib/theme';
 
 	let files: FileList;
 	let input: HTMLInputElement;
@@ -88,7 +89,7 @@
 
 				{#if data.user.thumbnail}
 					<button
-						class="absolute -right-10 top-0 z-20"
+						class="absolute -right-10 top-0"
 						type="button"
 						on:click={() => {
 							data.user.thumbnail = null;
@@ -143,6 +144,21 @@
 			<button class="btn btn-accent w-fit place-self-end">
 				Update profile
 			</button>
+
+			<div class="divider" />
+
+			<label class="cursor-pointer label" id="appearance">
+				<span class="label-text">Appearance</span>
+
+				<select
+					class="select select-bordered w-full max-w-xs"
+					bind:value={$theme}
+				>
+					<option value="light">Light</option>
+					<option value="dark">Dark</option>
+					<option value="system">System</option>
+				</select>
+			</label>
 		</form>
 	</div>
 </div>

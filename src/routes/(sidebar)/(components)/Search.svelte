@@ -2,7 +2,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 
 	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
+	import { goto, replaceState } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
 
@@ -31,16 +31,6 @@
 	let dropdown: HTMLDivElement;
 
 	let term = $page.url.searchParams.get('q') ?? '';
-
-	$: if (browser) {
-		if (term) {
-			$page.url.searchParams.set('q', term);
-		} else {
-			$page.url.searchParams.delete('q');
-		}
-
-		history.replaceState(history.state, '', $page.url);
-	}
 </script>
 
 <form on:submit|preventDefault={search}>

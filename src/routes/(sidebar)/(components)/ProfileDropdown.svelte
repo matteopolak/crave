@@ -8,11 +8,57 @@
 	import LogOut from '~icons/ic/baseline-logout';
 	import Settings from '~icons/ic/baseline-settings';
 	import LogIn from '~icons/ic/outline-account-circle';
+	import Palette from '~icons/ic/baseline-palette';
+	import Translate from '~icons/ic/baseline-translate';
 
 	export let user: User | undefined;
+
+	type Item = {
+		name: string;
+		icon: ConstructorOfATypedSvelteComponent;
+		href: string;
+		use?: (node: HTMLAnchorElement) => void;
+	};
+
+	$: items =
+		user &&
+		([
+			[
+				{
+					name: 'Your channel',
+					href: `/@${user.username}`,
+					icon: Channel,
+				},
+			],
+			[
+				{
+					name: 'Appearance',
+					href: '/settings#appearance',
+					icon: Palette,
+				},
+				{
+					name: 'Language',
+					href: '/settings#language',
+					icon: Translate,
+				},
+				{
+					name: 'Settings',
+					href: '/settings',
+					icon: Settings,
+				},
+			],
+			[
+				{
+					name: 'Log out',
+					href: '/logout',
+					icon: LogOut,
+					use: addFromQuery,
+				},
+			],
+		] as Item[][]);
 </script>
 
-{#if user}
+{#if user && items}
 	<div class="dropdown dropdown-bottom dropdown-end">
 		<div tabindex="0" role="button" class="avatar">
 			<div class="h-10 rounded-full">
@@ -45,24 +91,27 @@
 				</div>
 			</div>
 
-			<li>
-				<a href="/@{user.username}">
-					<Channel />
-					Your channel
-				</a>
-			</li>
-			<li>
-				<a href="/settings">
-					<Settings />
-					Settings
-				</a>
-			</li>
-			<li>
-				<a href="/logout" use:addFromQuery>
-					<LogOut />
-					Log out
-				</a>
-			</li>
+			{#each items as children, i}
+				{#each children as child}
+					<li>
+						{#if child.use}
+							<a href={child.href} use:child.use>
+								<svelte:component this={child.icon} />
+								{child.name}
+							</a>
+						{:else}
+							<a href={child.href}>
+								<svelte:component this={child.icon} />
+								{child.name}
+							</a>
+						{/if}
+					</li>
+				{/each}
+
+				{#if i !== items.length - 1}
+					<div class="divider my-0"></div>
+				{/if}
+			{/each}
 		</ul>
 	</div>
 {:else}

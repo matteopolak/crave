@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
+	import { onMount } from 'svelte';
 
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import { trpc } from '$lib/client';
+	import { initTheme } from '$lib/theme';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import Search from './(components)/Search.svelte';
@@ -23,6 +25,8 @@
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;
+
+	onMount(initTheme);
 
 	type SidebarCategory = {
 		name?: string;
