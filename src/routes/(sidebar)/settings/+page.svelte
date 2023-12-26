@@ -2,10 +2,13 @@
 	import { trpc } from '$lib/client';
 	import toast from 'svelte-french-toast';
 	import type { PageData } from './$types';
-	import At from '~icons/ic/baseline-alternate-email';
-	import Person from '~icons/ic/baseline-person';
 	import { TRPCClientError } from '@trpc/client';
 	import { resize } from '$lib/util';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+
+	import At from '~icons/ic/baseline-alternate-email';
+	import Person from '~icons/ic/baseline-person';
+	import Delete from '~icons/ic/baseline-delete';
 
 	export let data: PageData;
 
@@ -58,27 +61,42 @@
 <div class="flex flex-col items-center h-full">
 	<div class="grid max-w-lg w-full gap-2 h-full prose prose-h2:m-0">
 		<form class="form-control gap-4" on:submit|preventDefault={submit}>
-			<button class="relative max-w-[10rem]" on:click={() => input.click()}>
-				<input
-					type="file"
-					class="hidden"
-					bind:files
-					bind:this={input}
-					accept="image/*"
-				/>
-
-				<div class="w-full aspect-square bg-base-300 rounded-full">
-					<img
-						src={data.user.thumbnail ?? '/images/default-avatar.svg'}
-						class="aspect-square rounded-full w-full m-0"
-						alt="User avatar"
+			<div class="relative w-40">
+				<button on:click={() => input.click()} type="button">
+					<input
+						type="file"
+						class="hidden"
+						bind:files
+						bind:this={input}
+						accept="image/*"
 					/>
-				</div>
+
+					<div class="w-full aspect-square bg-base-300 rounded-full">
+						<img
+							src={data.user.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
+							class="aspect-square rounded-full w-40 object-cover m-0"
+							alt="User avatar"
+						/>
+					</div>
+				</button>
 
 				<div class="badge badge-lg badge-neutral absolute -right-5 bottom-5">
 					Edit avatar
 				</div>
-			</button>
+
+				{#if data.user.thumbnail}
+					<button
+						class="absolute -right-10 top-0 z-20"
+						type="button"
+						on:click={() => {
+							data.user.thumbnail = null;
+							data.user = data.user;
+						}}
+					>
+						<Delete class="text-error w-8 h-8" />
+					</button>
+				{/if}
+			</div>
 
 			<div>
 				<label class="label" for="name">

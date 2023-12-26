@@ -5,6 +5,7 @@
 	import Subscribe from '$lib/components/Subscribe.svelte';
 	import { formatNumber } from '$lib/util';
 	import type { User } from 'lucia';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 
 	export let channel: QueryObserverResult<APIUser>;
 	export let user: User | undefined;
@@ -20,7 +21,7 @@
 		</div>
 	{:else}
 		<img
-			src={channel.data.thumbnail}
+			src={channel.data.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 			alt="{channel.data.username}'s profile"
 			class="w-24 lg:w-32 aspect-square object-cover rounded-full"
 		/>

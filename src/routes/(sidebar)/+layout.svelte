@@ -16,6 +16,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { trpc } from '$lib/client';
 	import type { PageData } from '../$types';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;
@@ -94,7 +95,7 @@
 					children: $subscriptions.data.data.map(sub => ({
 						name: sub.name,
 						href: `/@${sub.username}`,
-						icon: sub.thumbnail,
+						icon: sub.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL,
 					})),
 			  }
 			: undefined,

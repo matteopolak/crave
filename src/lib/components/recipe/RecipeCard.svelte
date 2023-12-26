@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
 	import { showOnLoad } from '$lib/util';
@@ -29,7 +30,7 @@
 		<div class="flex flex-row gap-2 w-full col-span-3">
 			{#if author}
 				<img
-					src={recipe.author.thumbnail}
+					src={recipe.author.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 					class="rounded-full w-8 h-8"
 					alt={recipe.author.name}
 					use:showOnLoad

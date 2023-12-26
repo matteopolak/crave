@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import { addFromQuery } from '$lib/util';
 	import type { User } from 'lucia';
 
@@ -15,7 +16,7 @@
 		<div tabindex="0" role="button" class="avatar">
 			<div class="h-10 rounded-full">
 				<img
-					src={user.thumbnail ?? '/images/default-avatar.svg'}
+					src={user.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 					alt="{user.name}'s avatar"
 				/>
 			</div>
@@ -29,7 +30,7 @@
 				<div class="avatar">
 					<div class="h-10 rounded-full">
 						<img
-							src={user.thumbnail ?? '/images/default-avatar.svg'}
+							src={user.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 							alt="{user.name}'s avatar"
 						/>
 					</div>

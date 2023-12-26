@@ -6,6 +6,7 @@
 	import Like from './Like.svelte';
 	import NutritionFacts from './NutritionFacts.svelte';
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 
 	export let recipe: Recipe | undefined = undefined;
 	export let user: User | undefined;
@@ -29,7 +30,7 @@
 					class="flex flex-row gap-2 place-items-center w-fit no-underline"
 				>
 					<img
-						src={recipe.author.thumbnail}
+						src={recipe.author.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 						class="rounded-full w-14 h-14"
 						alt={recipe.author.name}
 						use:showOnLoad
@@ -84,7 +85,7 @@
 			<div class="flex flex-row flex-wrap gap-1 mt-7">
 				{#each { length: 5 } as _}
 					<div
-						class="badge badge-sm skeleton h-6"
+						class="badge badge-sm skeleton h-6 max-w-full"
 						style="width: {Math.floor(Math.random() * 70 + 50)}px"
 					/>
 				{/each}
@@ -100,7 +101,7 @@
 			<div class="flex flex-col gap-2 mt-8">
 				{#each { length: 5 } as _}
 					<div
-						class="h-6 skeleton"
+						class="h-6 skeleton max-w-full"
 						style="width: {Math.floor(Math.random() * 400 + 300)}px"
 					/>
 				{/each}
@@ -111,7 +112,7 @@
 			<div class="flex flex-col gap-2 mt-8">
 				{#each { length: 5 } as _}
 					<div
-						class="h-6 skeleton"
+						class="h-6 skeleton max-w-full"
 						style="width: {Math.floor(Math.random() * 400 + 300)}px"
 					/>
 				{/each}

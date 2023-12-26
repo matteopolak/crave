@@ -12,7 +12,7 @@ export const User = z
 		username: z.string().min(3, 'Username must be at least 3 characters in length.').max(39, 'Username cannot be more than 39 characters.').toLowerCase(),
 		name: z.string(),
 		verified: z.boolean(),
-		thumbnail: z.string().nullable().transform(v => v ?? undefined).default('/images/default-avatar.svg'),
+		thumbnail: z.string().nullable(),
 		createdAt: CreatedAt,
 		recipes: z.number().nonnegative().int().optional(),
 		subscribers: z.number().nonnegative().int().optional(),

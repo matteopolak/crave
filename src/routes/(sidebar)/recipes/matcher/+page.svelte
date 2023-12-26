@@ -4,15 +4,33 @@
 	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
 
 	import Info from '~icons/ic/baseline-info';
+	import Fullscreen from '~icons/ic/baseline-fullscreen';
+
 	import type { inferRouterOutputs } from '@trpc/server';
 	import type { Router } from '$lib/server/routes';
+	import Recipe from '$lib/components/recipe/Recipe.svelte';
+	import type { PageData } from './$types';
 
 	type PartialRecipe =
 		inferRouterOutputs<Router>['recipes']['vector']['search'][number];
 
 	let vector: number[] = [];
 	let first = true;
-	let info: HTMLDialogElement;
+	let infoModal: HTMLDialogElement;
+	let recipeModal: HTMLDialogElement;
+
+	let selectedRecipe: number | undefined;
+
+	$: recipe =
+		selectedRecipe !== undefined
+			? createQuery({
+					queryKey: ['recipe'],
+					queryFn: () =>
+						trpc.recipes.get.query({
+							id: selectedRecipe!,
+						}),
+			  })
+			: undefined;
 
 	$: length = Math.sqrt(vector.reduce((acc, val) => acc + val ** 2, 0));
 	$: unit = vector.map(val => val / length);
@@ -41,9 +59,11 @@
 			vector = unit.map(val => val * dot);
 		}
 	}
+
+	export let data: PageData;
 </script>
 
-<dialog id="info" class="modal" bind:this={info}>
+<dialog id="info" class="modal" bind:this={infoModal}>
 	<div class="modal-box">
 		<form method="dialog">
 			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -70,10 +90,25 @@
 	</form>
 </dialog>
 
+<dialog id="recipe" class="modal" bind:this={recipeModal}>
+	<div class="modal-box">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+				✕
+			</button>
+		</form>
+
+		<Recipe recipe={$recipe?.data} user={data?.user} />
+	</div>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>
+
 <div class="absolute top-0 left-0 grid w-screen h-screen place-items-center">
 	<div class="relative">
 		<button
-			on:click={() => info.showModal()}
+			on:click={() => infoModal.showModal()}
 			class="absolute top-2 right-2 md:top-0 md:right-0 text-info z-30 rounded-full overflow-hidden"
 		>
 			<Info class="w-12 h-12 md:w-16 md:h-16 z-30 bg-base-100" />
@@ -90,9 +125,21 @@
 		{:else}
 			<div class="grid grid-cols-3 gap-4 p-8 max-w-2xl">
 				{#each $recipes.data as recipe}
-					<button on:click={() => next(recipe)}>
-						<RecipeBox {recipe} />
-					</button>
+					<div class="relative">
+						<button on:click={() => next(recipe)} class="w-full h-full">
+							<RecipeBox {recipe} />
+						</button>
+
+						<button
+							class="absolute top-2 right-2 z-20"
+							on:click={() => {
+								selectedRecipe = recipe.id;
+								recipeModal.showModal();
+							}}
+						>
+							<Fullscreen class="w-8 h-8 text-primary bg-base-300 rounded-lg" />
+						</button>
+					</div>
 				{/each}
 			</div>
 		{/if}
