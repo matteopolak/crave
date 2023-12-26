@@ -1,9 +1,7 @@
 import { writable } from 'svelte/store';
 
-import { browser } from '$app/environment';
-
 function setTheme(name: string) {
-	if (!browser || name === 'unknown') return;
+	if (typeof document === 'undefined' || name === 'unknown') return;
 
 	if (name !== 'system') {
 		document.documentElement.setAttribute('data-theme', name);

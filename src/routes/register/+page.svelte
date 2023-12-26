@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import Blob from '$lib/components/blob/Blob.svelte';
 	import { addFromQuery } from '$lib/util';
+	import { t } from '$lib/translations';
 
 	import GitHub from '~icons/logos/github-icon';
 	import Google from '~icons/logos/google-icon';
@@ -44,7 +45,9 @@
 				use:addFromQuery
 			>
 				<GitHub class="h-6 w-6 dark:invert" />
-				<span class="hidden md:block">Continue with GitHub</span>
+				<span class="hidden md:block">
+					{$t('auth.continue-github')}
+				</span>
 			</a>
 			<a
 				class="btn btn-md dark:btn-neutral w-full gap-4"
@@ -52,11 +55,15 @@
 				use:addFromQuery
 			>
 				<Google class="h-6 w-6" />
-				<span class="hidden md:block">Continue with Google</span>
+				<span class="hidden md:block">
+					{$t('auth.continue-google')}
+				</span>
 			</a>
 		</div>
 
-		<div class="divider text-xs">OR</div>
+		<div class="divider text-xs uppercase">
+			{$t('auth.or')}
+		</div>
 
 		{#if form?.message}
 			<div class="alert alert-error">{form.message}</div>
@@ -64,13 +71,13 @@
 
 		<label class="label" for="name">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				Name
+				{$t('auth.name')}
 			</span>
 		</label>
 		<input
 			type="text"
 			name="name"
-			placeholder="Name"
+			placeholder={$t('auth.name')}
 			class="input input-bordered"
 			required
 			maxlength={255}
@@ -78,13 +85,13 @@
 
 		<label class="label" for="username">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				Username
+				{$t('auth.username')}
 			</span>
 		</label>
 		<input
 			type="text"
 			name="username"
-			placeholder="Username"
+			placeholder={$t('auth.username')}
 			class="input input-bordered"
 			required
 			maxlength={39}
@@ -92,7 +99,7 @@
 
 		<label class="label" for="password">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				Password
+				{$t('auth.password')}
 			</span>
 			<button
 				type="button"
@@ -106,7 +113,7 @@
 						/>
 					</svg>
 
-					Hide
+					{$t('auth.hide')}
 				{:else}
 					<svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
 						<path
@@ -114,7 +121,7 @@
 						/>
 					</svg>
 
-					Show
+					{$t('auth.show')}
 				{/if}
 			</button>
 		</label>
@@ -122,7 +129,7 @@
 			type={showPassword ? 'text' : 'password'}
 			name="password"
 			class="input input-bordered"
-			placeholder="Password"
+			placeholder={$t('auth.password')}
 			required
 			maxlength={255}
 		/>
@@ -132,18 +139,19 @@
 				<span class="loading loading-ball loading-md" />
 			{/if}
 
-			Sign up
+			{$t('auth.sign-up')}
 		</button>
 
 		<div class="divider" />
 
 		<p class="text-center text-sm">
-			Already have an account? <a
+			{$t('auth.switch-to-login')}
+			<a
 				href="/login"
 				class="underline text-neutral-100 dark:text-neutral-50"
 				use:addFromQuery
 			>
-				Log in to Crave
+				{$t('auth.switch-to-login-action')}
 			</a>
 		</p>
 	</form>

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
 
-	import { browser } from '$app/environment';
-	import { goto, replaceState } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
+	import { t } from '$lib/translations';
 
 	function search() {
 		return goto(`/recipes/search?q=${encodeURIComponent(term)}`);
@@ -37,7 +37,7 @@
 	<div class="dropdown w-full" bind:this={dropdown}>
 		<input
 			type="text"
-			placeholder="Search"
+			placeholder={$t('label.search')}
 			class="input input-bordered rounded-full bg-base-300 w-full md:w-72 lg:w-96"
 			bind:value={term}
 			on:focusin={() => dropdown.classList.add('dropdown-open')}

@@ -4,14 +4,15 @@
 
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import { trpc } from '$lib/client';
+	import { language, locales, t } from '$lib/translations';
 	import { resize } from '$lib/util';
 
 	import At from '~icons/ic/baseline-alternate-email';
 	import Delete from '~icons/ic/baseline-delete';
 	import Person from '~icons/ic/baseline-person';
 
-	import type { PageData } from './$types';
 	import { theme } from '$lib/theme';
+	import type { PageData } from './$types';
 
 	let files: FileList;
 	let input: HTMLInputElement;
@@ -102,8 +103,10 @@
 			</div>
 
 			<div>
-				<label class="label" for="name">
-					<span class="label-text">Username</span>
+				<label class="label" for="username">
+					<span class="label-text">
+						{$t('label.username')}
+					</span>
 				</label>
 
 				<div class="join join-horizontal w-full">
@@ -123,7 +126,9 @@
 
 			<div>
 				<label class="label" for="name">
-					<span class="label-text">Name</span>
+					<span class="label-text">
+						{$t('label.name')}
+					</span>
 				</label>
 
 				<div class="join join-horizontal w-full">
@@ -142,21 +147,48 @@
 			</div>
 
 			<button class="btn btn-accent w-fit place-self-end">
-				Update profile
+				{$t('label.update-profile')}
 			</button>
 
 			<div class="divider" />
 
 			<label class="cursor-pointer label" id="appearance">
-				<span class="label-text">Appearance</span>
+				<span class="label-text">
+					{$t('label.appearance')}
+				</span>
 
 				<select
 					class="select select-bordered w-full max-w-xs"
 					bind:value={$theme}
 				>
-					<option value="light">Light</option>
-					<option value="dark">Dark</option>
-					<option value="system">System</option>
+					<option value="light">
+						{$t('label.light')}
+					</option>
+					<option value="dark">
+						{$t('label.dark')}
+					</option>
+					<option value="system">
+						{$t('label.system')}
+					</option>
+				</select>
+			</label>
+
+			<label class="cursor-pointer label" id="language">
+				<span class="label-text">
+					{$t('label.language')}
+				</span>
+
+				<select
+					class="select select-bordered w-full max-w-xs"
+					bind:value={$language.locale}
+				>
+					{#each $locales as l}
+						<option value={l}>{$t(`lang.${l}`)}</option>
+					{/each}
+
+					<option value="system">
+						{$t('label.system')}
+					</option>
 				</select>
 			</label>
 		</form>

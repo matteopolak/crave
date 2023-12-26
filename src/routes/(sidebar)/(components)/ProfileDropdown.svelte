@@ -3,6 +3,7 @@
 
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import { addFromQuery } from '$lib/util';
+	import { t } from '$lib/translations';
 
 	import Channel from '~icons/ic/baseline-account-box';
 	import LogOut from '~icons/ic/baseline-logout';
@@ -25,31 +26,31 @@
 		([
 			[
 				{
-					name: 'Your channel',
+					name: $t('label.your-channel'),
 					href: `/@${user.username}`,
 					icon: Channel,
 				},
 			],
 			[
 				{
-					name: 'Appearance',
+					name: $t('label.appearance'),
 					href: '/settings#appearance',
 					icon: Palette,
 				},
 				{
-					name: 'Language',
+					name: $t('label.language'),
 					href: '/settings#language',
 					icon: Translate,
 				},
 				{
-					name: 'Settings',
+					name: $t('label.settings'),
 					href: '/settings',
 					icon: Settings,
 				},
 			],
 			[
 				{
-					name: 'Log out',
+					name: $t('label.log-out'),
 					href: '/logout',
 					icon: LogOut,
 					use: addFromQuery,
@@ -109,7 +110,7 @@
 				{/each}
 
 				{#if i !== items.length - 1}
-					<div class="divider my-0"></div>
+					<div class="divider my-0" />
 				{/if}
 			{/each}
 		</ul>
@@ -117,7 +118,9 @@
 {:else}
 	<a href="/login" class="btn btn-ghost rounded-xl" use:addFromQuery>
 		<LogIn class="w-6 h-6" />
-		<span class="hidden md:block">Sign in</span>
+		<span class="hidden md:block">
+			{$t('auth.login')}
+		</span>
 	</a>
 {/if}
 

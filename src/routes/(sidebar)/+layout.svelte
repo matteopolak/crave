@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
-	import { onMount } from 'svelte';
 
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import { trpc } from '$lib/client';
-	import { initTheme } from '$lib/theme';
+	import { t } from '$lib/translations';
 
 	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
 	import Search from './(components)/Search.svelte';
@@ -25,8 +24,6 @@
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;
-
-	onMount(initTheme);
 
 	type SidebarCategory = {
 		name?: string;
@@ -55,42 +52,42 @@
 		{
 			children: [
 				{
-					name: 'Home',
+					name: $t('label.name'),
 					href: '/',
 					icon: Home,
 				},
 				{
-					name: 'Recipes',
+					name: $t('label.recipes'),
 					href: '/recipes',
 					icon: Recipes,
 				},
 			],
 		},
 		{
-			name: 'You',
+			name: $t('label.you'),
 			href: `/@${data.user?.username}`,
 			disabled: data.user === undefined,
 			children: [
 				{
-					name: 'Your channel',
+					name: $t('label.your-channel'),
 					href: `/@${data.user?.username}`,
 					icon: Channel,
 					disabled: data.user === undefined,
 				},
 				{
-					name: 'History',
+					name: $t('label.history'),
 					href: '/recipes/history',
 					icon: History,
 					disabled: data.user === undefined,
 				},
 				{
-					name: 'Liked recipes',
+					name: $t('label.liked-recipes'),
 					href: '/recipes/liked',
 					icon: Liked,
 					disabled: data.user === undefined,
 				},
 				{
-					name: 'Recipe matcher',
+					name: $t('label.recipe-matcher'),
 					href: '/recipes/matcher',
 					icon: Food,
 				},
@@ -98,7 +95,7 @@
 		},
 		$subscriptions.data?.success && $subscriptions.data.data.length
 			? {
-					name: 'Subscriptions',
+					name: $t('label.subscriptions'),
 					children: $subscriptions.data.data.map(sub => ({
 						name: sub.name,
 						href: `/@${sub.username}`,
@@ -109,7 +106,7 @@
 		{
 			children: [
 				{
-					name: 'Settings',
+					name: $t('label.settings'),
 					href: '/settings',
 					icon: Settings,
 				},
@@ -181,7 +178,7 @@
 				class:btn-disabled={data.user === undefined}
 			>
 				<Create class="w-6 h-6" />
-				Create
+				{$t('label.create')}
 			</a>
 
 			<div class="divider"></div>
