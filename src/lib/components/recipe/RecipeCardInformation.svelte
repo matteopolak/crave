@@ -1,8 +1,10 @@
 <script lang="ts">
+	import Time from 'svelte-time';
+
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
 	import { formatNumber } from '$lib/util';
-	import Time from 'svelte-time';
+
 	import Verified from '~icons/ic/baseline-verified';
 
 	export let recipe: PartialRecipe | undefined = undefined;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PartialRecipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
+
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
 
 	export let recipe: PartialRecipe | undefined = undefined;

@@ -3,6 +3,7 @@
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
 	import { showOnLoad } from '$lib/util';
+
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
 
 	export let recipe: PartialRecipe | undefined = undefined;

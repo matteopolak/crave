@@ -1,9 +1,10 @@
 <script lang="ts">
-	import Like from '~icons/ic/baseline-favorite-border';
-	import Unlike from '~icons/ic/baseline-favorite';
 	import type { Recipe } from '$lib/server/schema';
 	import { trpc } from '$lib/client';
 	import { formatNumber } from '$lib/util';
+
+	import Like from '~icons/ic/baseline-favorite-border';
+	import Unlike from '~icons/ic/baseline-favorite';
 
 	export let recipe: Recipe;
 

@@ -1,10 +1,13 @@
 <script lang="ts">
 	import type { QueryObserverResult } from '@tanstack/svelte-query';
-	import RecipeCard from './RecipeCard.svelte';
-	import type { PartialRecipe } from '$lib/server/schema';
-	import type { Size } from '$lib/types';
 	import type { MaybePromise } from '@sveltejs/kit';
+
+	import type { PartialRecipe } from '$lib/server/schema';
+
+	import RecipeCard from './RecipeCard.svelte';
 	import InfiniteScroll from '../InfiniteScroll.svelte';
+
+	import type { Size } from '$lib/types';
 
 	export let recipes: QueryObserverResult<PartialRecipe[]>;
 	export let size: Size = 'md';

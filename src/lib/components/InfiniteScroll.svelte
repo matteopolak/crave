@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { viewport } from '$lib/util';
 	import type { MaybePromise } from '@sveltejs/kit';
+
+	import { viewport } from '$lib/util';
 
 	type T = $$Generic;
 

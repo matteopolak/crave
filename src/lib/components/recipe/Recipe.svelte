@@ -1,12 +1,14 @@
 <script lang="ts">
+	import type { User } from 'lucia';
+
 	import type { Recipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
-	import type { User } from 'lucia';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+
 	import Subscribe from '../Subscribe.svelte';
 	import Like from './Like.svelte';
 	import NutritionFacts from './NutritionFacts.svelte';
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 
 	export let recipe: Recipe | undefined = undefined;
 	export let user: User | undefined;

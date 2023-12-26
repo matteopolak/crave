@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
 	import { Blob } from './blob';
 
 	export let width: number;
