@@ -1,0 +1,5 @@
+{
+	"views": "{{views; 0:Aucune vue; 1:{{views}} vue; default: {{views}} vues}}",
+	"subscribers": "{{subscribers; 1:{{subscribers}} abonné; default: {{subscribers}} abonnés}}",
+	"recipes": "{{recipes; 1:{{recipes}} recette; default: {{recipes}} recettes}}"
+}

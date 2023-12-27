@@ -20,9 +20,6 @@ dependencies:
   svelte-reveal:
     specifier: ^0.7.0
     version: 0.7.0
-  svelte-time:
-    specifier: ^0.8.2
-    version: 0.8.2
   svelte-typewriter:
     specifier: ^3.2.2
     version: 3.2.2(svelte@4.2.8)
@@ -2123,10 +2120,6 @@ packages:
   /data-uri-to-buffer@2.0.2:
     resolution: {integrity: sha512-ND9qDTLc6diwj+Xe5cdAgVTbLVdXbtxTJRXRhli8Mowuaan+0EJOtdqJ0QCHNSSPyoXGx9HX2/VMnKeC34AChA==}
     dev: true
-
-  /dayjs@1.11.10:
-    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
-    dev: false
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -4815,12 +4808,6 @@ packages:
 
   /svelte-reveal@0.7.0:
     resolution: {integrity: sha512-cmdYWpULQXtbEuzxxObR2IRbyKef51KlqidkLswj1F3FzeoYr9WHvL2setvvkH3MpD0BfFngvWWAXNPj/PDXXA==}
-    dev: false
-
-  /svelte-time@0.8.2:
-    resolution: {integrity: sha512-sBLLrWMMInx5iidGlbtlCBAu8CzSixdqOkbhizdalULXBvYMPACp0GtzmyBLEa77hbaMVySZzApIaNG4B4OVmg==}
-    dependencies:
-      dayjs: 1.11.10
     dev: false
 
   /svelte-typewriter@3.2.2(svelte@4.2.8):

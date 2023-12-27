@@ -1,11 +1,10 @@
 <script lang="ts">
-	import Time from 'svelte-time';
-
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
-	import { t } from '$lib/translations';
+	import { t, locale } from '$lib/translations';
 
 	import Verified from '~icons/ic/baseline-verified';
+	import { formatRelativeTime } from '$lib/util';
 
 	export let recipe: PartialRecipe | undefined = undefined;
 	export let title: boolean = true;
@@ -56,7 +55,9 @@
 					})}
 				</span>
 				<span class="text-neutral-500">•</span>
-				<span><Time timestamp={recipe.createdAt} relative /></span>
+				<span>
+					{formatRelativeTime($locale, new Date(recipe.createdAt))}
+				</span>
 			</div>
 		</div>
 	</div>

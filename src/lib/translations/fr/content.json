@@ -1,0 +1,4 @@
+{
+	"matcher-title": "Votre concordance de recettes personnalisée",
+	"matcher-description": "Nous utilisons un réseau neuronal pour intégrer des recettes dans un espace vectoriel à 768 dimensions. Cela nous permet de calculer la similarité entre les recettes en utilisant des opérations mathématiques.\n\nLorsque vous cliquez sur une recette, nous calculons la similarité cosinus entre votre vecteur actuel et le vecteur de la recette. Nous déplaçons ensuite votre vecteur dans la direction du vecteur de la recette, de sorte que la prochaine recette que vous voyez soit plus semblable à celle que vous venez de cliquer."
+}

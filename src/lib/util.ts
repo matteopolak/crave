@@ -74,6 +74,34 @@ export function formatNumber(number: number) {
 	return number.toLocaleString();
 }
 
+export function formatRelativeTime(locale: string, date: Date) {
+	const now = new Date();
+	const ms = date.getTime() - now.getTime();
+	const duration = Math.abs(ms);
+
+	const rtf = new Intl.RelativeTimeFormat(locale, {
+		numeric: 'auto',
+	});
+
+	const units = [
+		{ unit: 'year', ms: 31_536_000_000 },
+		{ unit: 'month', ms: 2_592_000_000 },
+		{ unit: 'week', ms: 604_800_000 },
+		{ unit: 'day', ms: 86_400_000 },
+		{ unit: 'hour', ms: 3_600_000 },
+		{ unit: 'minute', ms: 60_000 },
+		{ unit: 'second', ms: 1_000 },
+	] as const;
+
+	for (const { unit, ms: unitMs } of units) {
+		if (duration >= unitMs) {
+			return rtf.format(Math.round(ms / unitMs), unit);
+		}
+	}
+
+	return rtf.format(Math.round(ms / 1_000), 'second');
+}
+
 export function parseFromQuery(url: URL) {
 	const from = url.searchParams.get('from');
 

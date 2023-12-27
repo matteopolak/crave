@@ -75,18 +75,20 @@
 						accept="image/*"
 					/>
 
-					<div class="w-full aspect-square bg-base-300 rounded-full">
+					<div class="w-full aspect-square bg-base-300 rounded-full relative">
 						<img
 							src={data.user.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL}
 							class="aspect-square rounded-full w-40 object-cover m-0"
 							alt="User avatar"
 						/>
+
+						<div
+							class="badge badge-lg badge-neutral absolute -right-5 bottom-5"
+						>
+							{$t('label.edit-avatar')}
+						</div>
 					</div>
 				</button>
-
-				<div class="badge badge-lg badge-neutral absolute -right-5 bottom-5">
-					Edit avatar
-				</div>
 
 				{#if data.user.thumbnail}
 					<button
@@ -161,14 +163,15 @@
 					class="select select-bordered w-full max-w-xs"
 					bind:value={$theme}
 				>
+					<option value="system">
+						{$t('label.system')}
+					</option>
+
 					<option value="light">
 						{$t('label.light')}
 					</option>
 					<option value="dark">
 						{$t('label.dark')}
-					</option>
-					<option value="system">
-						{$t('label.system')}
 					</option>
 				</select>
 			</label>
@@ -182,13 +185,13 @@
 					class="select select-bordered w-full max-w-xs"
 					bind:value={$language.locale}
 				>
-					{#each $locales as l}
-						<option value={l}>{$t(`lang.${l}`)}</option>
-					{/each}
-
 					<option value="system">
 						{$t('label.system')}
 					</option>
+
+					{#each $locales as l}
+						<option value={l}>{$t(`lang.${l}`)}</option>
+					{/each}
 				</select>
 			</label>
 		</form>

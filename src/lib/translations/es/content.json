@@ -1,0 +1,4 @@
+{
+	"matcher-title": "Tu buscador personalizado de recetas",
+	"matcher-description": "Utilizamos una red neuronal para incrustar recetas en un espacio vectorial de 768 dimensiones. Esto nos permite calcular la similitud entre recetas utilizando operaciones matemáticas.\n\nCuando haces clic en una receta, calculamos la similitud del coseno entre tu vector actual y el vector de la receta. Luego movemos tu vector en la dirección del vector de la receta, para que la próxima receta que veas sea más similar a la que acabas de seleccionar."
+}

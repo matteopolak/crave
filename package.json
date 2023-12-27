@@ -60,7 +60,6 @@
 		"redoc-svelte": "^0.2.3",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-reveal": "^0.7.0",
-		"svelte-time": "^0.8.2",
 		"svelte-typewriter": "^3.2.2",
 		"sveltekit-i18n": "^2.4.2"
 	}
