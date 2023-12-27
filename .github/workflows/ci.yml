@@ -20,6 +20,9 @@ jobs:
       - name: install modules
         run: pnpm install
 
+      - name: create .env
+        run: cp .env.example .env
+
       - name: run eslint
         run: pnpm eslint --ext .ts,.svelte src
 
