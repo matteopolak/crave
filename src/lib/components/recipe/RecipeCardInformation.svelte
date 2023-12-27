@@ -3,7 +3,7 @@
 
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
-	import { formatNumber } from '$lib/util';
+	import { t } from '$lib/translations';
 
 	import Verified from '~icons/ic/baseline-verified';
 
@@ -50,7 +50,11 @@
 			</a>
 
 			<div class="flex flex-row gap-2 place-items-center">
-				<span>{formatNumber(recipe.views)} views</span>
+				<span>
+					{$t('stat.views', {
+						views: recipe.views ?? 0,
+					})}
+				</span>
 				<span class="text-neutral-500">•</span>
 				<span><Time timestamp={recipe.createdAt} relative /></span>
 			</div>

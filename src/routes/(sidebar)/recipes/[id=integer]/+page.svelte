@@ -3,6 +3,7 @@
 
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
+	import { t } from '$lib/translations';
 
 	import Recipe from '$lib/components/recipe/Recipe.svelte';
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
@@ -40,7 +41,7 @@
 			<div class="grid place-items-center max-w-xl gap-16">
 				<Food class="w-2/3 h-auto" />
 				<span class="text-neutral-100 text-2xl">
-					This recipe isn't available anymore.
+					{$t('error.recipe-not-found')}
 				</span>
 			</div>
 		</div>

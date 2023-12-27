@@ -71,13 +71,13 @@
 
 		<label class="label" for="name">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				{$t('auth.name')}
+				{$t('label.name')}
 			</span>
 		</label>
 		<input
 			type="text"
 			name="name"
-			placeholder={$t('auth.name')}
+			placeholder={$t('placeholder.name')}
 			class="input input-bordered"
 			required
 			maxlength={255}
@@ -85,13 +85,13 @@
 
 		<label class="label" for="username">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				{$t('auth.username')}
+				{$t('label.username')}
 			</span>
 		</label>
 		<input
 			type="text"
 			name="username"
-			placeholder={$t('auth.username')}
+			placeholder={$t('placeholder.username')}
 			class="input input-bordered"
 			required
 			maxlength={39}
@@ -99,7 +99,7 @@
 
 		<label class="label" for="password">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				{$t('auth.password')}
+				{$t('label.password')}
 			</span>
 			<button
 				type="button"
@@ -129,7 +129,7 @@
 			type={showPassword ? 'text' : 'password'}
 			name="password"
 			class="input input-bordered"
-			placeholder={$t('auth.password')}
+			placeholder={$t('placeholder.password')}
 			required
 			maxlength={255}
 		/>
@@ -145,13 +145,13 @@
 		<div class="divider" />
 
 		<p class="text-center text-sm">
-			{$t('auth.switch-to-login')}
+			{$t('auth.switch-to-log-in')}
 			<a
 				href="/login"
 				class="underline text-neutral-100 dark:text-neutral-50"
 				use:addFromQuery
 			>
-				{$t('auth.switch-to-login-action')}
+				{$t('auth.switch-to-log-in-action')}
 			</a>
 		</p>
 	</form>

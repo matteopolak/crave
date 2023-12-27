@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Recipe } from '../+page.svelte';
+	import { t } from '$lib/translations';
 
 	import AddPhoto from '~icons/ic/baseline-add-photo-alternate';
 
@@ -68,7 +69,7 @@
 		<input
 			type="text"
 			class="badge badge-lg h-10 bg-base-300"
-			placeholder="Add tag..."
+			placeholder={$t('placeholder.add-tag')}
 			bind:value={tag}
 		/>
 	</form>
@@ -76,7 +77,7 @@
 
 <input
 	class="bg-base-300 rounded-lg text-xl lg:text-4xl font-extrabold p-2"
-	placeholder="Add title..."
+	placeholder={$t('placeholder.add-title')}
 	type="text"
 	bind:value={recipe.title}
 />

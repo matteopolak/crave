@@ -81,7 +81,7 @@
 					disabled: data.user === undefined,
 				},
 				{
-					name: $t('label.liked-recipes'),
+					name: $t('label.likes'),
 					href: '/recipes/liked',
 					icon: Liked,
 					disabled: data.user === undefined,

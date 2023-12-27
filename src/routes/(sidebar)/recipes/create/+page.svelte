@@ -13,6 +13,7 @@
 	import { resolveRoute } from '$app/paths';
 	import { trpc } from '$lib/client';
 	import { resize } from '$lib/util';
+	import { t } from '$lib/translations';
 
 	import Page0 from './(components)/Page0.svelte';
 	import Page1 from './(components)/Page1.svelte';
@@ -38,21 +39,21 @@
 
 	let page = 0;
 
-	const pages = [
+	$: pages = [
 		{
-			name: 'Thumbnail and title',
+			name: $t('label.thumbnail-and-title'),
 			component: Page0,
 		},
 		{
-			name: 'Ingredients',
+			name: $t('label.ingredients'),
 			component: Page1,
 		},
 		{
-			name: 'Directions',
+			name: $t('label.directions'),
 			component: Page2,
 		},
 		{
-			name: 'Nutritional information',
+			name: $t('label.nutritional-information'),
 			component: Page3,
 		},
 	];
@@ -64,13 +65,13 @@
 			const { id } = await toast.promise(
 				trpc.recipes.create.mutate(recipe),
 				{
-					loading: 'Creating recipe...',
-					success: 'Recipe created!',
+					loading: $t('toast.create-recipe-loading'),
+					success: $t('toast.create-recipe-done'),
 					error: e => {
 						if (e instanceof TRPCClientError) {
 							return e.message;
 						} else {
-							return 'An unknown error occurred.';
+							return $t('error.unknown');
 						}
 					},
 				},
@@ -106,7 +107,7 @@
 				</button>
 			{:else}
 				<button class="btn btn-secondary ml-auto" on:click={submit}>
-					Submit
+					{$t('label.submit')}
 				</button>
 			{/if}
 		</div>

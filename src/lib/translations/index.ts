@@ -5,7 +5,11 @@ import lang from './lang.json';
 
 type Lang = typeof lang;
 
-const config = {
+const config: Config<{
+	views?: number;
+	subscribers?: number;
+	recipes?: number;
+}> = {
 	translations: (Object.keys(lang) as (keyof Lang)[]).reduce((acc, key) => {
 		acc[key] = { lang };
 
@@ -13,10 +17,14 @@ const config = {
 	}, {} as Record<keyof Lang, { lang: Lang }>),
 	loaders: Object.keys(lang).reduce((loaders, l) => {
 		loaders.push(...[
-			'home',
-			'channel',
-			'label',
+			'auth',
 			'content',
+			'error',
+			'home',
+			'label',
+			'placeholder',
+			'stat',
+			'toast',
 		].map(k => ({
 			locale: l,
 			key: k,
@@ -28,7 +36,7 @@ const config = {
 		return loaders;
 	}, [] as Exclude<Config['loaders'], undefined>),
 	fallbackLocale: 'en',
-} satisfies Config;
+};
 
 export const { t, locale, locales, loading, loadTranslations } = new i18n(config);
 

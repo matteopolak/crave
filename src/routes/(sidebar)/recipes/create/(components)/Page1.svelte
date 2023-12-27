@@ -2,6 +2,7 @@
 	import { tick } from 'svelte';
 
 	import type { Recipe } from '../+page.svelte';
+	import { t } from '$lib/translations';
 
 	import Add from '~icons/ic/baseline-add';
 	import Delete from '~icons/ic/baseline-delete';
@@ -11,7 +12,7 @@
 	const inputs = [] as HTMLInputElement[];
 </script>
 
-<h2>Ingredients</h2>
+<h2>{$t('label.ingredients')}</h2>
 
 <form
 	class="flex flex-col gap-2"
@@ -48,6 +49,6 @@
 
 	<button class="btn bg-base-300 justify-start" type="submit">
 		<Add />
-		Add ingredient...
+		{$t('label.add-ingredient')}
 	</button>
 </form>

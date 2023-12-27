@@ -4,6 +4,7 @@
 	import type { Recipe } from '$lib/server/schema';
 	import { showOnLoad } from '$lib/util';
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { t } from '$lib/translations';
 
 	import Subscribe from '../Subscribe.svelte';
 	import Like from './Like.svelte';
@@ -64,7 +65,9 @@
 
 			<NutritionFacts {recipe} />
 
-			<h2>Ingredients</h2>
+			<h2>
+				{$t('label.ingredients')}
+			</h2>
 
 			<ul>
 				{#each recipe.ingredients as ingredient}
@@ -72,7 +75,9 @@
 				{/each}
 			</ul>
 
-			<h2>Directions</h2>
+			<h2>
+				{$t('label.directions')}
+			</h2>
 
 			<ol>
 				{#each recipe.directions as direction}

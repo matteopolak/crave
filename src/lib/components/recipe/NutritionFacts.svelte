@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/translations';
+
 	type Recipe = {
 		calories: number;
 		fat: number;
@@ -19,32 +21,32 @@
 
 	$: nutrition = [
 		{
-			name: 'Calories',
+			name: $t('label.calories'),
 			key: 'calories',
 			colour: 'bg-emerald-500',
 		},
 		{
-			name: 'Fat',
+			name: $t('label.fat'),
 			key: 'fat',
 			colour: 'bg-yellow-500',
 		},
 		{
-			name: 'Saturated Fat',
+			name: $t('label.saturated-fat'),
 			key: 'saturatedFat',
 			colour: 'bg-amber-500',
 		},
 		{
-			name: 'Protein',
+			name: $t('label.protein'),
 			key: 'protein',
 			colour: 'bg-red-400',
 		},
 		{
-			name: 'Sugar',
+			name: $t('label.sugar'),
 			key: 'sugar',
 			colour: 'bg-blue-500',
 		},
 		{
-			name: 'Sodium',
+			name: $t('label.sodium'),
 			key: 'sodium',
 			colour: 'bg-neutral-600',
 		},
@@ -112,7 +114,9 @@
 			<div class="flex flex-row place-items-center gap-2">
 				<div class="w-8 h-8 rounded-full bg-base-300" />
 
-				<span class="text-sm">Other</span>
+				<span class="text-sm">
+					{$t('label.other')}
+				</span>
 			</div>
 		</div>
 	{/if}

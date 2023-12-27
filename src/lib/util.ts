@@ -110,6 +110,10 @@ export async function resize(data: string, side = 512) {
 
 			resolve();
 		};
+
+		img.onerror = () => {
+			resolve();
+		};
 	});
 
 	return canvas.toDataURL('image/jpeg', 0.8);

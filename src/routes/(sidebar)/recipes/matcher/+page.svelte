@@ -4,6 +4,7 @@
 
 	import { trpc } from '$lib/client';
 	import type { Router } from '$lib/server/routes';
+	import { t } from '$lib/translations';
 
 	import Recipe from '$lib/components/recipe/Recipe.svelte';
 	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
@@ -73,18 +74,9 @@
 			</button>
 		</form>
 
-		<h3 class="font-bold text-lg">Your personalized recipe matcher</h3>
-		<p class="py-4">
-			We use a neural network to embed recipes into a 768-dimensional vector
-			space. This allows us to calculate the similarity between recipes using
-			mathematical operations.
-		</p>
-
-		<p>
-			When you click on a recipe, we calculate the cosine similarity between
-			your current vector and the recipe's vector. We then move your vector in
-			the direction of the recipe's vector, so that the next recipe you see is
-			more similar to the one you just clicked.
+		<h3 class="font-bold text-lg">{$t('content.matcher-title')}</h3>
+		<p class="pt-4 whitespace-pre-line">
+			{$t('content.matcher-description')}
 		</p>
 	</div>
 	<form method="dialog" class="modal-backdrop">
@@ -123,7 +115,7 @@
 				{/each}
 			</div>
 		{:else if $recipes.isError}
-			Error: {$recipes.error.message}
+			{$recipes.error.message}
 		{:else}
 			<div class="grid grid-cols-3 gap-4 p-8 max-w-2xl">
 				{#each $recipes.data as recipe}

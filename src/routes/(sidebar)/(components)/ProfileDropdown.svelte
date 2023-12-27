@@ -50,7 +50,7 @@
 			],
 			[
 				{
-					name: $t('label.log-out'),
+					name: $t('auth.log-out'),
 					href: '/logout',
 					icon: LogOut,
 					use: addFromQuery,
@@ -119,7 +119,7 @@
 	<a href="/login" class="btn btn-ghost rounded-xl" use:addFromQuery>
 		<LogIn class="w-6 h-6" />
 		<span class="hidden md:block">
-			{$t('auth.login')}
+			{$t('auth.log-in')}
 		</span>
 	</a>
 {/if}

@@ -5,6 +5,7 @@
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import type { User as APIUser } from '$lib/server/schema';
 	import { formatNumber } from '$lib/util';
+	import { t } from '$lib/translations';
 
 	import Subscribe from '$lib/components/Subscribe.svelte';
 
@@ -44,9 +45,17 @@
 						<span class="text-info"><Verified /></span>
 					{/if}
 				</span>
-				<span>{formatNumber(channel.data.subscribers ?? 0)} subscribers</span>
+				<span>
+					{$t('stat.subscribers', {
+						subscribers: channel.data.subscribers ?? 0,
+					})}
+				</span>
 				<span class="text-neutral-500">•</span>
-				<span>{formatNumber(channel.data.recipes ?? 0)} recipes</span>
+				<span>
+					{$t('stat.recipes', {
+						recipes: channel.data.recipes ?? 0,
+					})}
+				</span>
 			</div>
 
 			{#if user && user.userId !== channel.data.id}

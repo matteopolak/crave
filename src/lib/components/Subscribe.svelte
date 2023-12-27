@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { User } from '$lib/server/schema';
 	import { trpc } from '$lib/client';
+	import { t } from '$lib/translations';
 
 	export let user: User;
 
@@ -21,8 +22,8 @@
 	class:btn-primary={!user.subscribed}
 >
 	{#if user.subscribed}
-		Unsubscribe
+		{$t('label.unsubscribe')}
 	{:else}
-		Subscribe
+		{$t('label.subscribe')}
 	{/if}
 </button>

@@ -37,7 +37,7 @@
 	<div class="dropdown w-full" bind:this={dropdown}>
 		<input
 			type="text"
-			placeholder={$t('label.search')}
+			placeholder={$t('placeholder.search')}
 			class="input input-bordered rounded-full bg-base-300 w-full md:w-72 lg:w-96"
 			bind:value={term}
 			on:focusin={() => dropdown.classList.add('dropdown-open')}

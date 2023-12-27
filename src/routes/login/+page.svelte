@@ -71,13 +71,13 @@
 
 		<label class="label" for="username">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				{$t('auth.username')}
+				{$t('label.username')}
 			</span>
 		</label>
 		<input
 			type="text"
 			name="username"
-			placeholder={$t('auth.username')}
+			placeholder={$t('placeholder.username')}
 			class="input input-bordered"
 			required
 			maxlength={39}
@@ -85,7 +85,7 @@
 
 		<label class="label" for="password">
 			<span class="label-text font-bold text-neutral-900 dark:text-neutral-100">
-				{$t('auth.password')}
+				{$t('label.password')}
 			</span>
 			<button
 				type="button"
@@ -115,7 +115,7 @@
 			type={showPassword ? 'text' : 'password'}
 			name="password"
 			class="input input-bordered"
-			placeholder={$t('auth.password')}
+			placeholder={$t('placeholder.password')}
 			required
 			maxlength={255}
 		/>
