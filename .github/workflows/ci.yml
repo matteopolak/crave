@@ -23,6 +23,9 @@ jobs:
       - name: create .env
         run: cp .env.example .env
 
+      - name: generate sveltekit types
+        run: pnpm svelte-kit sync
+
       - name: run eslint
         run: pnpm eslint --ext .ts,.svelte src
 
