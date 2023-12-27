@@ -2,8 +2,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 
 	import { trpc } from '$lib/client';
-
-	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 
 	const recipes = createQuery({
 		queryKey: ['random'],

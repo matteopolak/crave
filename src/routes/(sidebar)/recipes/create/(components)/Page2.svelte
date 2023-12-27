@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 
-	import type { Recipe } from '../+page.svelte';
-	import { t } from '$lib/translations';
-
 	import Add from '~icons/ic/baseline-add';
 	import Delete from '~icons/ic/baseline-delete';
+	import { t } from '$lib/translations';
+	
+	import type { Recipe } from '../+page.svelte';
 
 	export let recipe: Recipe;
 

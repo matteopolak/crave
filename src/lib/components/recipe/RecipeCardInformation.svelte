@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { PartialRecipe } from '$lib/server/schema';
-	import type { Size } from '$lib/types';
-	import { t, locale } from '$lib/translations';
-
 	import Verified from '~icons/ic/baseline-verified';
+	import type { PartialRecipe } from '$lib/server/schema';
+	import { locale,t } from '$lib/translations';
+	import type { Size } from '$lib/types';
 	import { formatRelativeTime } from '$lib/util';
 
 	export let recipe: PartialRecipe | undefined = undefined;

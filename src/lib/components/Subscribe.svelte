@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { User } from '$lib/server/schema';
 	import { trpc } from '$lib/client';
+	import type { User } from '$lib/server/schema';
 	import { t } from '$lib/translations';
 
 	export let user: User;

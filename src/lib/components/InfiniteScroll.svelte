@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	import type { MaybePromise } from '@sveltejs/kit';
+	import { tick } from 'svelte';
 
 	import { viewport } from '$lib/util';
 

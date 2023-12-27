@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import Blob from '$lib/components/blob/Blob.svelte';
-	import { addFromQuery } from '$lib/util';
-	import { t } from '$lib/translations';
-
 	import GitHub from '~icons/logos/github-icon';
 	import Google from '~icons/logos/google-icon';
-
+	import { enhance } from '$app/forms';
+	import Blob from '$lib/components/blob/Blob.svelte';
+	import { t } from '$lib/translations';
+	import { addFromQuery } from '$lib/util';
+	
 	import type { ActionData } from './$types';
 
 	let showPassword = false;

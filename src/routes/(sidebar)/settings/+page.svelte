@@ -2,16 +2,15 @@
 	import { TRPCClientError } from '@trpc/client';
 	import toast from 'svelte-french-toast';
 
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
-	import { trpc } from '$lib/client';
-	import { language, locales, t } from '$lib/translations';
-	import { resize } from '$lib/util';
-
 	import At from '~icons/ic/baseline-alternate-email';
 	import Delete from '~icons/ic/baseline-delete';
 	import Person from '~icons/ic/baseline-person';
-
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { trpc } from '$lib/client';
 	import { theme } from '$lib/theme';
+	import { language, locales, t } from '$lib/translations';
+	import { resize } from '$lib/util';
+	
 	import type { PageData } from './$types';
 
 	let files: FileList;

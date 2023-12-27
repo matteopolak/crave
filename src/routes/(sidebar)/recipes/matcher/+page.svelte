@@ -2,15 +2,13 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { inferRouterOutputs } from '@trpc/server';
 
-	import { trpc } from '$lib/client';
-	import type { Router } from '$lib/server/routes';
-	import { t } from '$lib/translations';
-
-	import Recipe from '$lib/components/recipe/Recipe.svelte';
-	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
-
 	import Fullscreen from '~icons/ic/baseline-fullscreen';
 	import Info from '~icons/ic/baseline-info';
+	import { trpc } from '$lib/client';
+	import Recipe from '$lib/components/recipe/Recipe.svelte';
+	import RecipeBox from '$lib/components/recipe/RecipeBox.svelte';
+	import type { Router } from '$lib/server/routes';
+	import { t } from '$lib/translations';
 
 	import type { PageData } from './$types';
 
@@ -27,12 +25,12 @@
 	$: recipe =
 		selectedRecipe !== undefined
 			? createQuery({
-					queryKey: ['recipe'],
-					queryFn: () =>
-						trpc.recipes.get.query({
-							id: selectedRecipe!,
-						}),
-			  })
+				queryKey: ['recipe'],
+				queryFn: () =>
+					trpc.recipes.get.query({
+						id: selectedRecipe!,
+					}),
+			})
 			: undefined;
 
 	$: length = Math.sqrt(vector.reduce((acc, val) => acc + val ** 2, 0));

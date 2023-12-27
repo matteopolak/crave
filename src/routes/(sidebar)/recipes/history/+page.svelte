@@ -2,9 +2,8 @@
 	import { createQuery } from '@tanstack/svelte-query';
 
 	import { trpc } from '$lib/client';
-	import { t } from '$lib/translations';
-
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+	import { t } from '$lib/translations';
 
 	const recipes = createQuery({
 		queryKey: ['liked'],

@@ -3,8 +3,7 @@
 
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
-
-	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 
 	$: recipes = createQuery({
 		queryKey: ['search'],

@@ -1,22 +1,22 @@
 <script lang="ts">
 	import type { User } from 'lucia';
-
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
-	import { addFromQuery } from '$lib/util';
-	import { t } from '$lib/translations';
+	import type { ComponentType,SvelteComponent } from 'svelte';
 
 	import Channel from '~icons/ic/baseline-account-box';
 	import LogOut from '~icons/ic/baseline-logout';
-	import Settings from '~icons/ic/baseline-settings';
-	import LogIn from '~icons/ic/outline-account-circle';
 	import Palette from '~icons/ic/baseline-palette';
+	import Settings from '~icons/ic/baseline-settings';
 	import Translate from '~icons/ic/baseline-translate';
+	import LogIn from '~icons/ic/outline-account-circle';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { t } from '$lib/translations';
+	import { addFromQuery } from '$lib/util';
 
 	export let user: User | undefined;
 
 	type Item = {
 		name: string;
-		icon: ConstructorOfATypedSvelteComponent;
+		icon: ComponentType<SvelteComponent>;
 		href: string;
 		use?: (node: HTMLAnchorElement) => void;
 	};

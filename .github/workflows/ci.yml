@@ -1,0 +1,24 @@
+name: ci
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: use node 20.x
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+
+      - name: install modules
+        run: pnpm install
+
+      - name: run eslint
+        run: pnpm eslint --ext .ts,.svelte src
+
+      - name: run svelte-check
+        run: pnpm svelte-check

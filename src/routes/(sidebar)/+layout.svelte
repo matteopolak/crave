@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
-
-	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
-	import { trpc } from '$lib/client';
-	import { t } from '$lib/translations';
-
-	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
-	import Search from './(components)/Search.svelte';
+	import type { ComponentType,SvelteComponent } from 'svelte';
 
 	import Channel from '~icons/ic/baseline-account-box';
 	import Create from '~icons/ic/baseline-add';
@@ -19,8 +13,13 @@
 	import Recipes from '~icons/ic/baseline-restaurant-menu';
 	import Settings from '~icons/ic/baseline-settings';
 	import Logo from '~icons/noto/shallow-pan-of-food';
+	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import { trpc } from '$lib/client';
+	import { t } from '$lib/translations';
 
 	import type { PageData } from '../$types';
+	import ProfileDropdown from './(components)/ProfileDropdown.svelte';
+	import Search from './(components)/Search.svelte';
 
 	export let year = new Date().getFullYear();
 	export let data: PageData;
@@ -34,7 +33,7 @@
 
 	type SidebarItem = {
 		name: string;
-		icon: ConstructorOfATypedSvelteComponent | string;
+		icon: ComponentType<SvelteComponent> | string;
 		href: string;
 		disabled?: boolean;
 	};
@@ -95,13 +94,13 @@
 		},
 		$subscriptions.data?.success && $subscriptions.data.data.length
 			? {
-					name: $t('label.subscriptions'),
-					children: $subscriptions.data.data.map(sub => ({
-						name: sub.name,
-						href: `/@${sub.username}`,
-						icon: sub.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL,
-					})),
-			  }
+				name: $t('label.subscriptions'),
+				children: $subscriptions.data.data.map(sub => ({
+					name: sub.name,
+					href: `/@${sub.username}`,
+					icon: sub.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL,
+				})),
+			}
 			: undefined,
 		{
 			children: [

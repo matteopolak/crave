@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { User } from 'lucia';
 
-	import type { Recipe } from '$lib/server/schema';
-	import { showOnLoad } from '$lib/util';
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
+	import type { Recipe } from '$lib/server/schema';
 	import { t } from '$lib/translations';
+	import { showOnLoad } from '$lib/util';
 
 	import Subscribe from '../Subscribe.svelte';
 	import Like from './Like.svelte';

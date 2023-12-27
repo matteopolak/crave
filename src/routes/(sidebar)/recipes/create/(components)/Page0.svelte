@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { Recipe } from '../+page.svelte';
-	import { t } from '$lib/translations';
-
 	import AddPhoto from '~icons/ic/baseline-add-photo-alternate';
+	import { t } from '$lib/translations';
+	
+	import type { Recipe } from '../+page.svelte';
 
 	export let recipe: Recipe;
 

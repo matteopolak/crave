@@ -1,6 +1,7 @@
 <script lang="ts" context="module">
-	import type { Router } from '$lib/server/routes';
 	import type { inferRouterInputs } from '@trpc/server';
+
+	import type { Router } from '$lib/server/routes';
 
 	export type Recipe = inferRouterInputs<Router>['recipes']['create'];
 </script>
@@ -9,19 +10,18 @@
 	import { TRPCClientError } from '@trpc/client';
 	import toast from 'svelte-french-toast';
 
+	import Back from '~icons/ic/baseline-arrow-back';
+	import Forward from '~icons/ic/baseline-arrow-forward';
 	import { goto } from '$app/navigation';
 	import { resolveRoute } from '$app/paths';
 	import { trpc } from '$lib/client';
-	import { resize } from '$lib/util';
 	import { t } from '$lib/translations';
+	import { resize } from '$lib/util';
 
 	import Page0 from './(components)/Page0.svelte';
 	import Page1 from './(components)/Page1.svelte';
 	import Page2 from './(components)/Page2.svelte';
 	import Page3 from './(components)/Page3.svelte';
-
-	import Back from '~icons/ic/baseline-arrow-back';
-	import Forward from '~icons/ic/baseline-arrow-forward';
 
 	let recipe = {
 		title: '',
@@ -82,7 +82,9 @@
 			);
 
 			await goto(resolveRoute('/recipes/[id]', { id: id.toString() }));
-		} catch {}
+		} catch {
+			// do nothing
+		}
 	}
 </script>
 
