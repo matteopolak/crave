@@ -1,6 +1,6 @@
 # Crave
 
-[![build status](https://github.com/matteopolak/jukebox/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![build status](https://github.com/matteopolak/crave/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![license](https://img.shields.io/github/license/matteopolak/crave.svg)](LICENSE)
 
 YouTube-like recipe explorer with semantic recommendations and powerful search.
