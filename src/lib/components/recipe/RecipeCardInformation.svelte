@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Verified from '~icons/ic/baseline-verified';
 	import type { PartialRecipe } from '$lib/server/schema';
-	import { locale,t } from '$lib/translations';
+	import { locale, t } from '$lib/translations';
 	import type { Size } from '$lib/types';
 	import { formatRelativeTime } from '$lib/util';
 
@@ -31,7 +31,7 @@
 				class="line-clamp-2 font-bold text-neutral-800 dark:text-neutral-200"
 				style="font-size: {sizes[size]}rem;"
 			>
-				{recipe.title}
+				{@html recipe.title}
 			</h1>
 		{/if}
 

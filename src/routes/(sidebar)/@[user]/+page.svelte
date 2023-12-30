@@ -3,8 +3,8 @@
 
 	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
-import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
-	
+	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
+
 	import Channel from './(components)/Channel.svelte';
 	import type { PageData } from './$types';
 
@@ -39,6 +39,7 @@ import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 					page: i,
 				})}
 			itemThreshold={25}
+			user={data.user}
 		/>
 	</div>
 </div>

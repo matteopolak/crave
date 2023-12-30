@@ -1,7 +1,7 @@
 <script lang="ts">
 	import NutritionFacts from '$lib/components/recipe/NutritionFacts.svelte';
-	
-	import type { Recipe } from '../+page.svelte';
+
+	import type { Recipe } from '.';
 
 	export let recipe: Recipe;
 </script>

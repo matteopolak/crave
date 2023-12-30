@@ -1,15 +1,17 @@
 <script lang="ts">
 	import type { MaybePromise } from '@sveltejs/kit';
 	import type { QueryObserverResult } from '@tanstack/svelte-query';
-	
+	import type { User } from 'lucia';
+
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
-	
+
 	import InfiniteScroll from '../InfiniteScroll.svelte';
 	import RecipeCard from './RecipeCard.svelte';
 
 	export let recipes: QueryObserverResult<PartialRecipe[]>;
 	export let size: Size = 'md';
+	export let user: User | undefined = undefined;
 
 	export let vertical = false;
 	export let side = false;
@@ -53,6 +55,7 @@
 				recipe={item}
 				{author}
 				{side}
+				{user}
 				size={!vertical ? 'full' : size}
 			/>
 

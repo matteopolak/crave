@@ -1,8 +1,8 @@
 <script lang="ts">
 	import AddPhoto from '~icons/ic/baseline-add-photo-alternate';
 	import { t } from '$lib/translations';
-	
-	import type { Recipe } from '../+page.svelte';
+
+	import type { Recipe } from '.';
 
 	export let recipe: Recipe;
 
@@ -80,4 +80,10 @@
 	placeholder={$t('placeholder.add-title')}
 	type="text"
 	bind:value={recipe.title}
+/>
+
+<textarea
+	class="bg-base-300 rounded-lg text-lg lg:text-2xl p-2 min-h-48"
+	placeholder={$t('placeholder.add-description')}
+	bind:value={recipe.description}
 />

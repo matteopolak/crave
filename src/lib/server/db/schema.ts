@@ -21,6 +21,8 @@ export const recipe = pgTable('recipe', {
 	url: text('url'),
 	ingredients: text('ingredients').array().notNull(),
 	directions: text('directions').array().notNull(),
+	notes: text('notes'),
+	description: text('description'),
 	tags: text('tags').array().notNull(),
 	calories: real('calories').notNull(),
 	fat: real('fat').notNull(),

@@ -1,4 +1,7 @@
 <script lang="ts">
+	import type { User } from 'lucia';
+
+	import Edit from '~icons/ic/baseline-edit';
 	import { PUBLIC_FALLBACK_AVATAR_URL } from '$env/static/public';
 	import type { PartialRecipe } from '$lib/server/schema';
 	import type { Size } from '$lib/types';
@@ -7,6 +10,7 @@
 	import RecipeCardInformation from './RecipeCardInformation.svelte';
 
 	export let recipe: PartialRecipe | undefined = undefined;
+	export let user: User | undefined = undefined;
 
 	export let size: Size = '3xl';
 	export let author = false;
@@ -19,13 +23,21 @@
 		class:md:grid={side}
 		href="/recipes/{recipe.id}"
 	>
-		<div class="rounded-xl overflow-hidden aspect-video bg-base-300 col-span-2">
+		<div
+			class="rounded-xl overflow-hidden aspect-video bg-base-300 col-span-2 relative"
+		>
 			<img
 				class="object-cover h-full w-full group-hover:scale-105 transition-all duration-300"
 				src={recipe.thumbnail}
 				alt={recipe.title}
 				use:showOnLoad
 			/>
+
+			{#if user && user.userId === recipe.author.id}
+				<a href="/recipes/{recipe.id}/edit" class="absolute top-2 right-2">
+					<Edit />
+				</a>
+			{/if}
 		</div>
 
 		<div class="flex flex-row gap-2 w-full col-span-3">

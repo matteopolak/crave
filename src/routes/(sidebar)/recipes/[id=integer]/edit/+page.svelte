@@ -1,21 +1,26 @@
+<script lang="ts" context="module">
+</script>
+
 <script lang="ts">
 	import { TRPCClientError } from '@trpc/client';
 	import toast from 'svelte-french-toast';
 
 	import { goto } from '$app/navigation';
 	import { resolveRoute } from '$app/paths';
+	import { page } from '$app/stores';
 	import { trpc } from '$lib/client';
 	import { t } from '$lib/translations';
 	import { resize } from '$lib/util';
 
-	import type { Recipe } from '../(components)/edit';
-	import Content from '../(components)/edit/Content.svelte';
-	import Directions from '../(components)/edit/Directions.svelte';
-	import Ingredients from '../(components)/edit/Ingredients.svelte';
-	import Notes from '../(components)/edit/Notes.svelte';
-	import Nutrition from '../(components)/edit/Nutrition.svelte';
+	import type { Recipe } from '../../(components)/edit';
+	import Content from '../../(components)/edit/Content.svelte';
+	import Directions from '../../(components)/edit/Directions.svelte';
+	import Ingredients from '../../(components)/edit/Ingredients.svelte';
+	import Notes from '../../(components)/edit/Notes.svelte';
+	import Nutrition from '../../(components)/edit/Nutrition.svelte';
 
 	let recipe = {
+		id: 0,
 		title: '',
 		thumbnail: '',
 		tags: [],
@@ -30,14 +35,30 @@
 		notes: '',
 		description: '',
 		url: null,
-	} as Recipe;
+	} as Recipe & { id: number };
+
+	$: {
+		getRecipe(parseInt($page.params.id));
+	}
+
+	function getRecipe(id: number) {
+		trpc.recipes.get
+			.query({
+				id,
+				markdown: true,
+			})
+			.then(r => {
+				recipe = r;
+			});
+	}
 
 	async function submit() {
 		recipe.thumbnail = await resize(recipe.thumbnail);
 
 		try {
 			const { id } = await toast.promise(
-				trpc.recipes.create.mutate({
+				trpc.recipes.edit.mutate({
+					id: recipe.id,
 					title: recipe.title,
 					thumbnail: recipe.thumbnail,
 					tags: recipe.tags,
@@ -99,7 +120,7 @@
 
 		<div class="flex flex-row flex-wrap mt-auto">
 			<button class="btn btn-secondary ml-auto" on:click={submit}>
-				{$t('label.submit')}
+				{$t('label.update')}
 			</button>
 		</div>
 	</div>

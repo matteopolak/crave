@@ -43,6 +43,15 @@
 				</a>
 
 				<div class="ml-auto w-fit flex flex-row place-items-center gap-2">
+					{#if user && user.userId === recipe.author.id}
+						<a
+							href="/recipes/{recipe.id}/edit"
+							class="btn btn-accent no-underline text-accent-content"
+						>
+							{$t('label.edit')}
+						</a>
+					{/if}
+
 					{#if user && user.userId !== recipe.author.id}
 						<Subscribe bind:user={recipe.author} />
 					{/if}
@@ -55,13 +64,19 @@
 				<div class="flex flex-row flex-wrap gap-1 mt-7">
 					{#each recipe.tags as tag}
 						<div class="badge badge-lg badge-neutral line-clamp-1">
-							{tag}
+							{@html tag}
 						</div>
 					{/each}
 				</div>
 
-				<h1 class="mt-4">{recipe.title}</h1>
+				<h1 class="mt-4">{@html recipe.title}</h1>
 			</div>
+
+			{#if recipe.description}
+				<p class="mt-10">
+					{@html recipe.description}
+				</p>
+			{/if}
 
 			<NutritionFacts {recipe} />
 
@@ -71,7 +86,7 @@
 
 			<ul>
 				{#each recipe.ingredients as ingredient}
-					<li>{ingredient}</li>
+					<li>{@html ingredient}</li>
 				{/each}
 			</ul>
 
@@ -82,10 +97,20 @@
 			<ol>
 				{#each recipe.directions as direction}
 					<li>
-						{direction}
+						{@html direction}
 					</li>
 				{/each}
 			</ol>
+
+			{#if recipe.notes}
+				<h2>
+					{$t('label.notes')}
+				</h2>
+
+				<p>
+					{@html recipe.notes}
+				</p>
+			{/if}
 		{:else}
 			<div class="w-full h-full aspect-video skeleton" />
 

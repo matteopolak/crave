@@ -85,4 +85,6 @@ export const completeRecipe = (userId?: string) => ({
 	url: s.recipe.url,
 	liked: liked(userId),
 	likes: sql<number>`${likes}`,
+	description: s.recipe.description,
+	notes: s.recipe.notes,
 });

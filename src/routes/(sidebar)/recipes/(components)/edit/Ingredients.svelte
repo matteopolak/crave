@@ -4,8 +4,8 @@
 	import Add from '~icons/ic/baseline-add';
 	import Delete from '~icons/ic/baseline-delete';
 	import { t } from '$lib/translations';
-	
-	import type { Recipe } from '../+page.svelte';
+
+	import type { Recipe } from '.';
 
 	export let recipe: Recipe;
 
@@ -14,19 +14,20 @@
 
 <h2>{$t('label.ingredients')}</h2>
 
-<form
-	class="flex flex-col gap-2"
-	on:submit|preventDefault={() => {
-		recipe.ingredients.push('');
-		recipe = recipe;
-
-		tick().then(() => {
-			inputs.at(-1)?.focus();
-		});
-	}}
->
+<div class="flex flex-col gap-2">
 	{#each recipe.ingredients as ingredient, index}
-		<div class="relative join">
+		<form
+			class="relative join"
+			on:submit|preventDefault={() => {
+				// push after cirremt index
+				recipe.ingredients.splice(index + 1, 0, '');
+				recipe = recipe;
+
+				tick().then(() => {
+					inputs.at(index + 1)?.focus();
+				});
+			}}
+		>
 			<input
 				type="text"
 				class="input input-bordered bg-base-300 border-none w-full join-item"
@@ -44,11 +45,11 @@
 			>
 				<Delete />
 			</button>
-		</div>
+		</form>
 	{/each}
 
 	<button class="btn bg-base-300 justify-start" type="submit">
 		<Add />
 		{$t('label.add-ingredient')}
 	</button>
-</form>
+</div>

@@ -7,6 +7,7 @@ import { TEXT_EMBEDDER_PORT } from '$env/static/private';
 import { db } from '$lib/server/db';
 import { history, like, recipe, user } from '$lib/server/db/schema';
 import { completeRecipe, maxInnerProduct, partialRecipe, random } from '$lib/server/db/select';
+import { htmlToMd, mdToHtml } from '$lib/server/md';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
 import { get } from '$lib/server/sentry';
 import { procedure, protectedProcedure, router } from '$lib/server/trpc';
@@ -20,6 +21,102 @@ const ai = axios.create({
 
 export default router({
 	vector,
+	edit: protectedProcedure
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/{id}/edit',
+				summary: 'Edit recipe',
+				description: 'Edits a specific recipe.',
+				tags: ['recipe'],
+			},
+		})
+		.input(Recipe.pick({
+			id: true,
+			title: true,
+			thumbnail: true,
+			ingredients: true,
+			directions: true,
+			tags: true,
+			calories: true,
+			fat: true,
+			saturatedFat: true,
+			protein: true,
+			sodium: true,
+			sugar: true,
+			description: true,
+			notes: true,
+			url: true,
+		}).partial({
+			title: true,
+			thumbnail: true,
+			ingredients: true,
+			directions: true,
+			tags: true,
+			calories: true,
+			fat: true,
+			saturatedFat: true,
+			protein: true,
+			sodium: true,
+			sugar: true,
+			description: true,
+			notes: true,
+			url: true,
+		}))
+		.output(z.object({
+			id: Id,
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const update = await get(db
+				.update(recipe)
+				.set({
+					title: input.title && mdToHtml(input.title),
+					thumbnail: input.thumbnail,
+					ingredients: input.ingredients && input.ingredients.map(mdToHtml),
+					directions: input.directions && input.directions.map(mdToHtml),
+					tags: input.tags && input.tags.map(mdToHtml),
+					calories: input.calories,
+					fat: input.fat,
+					saturatedFat: input.saturatedFat,
+					protein: input.protein,
+					sodium: input.sodium,
+					sugar: input.sugar,
+					description: input.description && mdToHtml(input.description),
+					notes: input.notes && mdToHtml(input.notes),
+					url: input.url,
+				})
+				.where(and(
+					eq(recipe.id, input.id),
+					eq(recipe.authorId, ctx.session.user.userId)),
+				)
+				.returning({
+					id: recipe.id,
+					title: recipe.title,
+					tags: recipe.tags,
+					ingredients: recipe.ingredients,
+					description: recipe.description,
+				}));
+
+			if (!update.length) {
+				throw new TRPCError({
+					code: 'NOT_FOUND',
+					message: 'Recipe not found.',
+				});
+			}
+
+			const vector = await ai.post('/', {
+				text: `${update[0].title} | ${update[0].tags.join(' ')} | ${update[0].ingredients.join(' ')} | ${update[0].description}`,
+			});
+
+			await get(db
+				.update(recipe)
+				.set({
+					embedding: vector.data.embedding,
+				})
+				.where(eq(recipe.id, input.id)));
+
+			return { id: update[0].id };
+		}),
 	create: protectedProcedure
 		.meta({
 			openapi: {
@@ -42,22 +139,25 @@ export default router({
 			protein: true,
 			sodium: true,
 			sugar: true,
+			description: true,
+			notes: true,
+			url: true,
 		}))
 		.output(z.object({ id: Id }))
 		.mutation(async ({ input, ctx }) => {
 			const vector = await ai.post('/', {
-				text: `${input.title} ${input.tags.join(' ')}`,
+				text: `${input.title} | ${input.tags.join(' ')} | ${input.ingredients.join(' ')} | ${input.description}`,
 			});
 
 			const recipes = await get(db
 				.insert(recipe)
 				.values({
 					authorId: ctx.session.user.userId,
-					title: input.title,
+					title: mdToHtml(input.title),
 					thumbnail: input.thumbnail,
-					ingredients: input.ingredients,
-					directions: input.directions,
-					tags: input.tags,
+					ingredients: input.ingredients.map(mdToHtml),
+					directions: input.directions.map(mdToHtml),
+					tags: input.tags.map(mdToHtml),
 					calories: input.calories,
 					fat: input.fat,
 					saturatedFat: input.saturatedFat,
@@ -65,6 +165,9 @@ export default router({
 					sodium: input.sodium,
 					sugar: input.sugar,
 					embedding: vector.data.embedding,
+					description: input.description && mdToHtml(input.description),
+					notes: input.notes && mdToHtml(input.notes),
+					url: input.url,
 				})
 				.returning({
 					id: recipe.id,
@@ -153,13 +256,6 @@ export default router({
 				.orderBy(random())
 				.limit(25));
 
-			if (!recipes.length) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Recipe not found.',
-				});
-			}
-
 			return recipes;
 		}),
 	random: procedure
@@ -200,7 +296,7 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ id: Id }))
+		.input(z.object({ id: Id, markdown: z.boolean().default(false) }))
 		.output(Recipe)
 		.query(async ({ input, ctx }) => {
 			const recipes = await get(db
@@ -218,6 +314,17 @@ export default router({
 
 			if (ctx.session) {
 				await db.execute(sql`CALL add_history(${ctx.session.user.userId}, ${input.id})`);
+			}
+
+			if (input.markdown) {
+				const recipe = recipes[0];
+
+				recipe.description = recipe.description && htmlToMd(recipe.description);
+				recipe.notes = recipe.notes && htmlToMd(recipe.notes);
+				recipe.directions = recipe.directions.map(htmlToMd);
+				recipe.title = htmlToMd(recipe.title);
+				recipe.tags = recipe.tags.map(htmlToMd);
+				recipe.ingredients = recipe.ingredients.map(htmlToMd);
 			}
 
 			return recipes[0];
