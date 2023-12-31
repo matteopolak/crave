@@ -21,7 +21,7 @@
 			<div class="bg-base-300 rounded-2xl aspect-video">
 				<img
 					class="object-cover w-full h-full rounded-2xl mt-0"
-					src={recipe.thumbnail}
+					src="/recipes/{recipe.id}/thumbnail"
 					alt={recipe.title}
 					use:showOnLoad
 				/>

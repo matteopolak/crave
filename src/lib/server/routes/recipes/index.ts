@@ -7,6 +7,7 @@ import { TEXT_EMBEDDER_PORT } from '$env/static/private';
 import { db } from '$lib/server/db';
 import { history, like, recipe, user } from '$lib/server/db/schema';
 import { completeRecipe, maxInnerProduct, partialRecipe, random } from '$lib/server/db/select';
+import { optimizeImage } from '$lib/server/image';
 import { htmlToMd, mdToHtml } from '$lib/server/md';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
 import { get } from '$lib/server/sentry';
@@ -71,7 +72,7 @@ export default router({
 				.update(recipe)
 				.set({
 					title: input.title && mdToHtml(input.title),
-					thumbnail: input.thumbnail,
+					thumbnail: input.thumbnail && await optimizeImage(input.thumbnail),
 					ingredients: input.ingredients && input.ingredients.map(mdToHtml),
 					directions: input.directions && input.directions.map(mdToHtml),
 					tags: input.tags && input.tags.map(mdToHtml),
@@ -142,7 +143,7 @@ export default router({
 			description: true,
 			notes: true,
 			url: true,
-		}))
+		}).required())
 		.output(z.object({ id: Id }))
 		.mutation(async ({ input, ctx }) => {
 			const vector = await ai.post('/', {
@@ -154,7 +155,7 @@ export default router({
 				.values({
 					authorId: ctx.session.user.userId,
 					title: mdToHtml(input.title),
-					thumbnail: input.thumbnail,
+					thumbnail: await optimizeImage(input.thumbnail),
 					ingredients: input.ingredients.map(mdToHtml),
 					directions: input.directions.map(mdToHtml),
 					tags: input.tags.map(mdToHtml),

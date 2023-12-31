@@ -118,7 +118,7 @@ export function parseFromQuery(url: URL) {
 	return null;
 }
 
-export async function resize(data: string, side = 512) {
+export async function resize(data: string, width = 1920, height = 1080) {
 	const canvas = document.createElement('canvas');
 
 	const img = new Image();
@@ -126,15 +126,17 @@ export async function resize(data: string, side = 512) {
 
 	await new Promise<void>(resolve => {
 		img.onload = () => {
-			const { width, height } = img;
+			const aspectRatio = img.width / img.height;
 
-			const max = Math.max(width, height);
+			const w = Math.min(width, height * aspectRatio);
+			const h = Math.min(height, width / aspectRatio);
 
-			canvas.width = (width / max) * side;
-			canvas.height = (height / max) * side;
+			canvas.width = w;
+			canvas.height = h;
 
 			const ctx = canvas.getContext('2d')!;
-			ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+			ctx.drawImage(img, 0, 0, w, h);
 
 			resolve();
 		};
@@ -144,5 +146,5 @@ export async function resize(data: string, side = 512) {
 		};
 	});
 
-	return canvas.toDataURL('image/jpeg', 0.8);
+	return canvas.toDataURL('image/png').slice('data:image/png;base64,'.length);
 }

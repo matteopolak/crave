@@ -62,7 +62,6 @@ export const partialRecipe = {
 	id: s.recipe.id,
 	title: s.recipe.title,
 	tags: s.recipe.tags,
-	thumbnail: s.recipe.thumbnail,
 	createdAt: s.recipe.createdAt,
 	author: user,
 	views,

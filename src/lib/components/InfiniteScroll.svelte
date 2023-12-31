@@ -10,7 +10,7 @@
 	export let load: (index: number) => MaybePromise<T[]>;
 	export let itemThreshold = 1;
 
-	let done = data.length === 0;
+	let done = data.length < itemThreshold;
 	let loading = false;
 	let index = 1;
 	let shouldLoad = false;

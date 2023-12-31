@@ -34,7 +34,7 @@ export const PartialRecipe = z.object({
 	id: Id,
 	author: User,
 	title: z.string().min(3, 'Recipe title must be at least 10 characters in length.'),
-	thumbnail: z.string().min(1, 'Recipe thumbnail is required.'),
+	thumbnail: z.string().min(1, 'Recipe thumbnail is required.').optional(),
 	tags: z.string().min(1, 'Tags must contain at least 1 character.').array(),
 	embedding: Embedding.optional(),
 
@@ -50,8 +50,8 @@ export const Recipe = z.object({
 	likes: z.number().nonnegative().int(),
 	ingredients: z.string().min(5, 'Ingredients must be at least 5 characters in length.').array().min(1, 'At least one ingredient is required.'),
 	directions: z.string().min(5, 'Directions must be at least 5 characters in length').array().min(1, 'At least one direction is required.'),
-	description: z.string().min(5, 'Description must be at least 5 characters in length.').max(1_000, 'Description cannot be more than 1,000 characters.').nullable(),
-	notes: z.string().min(5, 'Notes must be at least 5 characters in length.').max(1_000, 'Notes cannot be more than 1,000 characters.').nullable(),
+	description: z.string().max(1_000, 'Description cannot be more than 1,000 characters.').nullable(),
+	notes: z.string().max(1_000, 'Notes cannot be more than 1,000 characters.').nullable(),
 	url: z.string().url().nullable(),
 })
 	.merge(Nutrition)

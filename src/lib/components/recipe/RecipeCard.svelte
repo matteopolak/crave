@@ -28,7 +28,7 @@
 		>
 			<img
 				class="object-cover h-full w-full group-hover:scale-105 transition-all duration-300"
-				src={recipe.thumbnail}
+				src="/recipes/{recipe.id}/thumbnail"
 				alt={recipe.title}
 				use:showOnLoad
 			/>
