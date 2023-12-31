@@ -1,0 +1,4 @@
+{
+	"matcher-title": "Ihr persönlicher Rezeptabgleich",
+	"matcher-description": "Wir verwenden ein neuronales Netzwerk, um Rezepte in einen 768-dimensionalen Vektorraum einzubetten. Dies ermöglicht es uns, die Ähnlichkeit zwischen Rezepten mit mathematischen Operationen zu berechnen.\n\nWenn Sie auf ein Rezept klicken, berechnen wir die Kosinusähnlichkeit zwischen Ihrem aktuellen Vektor und dem Vektor des Rezepts. Anschließend bewegen wir Ihren Vektor in Richtung des Rezeptvektors, sodass das nächste Rezept, das Sie sehen, demjenigen ähnlicher ist, auf das Sie gerade geklickt haben."
+}
