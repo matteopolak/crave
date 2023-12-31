@@ -48,7 +48,10 @@
 				markdown: true,
 			})
 			.then(r => {
-				recipe = r;
+				recipe = {
+					thumbnail: '',
+					...r,
+				};
 			});
 	}
 
