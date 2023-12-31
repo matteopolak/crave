@@ -9,7 +9,7 @@
 	import InfiniteScroll from '../InfiniteScroll.svelte';
 	import RecipeCard from './RecipeCard.svelte';
 
-	export let recipes: QueryObserverResult<PartialRecipe[]>;
+	export let recipes: QueryObserverResult<PartialRecipe[]> | PartialRecipe[];
 	export let size: Size = 'md';
 	export let user: User | undefined = undefined;
 
@@ -45,12 +45,17 @@
 		? `grid-template-columns: repeat(auto-fill, minmax(${sizes[size]}, 1fr))`
 		: ''}
 >
-	{#if recipes.isPending || recipes.isError}
+	{#if !Array.isArray(recipes) && (recipes.isPending || recipes.isError)}
 		{#each { length: placeholderItems } as _}
 			<RecipeCard {author} {side} size={!vertical ? 'full' : size} />
 		{/each}
 	{:else if load}
-		<InfiniteScroll data={recipes.data} {load} {itemThreshold} let:item>
+		<InfiniteScroll
+			data={Array.isArray(recipes) ? recipes : recipes.data}
+			{load}
+			{itemThreshold}
+			let:item
+		>
 			<RecipeCard
 				recipe={item}
 				{author}
@@ -66,7 +71,7 @@
 			</svelte:fragment>
 		</InfiniteScroll>
 	{:else}
-		{#each recipes.data as recipe}
+		{#each Array.isArray(recipes) ? recipes : recipes.data as recipe}
 			<RecipeCard {recipe} {author} {side} size={!vertical ? 'full' : size} />
 		{/each}
 	{/if}

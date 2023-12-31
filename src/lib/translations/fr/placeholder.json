@@ -4,5 +4,7 @@
 	"name": "Nom",
 	"username": "Nom d'utilisateur",
 	"password": "Mot de passe",
-	"search": "Rechercher"
+	"search": "Rechercher",
+	"add-description": "Ajouter une description...",
+	"add-notes": "Ajouter des notes..."
 }

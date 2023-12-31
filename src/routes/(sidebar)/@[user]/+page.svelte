@@ -8,14 +8,6 @@
 	import Channel from './(components)/Channel.svelte';
 	import type { PageData } from './$types';
 
-	$: recipes = createQuery({
-		queryKey: ['user_recipes'],
-		queryFn: () =>
-			trpc.users.recipes.query({
-				username: $page.params.user,
-			}),
-	});
-
 	$: user = createQuery({
 		queryKey: ['user_profile'],
 		queryFn: () =>
@@ -31,7 +23,7 @@
 	<div class="grid items-center max-w-7xl navbar gap-16 p-0">
 		<Channel channel={$user} user={data.user} />
 		<RecipeGrid
-			recipes={$recipes}
+			recipes={[]}
 			author
 			load={i =>
 				trpc.users.recipes.query({

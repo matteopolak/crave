@@ -1,17 +1,7 @@
 <script lang="ts">
-	import { createQuery } from '@tanstack/svelte-query';
-
 	import { trpc } from '$lib/client';
 	import RecipeGrid from '$lib/components/recipe/RecipeGrid.svelte';
 	import { t } from '$lib/translations';
-
-	const recipes = createQuery({
-		queryKey: ['liked'],
-		queryFn: () =>
-			trpc.recipes.history.query({
-				page: 0,
-			}),
-	});
 </script>
 
 <div class="max-w-4xl grid gap-8 px-8 md:px-16 lg:px-24">
@@ -20,7 +10,7 @@
 	</h1>
 
 	<RecipeGrid
-		recipes={$recipes}
+		recipes={[]}
 		side
 		vertical
 		size="xl"

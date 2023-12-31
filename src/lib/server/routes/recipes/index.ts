@@ -211,7 +211,10 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ text: z.string() }))
+		.input(z.object({
+			text: z.string(),
+			page: z.number().int().nonnegative().default(0),
+		}))
 		.output(PartialRecipe.array())
 		.query(async ({ input }) => {
 			const vector = await ai.post('/', {
@@ -223,7 +226,8 @@ export default router({
 				.from(recipe)
 				.innerJoin(user, eq(recipe.authorId, user.id))
 				.orderBy(maxInnerProduct(recipe.embedding, vector.data.embedding))
-				.limit(50));
+				.offset(25 * input.page)
+				.limit(25));
 
 			return recipes;
 		}),
@@ -269,7 +273,7 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(z.object({ limit: z.number().int().min(1).max(100).default(50) }))
+		.input(z.object({ limit: z.number().int().min(1).max(100).default(25) }))
 		.output(PartialRecipe.array())
 		.query(async ({ input, ctx }) => {
 			const h = ctx.session && db

@@ -36,5 +36,7 @@
 	"add-direction": "Agregar instrucción",
 	"thumbnail-and-title": "Miniatura y título",
 	"nutritional-information": "Información nutricional",
-	"submit": "Enviar"
+	"submit": "Enviar",
+	"edit": "Editar",
+	"update": "Actualizar"
 }

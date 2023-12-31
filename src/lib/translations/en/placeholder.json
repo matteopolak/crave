@@ -4,5 +4,7 @@
 	"name": "Name",
 	"username": "Username",
 	"password": "Password",
-	"search": "Search"
+	"search": "Search",
+	"add-description": "Add description...",
+	"add-notes": "Add notes..."
 }
