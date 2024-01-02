@@ -10,6 +10,15 @@
 	export let recipe: Recipe;
 
 	const inputs = [] as HTMLInputElement[];
+
+	function add(index: number) {
+		recipe.ingredients.splice(index, 0, '');
+		recipe = recipe;
+
+		tick().then(() => {
+			inputs.at(index)?.focus();
+		});
+	}
 </script>
 
 <h2>{$t('label.ingredients')}</h2>
@@ -19,13 +28,7 @@
 		<form
 			class="relative join"
 			on:submit|preventDefault={() => {
-				// push after cirremt index
-				recipe.ingredients.splice(index + 1, 0, '');
-				recipe = recipe;
-
-				tick().then(() => {
-					inputs.at(index + 1)?.focus();
-				});
+				add(index + 1);
 			}}
 		>
 			<input
@@ -48,7 +51,12 @@
 		</form>
 	{/each}
 
-	<button class="btn bg-base-300 justify-start" type="submit">
+	<button
+		class="btn bg-base-300 justify-start"
+		on:click={() => {
+			add(recipe.ingredients.length - 1);
+		}}
+	>
 		<Add />
 		{$t('label.add-ingredient')}
 	</button>
