@@ -20,12 +20,12 @@
 		const localCtx = ++ctx;
 		const items = await load(index++);
 
-		if (localCtx !== ctx) {
-			return;
-		}
-
 		if (items.length < itemThreshold) {
 			done = true;
+		}
+
+		if (localCtx !== ctx) {
+			return;
 		}
 
 		if (items.length) {
