@@ -2,7 +2,7 @@
 	import type { MaybePromise } from '@sveltejs/kit';
 	import { tick } from 'svelte';
 	
-	import { viewport } from '$lib/use';
+	import { viewport } from '$lib/util';
 
 	export let data: T[];
 	export let load: (index: number) => MaybePromise<T[]>;
