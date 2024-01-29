@@ -22,7 +22,7 @@
 		| undefined = undefined;
 
 	export let placeholderItems = 10;
-	export let itemThreshold = 0;
+	export let itemThreshold = 1;
 
 	const sizes: Record<Size, string> = {
 		sm: '15rem',

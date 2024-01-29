@@ -20,12 +20,12 @@
 		const localCtx = ++ctx;
 		const items = await load(index++);
 
-		if (items.length < itemThreshold) {
-			done = true;
-		}
-
 		if (localCtx !== ctx) {
 			return;
+		}
+
+		if (items.length < itemThreshold) {
+			done = true;
 		}
 
 		if (items.length) {
@@ -38,8 +38,21 @@
 		});
 	}
 
+	function onLoadChange() {
+		data = [];
+		done = false;
+		index = 0;
+
+		next();
+	}
+
 	$: if (shouldLoad && !loading && !done) {
 		next();
+	}
+
+	$: {
+		load;
+		onLoadChange();
 	}
 </script>
 
