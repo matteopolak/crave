@@ -38,21 +38,8 @@
 		});
 	}
 
-	function onLoadChange() {
-		data = [];
-		done = false;
-		index = 0;
-
-		next();
-	}
-
 	$: if (shouldLoad && !loading && !done) {
 		next();
-	}
-
-	$: {
-		load;
-		onLoadChange();
 	}
 </script>
 
