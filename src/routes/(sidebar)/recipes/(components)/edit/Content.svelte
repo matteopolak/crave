@@ -27,12 +27,11 @@
 
 <button
 	class="bg-base-300 rounded-2xl aspect-video flex place-items-center justify-center relative w-full h-full"
-	class:border-8={hovering}
-	class:border-primary={hovering}
 	on:click={() => input.click()}
 	on:dragover|preventDefault={() => {}}
 	on:drop|preventDefault={(e) => {
-		if (e.dataTransfer) files = e.dataTransfer.files
+		if (e.dataTransfer) files = e.dataTransfer.files;
+		hovering = false;
 	}}
 	on:dragenter|preventDefault={() => {
 		hovering = true;
@@ -41,9 +40,14 @@
 		hovering = false;
 	}}
 >
+	<div
+		class="w-full h-full absolute top-0 left-0 rounded-2xl opacity-75 transition-all duration-300 border-primary"
+		class:border-8={hovering}
+	/>
+
 	{#if recipe.thumbnail}
 		<img
-			class="object-cover w-full h-full m-0"
+			class="object-cover rounded-2xl w-full h-full m-0"
 			src={recipe.thumbnail}
 			alt={recipe.title}
 		/>
