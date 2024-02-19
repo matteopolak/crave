@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AddPhoto from '~icons/ic/baseline-add-photo-alternate';
+	import Upload from '~icons/ic/baseline-cloud-upload';
 	import { t } from '$lib/translations';
 
 	import type { Recipe } from '.';
@@ -9,6 +10,7 @@
 	let tag = '';
 	let files: FileList;
 	let input: HTMLInputElement;
+	let hovering = false;
 
 	$: if (files?.length) {
 		const file = files[0];
@@ -24,8 +26,20 @@
 </script>
 
 <button
-	class="bg-base-300 rounded-2xl aspect-video flex place-items-center justify-center relative w-full h-ful"
+	class="bg-base-300 rounded-2xl aspect-video flex place-items-center justify-center relative w-full h-full"
+	class:border-8={hovering}
+	class:border-primary={hovering}
 	on:click={() => input.click()}
+	on:dragover|preventDefault={() => {}}
+	on:drop|preventDefault={(e) => {
+		if (e.dataTransfer) files = e.dataTransfer.files
+	}}
+	on:dragenter|preventDefault={() => {
+		hovering = true;
+	}}
+	on:dragleave|preventDefault={() => {
+		hovering = false;
+	}}
 >
 	{#if recipe.thumbnail}
 		<img
@@ -33,6 +47,8 @@
 			src={recipe.thumbnail}
 			alt={recipe.title}
 		/>
+	{:else if hovering}
+		<span>Drop to upload <Upload class="inline-block"/></span>
 	{:else}
 		<AddPhoto />
 	{/if}
