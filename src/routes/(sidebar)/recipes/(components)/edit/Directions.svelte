@@ -54,7 +54,7 @@
 	<button
 		class="btn bg-base-300 justify-start"
 		on:click={() => {
-			add(recipe.directions.length - 1);
+			add(recipe.directions.length);
 		}}
 	>
 		<Add />

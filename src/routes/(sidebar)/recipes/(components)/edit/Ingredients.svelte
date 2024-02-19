@@ -54,7 +54,7 @@
 	<button
 		class="btn bg-base-300 justify-start"
 		on:click={() => {
-			add(recipe.ingredients.length - 1);
+			add(recipe.ingredients.length);
 		}}
 	>
 		<Add />
