@@ -78,8 +78,8 @@
 					url: recipe.url,
 				}),
 				{
-					loading: $t('toast.create-recipe-loading'),
-					success: $t('toast.create-recipe-done'),
+					loading: $t('toast.update-recipe-loading'),
+					success: $t('toast.update-recipe-done'),
 					error: e => {
 						if (e instanceof TRPCClientError) {
 							return e.message;

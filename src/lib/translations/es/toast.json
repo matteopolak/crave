@@ -1,4 +1,6 @@
 {
 	"create-recipe-loading": "Creando receta...",
-	"create-recipe-done": "¡Receta creada!"
+	"create-recipe-done": "¡Receta creada!",
+	"update-recipe-loading": "Actualizando receta...",
+	"update-recipe-done": "¡Receta actualizada!"
 }

@@ -51,7 +51,7 @@
 		{
 			children: [
 				{
-					name: $t('label.name'),
+					name: $t('label.home'),
 					href: '/',
 					icon: Home,
 				},
