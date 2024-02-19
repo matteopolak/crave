@@ -43,7 +43,7 @@
 >
 	{#if recipe.thumbnail}
 		<img
-			class="object-cover w-full h-full rounded-2xl m-0"
+			class="object-cover w-full h-full m-0"
 			src={recipe.thumbnail}
 			alt={recipe.title}
 		/>
