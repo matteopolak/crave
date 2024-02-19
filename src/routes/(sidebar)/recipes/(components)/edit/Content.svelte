@@ -48,7 +48,7 @@
 			alt={recipe.title}
 		/>
 	{:else if hovering}
-		<span>Drop to upload <Upload class="inline-block"/></span>
+		<span>{$t('label.drop-to-upload')} <Upload class="inline-block"/></span>
 	{:else}
 		<AddPhoto />
 	{/if}
