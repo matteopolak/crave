@@ -49,10 +49,16 @@
 			<section>
 				<h1>Creating a new recipe</h1>
 				<ul>
-					<li>Enter the recipe content below</li>
+					<li>
+						Copy-and-paste the full recipe content (including the author) below
+					</li>
 					<li>Click the "Generate Recipe" button</li>
-					<li>Review the generated recipe</li>
+					<li>Review the generated recipe and edit if needed</li>
 					<li>Click the "Submit" button</li>
+					<li class="font-bold">
+						Or if it's a hardcopy, you can enter the recipe manually by clicking
+						the "Enter manually" button above
+					</li>
 				</ul>
 			</section>
 
