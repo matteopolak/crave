@@ -40,5 +40,7 @@
 	"edit": "Edit",
 	"update": "Update",
 	"notes": "Notes",
-	"drop-to-upload": "Drop to upload"
+	"drop-to-upload": "Drop to upload",
+	"enter-manually": "Enter manually",
+	"generate-recipe": "Generate recipe"
 }

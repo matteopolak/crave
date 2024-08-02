@@ -1,5 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS vector;
-CREATE EXTENSION IF NOT EXISTS tsm_system_rows; 
+CREATE EXTENSION IF NOT EXISTS tsm_system_rows;
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "history" (
 	"id" serial PRIMARY KEY NOT NULL,
@@ -124,7 +124,7 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
-CREATE PROCEDURE IF NOT EXISTS add_history(
+CREATE PROCEDURE add_history(
   user_id TEXT,
   recipe_id INTEGER
 ) LANGUAGE plpgsql

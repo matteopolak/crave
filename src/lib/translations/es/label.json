@@ -40,5 +40,7 @@
 	"edit": "Editar",
 	"update": "Actualizar",
 	"notes": "Notas",
-	"drop-to-upload": "Arrastra para subir"
+	"drop-to-upload": "Arrastra para subir",
+	"enter-manually": "Ingresar manualmente",
+	"generate-recipe": "Generar receta"
 }

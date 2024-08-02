@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
-	import type { ComponentType,SvelteComponent } from 'svelte';
+	import type { ComponentType, SvelteComponent } from 'svelte';
 
 	import Channel from '~icons/ic/baseline-account-box';
 	import Create from '~icons/ic/baseline-add';
@@ -43,7 +43,7 @@
 		queryFn: () =>
 			trpc.users.subscriptions
 				.query()
-				.then(r => ({ success: true, data: r }) as const)
+				.then((r) => ({ success: true, data: r }) as const)
 				.catch(() => ({ success: false }) as const),
 	});
 
@@ -95,7 +95,7 @@
 		$subscriptions.data?.success && $subscriptions.data.data.length
 			? {
 				name: $t('label.subscriptions'),
-				children: $subscriptions.data.data.map(sub => ({
+				children: $subscriptions.data.data.map((sub) => ({
 					name: sub.name,
 					href: `/@${sub.username}`,
 					icon: sub.thumbnail ?? PUBLIC_FALLBACK_AVATAR_URL,
@@ -207,7 +207,7 @@
 					{#each category.children as route}
 						<li>
 							<svelte:element
-								this={route.disabled ? 'button' : 'a'}
+								this={route.disabled ? "button" : "a"}
 								href={route.href}
 								class:btn-disabled={route.disabled}
 								class:opacity-50={route.disabled}

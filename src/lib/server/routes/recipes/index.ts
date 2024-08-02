@@ -9,6 +9,7 @@ import { history, like, recipe, user } from '$lib/server/db/schema';
 import { completeRecipe, maxInnerProduct, partialRecipe, random } from '$lib/server/db/select';
 import { optimizeImage } from '$lib/server/image';
 import { htmlToMd, mdToHtml } from '$lib/server/md';
+import { textToRecipe } from '$lib/server/openai';
 import { Id, PartialRecipe, Recipe } from '$lib/server/schema';
 import { get } from '$lib/server/sentry';
 import { procedure, protectedProcedure, router } from '$lib/server/trpc';
@@ -18,6 +19,23 @@ import vector from './vector';
 const ai = axios.create({
 	baseURL: `http://127.0.0.1:${TEXT_EMBEDDER_PORT}`,
 	validateStatus: () => true,
+});
+
+const InputRecipe = Recipe.pick({
+	title: true,
+	thumbnail: true,
+	ingredients: true,
+	directions: true,
+	tags: true,
+	calories: true,
+	fat: true,
+	saturatedFat: true,
+	protein: true,
+	sodium: true,
+	sugar: true,
+	description: true,
+	notes: true,
+	url: true,
 });
 
 export default router({
@@ -128,22 +146,7 @@ export default router({
 				tags: ['recipe'],
 			},
 		})
-		.input(Recipe.pick({
-			title: true,
-			thumbnail: true,
-			ingredients: true,
-			directions: true,
-			tags: true,
-			calories: true,
-			fat: true,
-			saturatedFat: true,
-			protein: true,
-			sodium: true,
-			sugar: true,
-			description: true,
-			notes: true,
-			url: true,
-		}).required())
+		.input(InputRecipe)
 		.output(z.object({ id: Id }))
 		.mutation(async ({ input, ctx }) => {
 			const vector = await ai.post('/', {
@@ -318,7 +321,7 @@ export default router({
 			}
 
 			if (ctx.session) {
-				await db.execute(sql`CALL add_history(${ctx.session.user.userId}, ${input.id})`);
+				await db.execute(sql`CALL add_history(${ctx.session.user.userId}::text, ${input.id}::integer)`);
 			}
 
 			if (input.markdown) {
@@ -428,5 +431,44 @@ export default router({
 				.limit(25));
 
 			return recipes;
+		}),
+	parse: protectedProcedure
+		.meta({
+			openapi: {
+				method: 'POST',
+				path: '/recipes/parse',
+				summary: 'Parse recipe',
+				description: 'Parses a recipe from arbitrary text.',
+				tags: ['recipe'],
+			},
+		})
+		.input(z.object({ text: z.string() }))
+		.output(InputRecipe)
+		.mutation(async ({ input }) => {
+			const recipe = await textToRecipe(input.text);
+
+			if (recipe === null) {
+				throw new TRPCError({
+					code: 'BAD_REQUEST',
+					message: 'Error parsing recipe.',
+				});
+			}
+
+			return {
+				title: recipe.title,
+				thumbnail: undefined,
+				tags: recipe.tags,
+				ingredients: recipe.ingredients,
+				directions: recipe.directions,
+				calories: 0,
+				fat: 0,
+				saturatedFat: 0,
+				protein: 0,
+				sodium: 0,
+				sugar: 0,
+				notes: `${recipe.notes.join('\n')}\n\n**Attribution:** ${recipe.attribution}`.trim(),
+				description: recipe.description,
+				url: null,
+			};
 		}),
 });

@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
+// import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import pg from 'pg';
 
 import { DATABASE_URL } from '$env/static/private';
@@ -12,4 +12,4 @@ export const pool = new pg.Pool({
 
 export const db = drizzle(pool, { schema });
 
-migrate(db, { migrationsFolder: './drizzle' });
+// migrate(db, { migrationsFolder: './drizzle' });

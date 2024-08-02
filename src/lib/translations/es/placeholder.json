@@ -6,5 +6,6 @@
 	"password": "Contraseña",
 	"search": "Buscar",
 	"add-description": "Añadir descripción...",
-	"add-notes": "Añadir notas..."
+	"add-notes": "Añadir notas...",
+	"recipe-content": "Contenido de la receta"
 }

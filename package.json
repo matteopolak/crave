@@ -61,6 +61,8 @@
 		"@tanstack/svelte-query": "^5.15.5",
 		"@trpc/client": "^10.45.0",
 		"jsdom": "^23.0.1",
+		"mammoth": "^1.8.0",
+		"openai": "^4.53.2",
 		"redoc-svelte": "^0.2.3",
 		"sanitize-html": "^2.11.0",
 		"sharp": "^0.33.1",

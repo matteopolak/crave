@@ -63,7 +63,7 @@ export const actions = {
 		} catch (e) {
 			if (
 				e instanceof pg.DatabaseError &&
-				e.constraint
+        e.constraint
 			) {
 				return fail(400, {
 					message: 'Username already taken.',

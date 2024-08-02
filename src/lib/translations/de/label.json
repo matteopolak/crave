@@ -40,5 +40,7 @@
 	"edit": "Bearbeiten",
 	"update": "Aktualisieren",
 	"notes": "Notizen",
-	"drop-to-upload": "Zum Hochladen ablegen"
+	"drop-to-upload": "Zum Hochladen ablegen",
+	"enter-manually": "Manuell eingeben",
+	"generate-recipe": "Rezept generieren"
 }
