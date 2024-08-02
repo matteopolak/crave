@@ -36,7 +36,7 @@
 					sugar: recipe.sugar,
 					notes: recipe.notes || null,
 					description: recipe.description || null,
-					url: recipe.url,
+					url: recipe.url || null,
 				}),
 				{
 					loading: $t('toast.create-recipe-loading'),

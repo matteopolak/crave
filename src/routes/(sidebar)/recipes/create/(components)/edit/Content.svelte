@@ -102,6 +102,13 @@
 	bind:value={recipe.title}
 />
 
+<input
+	class="bg-base-300 rounded-lg text-lg lg:text-2xl p-2"
+	placeholder={$t('placeholder.add-source-url')}
+	type="url"
+	bind:value={recipe.url}
+/>
+
 <textarea
 	class="bg-base-300 rounded-lg text-lg lg:text-2xl p-2 min-h-48"
 	placeholder={$t('placeholder.add-description')}

@@ -7,9 +7,14 @@
 
 	let content = '';
 	let recipe: Recipe | null = null;
+	let loading = false;
 
 	async function submit() {
+		if (loading) return;
+
+		loading = true;
 		recipe = await trpc.recipes.parse.mutate({ text: content });
+		loading = false;
 	}
 
 	function enableManualEntry() {
@@ -27,7 +32,7 @@
 			sugar: 0,
 			notes: '',
 			description: '',
-			url: null,
+			url: '',
 		};
 	}
 </script>
@@ -45,7 +50,7 @@
 				<h1>Creating a new recipe</h1>
 				<ul>
 					<li>Enter the recipe content below</li>
-					<li>Click the "Generate" button</li>
+					<li>Click the "Generate Recipe" button</li>
 					<li>Review the generated recipe</li>
 					<li>Click the "Submit" button</li>
 				</ul>
@@ -59,7 +64,10 @@
 
 			<div class="flex flex-row flex-wrap mt-auto">
 				<button class="btn btn-secondary ml-auto" on:click={submit}>
-					{$t('label.generate')}
+					{#if loading}
+						<span class="loading loading-spinner" />
+					{/if}
+					{$t('label.generate-recipe')}
 				</button>
 			</div>
 		</div>

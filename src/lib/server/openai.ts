@@ -46,7 +46,6 @@ export async function textToRecipe(text: string) {
 	});
 
 	const rawRecipe = JSON.parse(response.choices[0].message.content!);
-	console.log(rawRecipe);
 	const recipe = Recipe.safeParse(rawRecipe);
 
 	return recipe.success ? recipe.data : null;
