@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { asc, isNotNull, ne } from 'drizzle-orm';
+import { asc, ne } from 'drizzle-orm';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';

@@ -11,7 +11,8 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"fmt": "eslint --fix ."
 	},
 	"devDependencies": {
 		"@iconify-json/emojione": "^1.1.10",
